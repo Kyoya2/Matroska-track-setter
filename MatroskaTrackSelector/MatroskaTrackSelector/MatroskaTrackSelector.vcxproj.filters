@@ -4,21 +4,15 @@
     <Filter Include="EbmlVint">
       <UniqueIdentifier>{8481996c-a845-4a59-958b-4f6f69e941d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{6be71ea5-4fad-404a-a3d4-bf93cc626ac1}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EbmlVint.cpp">
-      <Filter>EbmlVint</Filter>
-    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Common.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EbmlVint.h">
       <Filter>EbmlVint</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>Common</Filter>
-    </ClInclude>
+    <ClInclude Include="Common.h" />
   </ItemGroup>
 </Project>
