@@ -52,6 +52,7 @@ namespace EbmlVintUT
                 CHECK(i + 1 == without_marker.m_minimal_encoded_size);
                 CHECK(i + 1 == with_marker.m_minimal_encoded_size);
 
+                /************************************ TESTING USING FILE ************************************/
                 // Write to file
                 size_t mid_pos = 0;
                 size_t end_pos = 0;
@@ -76,6 +77,8 @@ namespace EbmlVintUT
                 // Check minimal size
                 CHECK(i + 1 == without_marker.m_minimal_encoded_size);
                 CHECK(i + 1 == with_marker.m_minimal_encoded_size);
+
+                // TODO: encode with a bigger length
             }
         }
 
