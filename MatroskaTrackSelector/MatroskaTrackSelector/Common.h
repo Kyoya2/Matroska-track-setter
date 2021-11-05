@@ -1,8 +1,17 @@
 #pragma once
 #include <cstdint>
+#include <intrin.h>
 #include <iostream>
+#include <array>
 #include <vector>
 #include <unordered_map>
+
+using std::cout;
+using std::vector;
+using std::string;
+using std::array;
+
+using Buffer = vector<uint8_t>;
 
 namespace Utility
 {

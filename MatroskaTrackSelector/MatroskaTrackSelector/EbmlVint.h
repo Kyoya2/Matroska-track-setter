@@ -28,13 +28,17 @@ template<>
 EbmlVint<false>::EbmlVint(uint64_t value) :
     m_value(value),
     m_minimal_encoded_size(_s_get_minimal_encoded_size(value))
-{}
+{
+    cout << "qwe";
+}
 
 template<>
 EbmlVint<true>::EbmlVint(uint64_t value) :
     m_value(_s_remove_vint_marker(value)),
     m_minimal_encoded_size(_s_get_minimal_encoded_size(value))
-{}
+{
+    cout << "qwe1";
+}
 
 template<bool remove_vint_marker>
 inline uint64_t EbmlVint<remove_vint_marker>::_s_remove_vint_marker(uint64_t value)
