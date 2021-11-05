@@ -14,6 +14,8 @@ using std::array;
 
 using Buffer = vector<uint8_t>;
 
+#define WriteLine(something) cout << something << endl
+
 namespace Utility
 {
     inline uint64_t get_msb(uint64_t num);
