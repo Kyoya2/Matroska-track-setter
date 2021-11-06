@@ -91,7 +91,8 @@ namespace EbmlVintUT
                     // Check value
                     CHECK(element_length.get_value() == test_number);
 
-                    // Check minimal size
+                    // Check sizes
+                    CHECK(j == element_length.get_encoded_size());
                     CHECK(i + 1 == element_length.get_minimal_encoded_size());
                 }
             }
