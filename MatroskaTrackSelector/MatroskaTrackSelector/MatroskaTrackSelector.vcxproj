@@ -156,10 +156,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
-    <ClInclude Include="EbmlVint.h" />
+    <ClInclude Include="EbmlElementLength.h" />
+    <ClInclude Include="EbmlElementID.h" />
+    <ClInclude Include="EbmlVintUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="EbmlElementID.cpp" />
+    <ClCompile Include="EbmlElementLength.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

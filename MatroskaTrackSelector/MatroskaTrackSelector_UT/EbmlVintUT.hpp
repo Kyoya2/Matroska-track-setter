@@ -3,8 +3,9 @@
 #include <ios>
 #include <fstream>
 
-#define private public
-#include "EbmlVint.h"
+//#define private public
+#include "EbmlElementLength.h"
+#include "EbmlElementID.h"
 
 namespace EbmlVintUT
 {
@@ -26,8 +27,8 @@ namespace EbmlVintUT
         }};
 
         // Init test file
-        std::fstream test_file;
-        test_file.open("test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
+        std::fstream test_file("test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
+        array<uint32_t, 9> stream_position_indices;
 
         for (uint64_t i = 0; i < test_numers.size(); ++i)
         {
@@ -38,53 +39,60 @@ namespace EbmlVintUT
 
                 uint64_t value_with_marker = test_number | ((uint64_t)1 << (7 * (i + 1)));
 
-                EbmlVint<false> without_marker = test_number;
-                EbmlVint<true> with_marker = value_with_marker;
+                EbmlElementLength element_length = test_number;
+                EbmlElementID element_id = value_with_marker;
 
                 // Sanity
-                CHECK(without_marker.m_value == test_number);
-                CHECK(with_marker.m_value == value_with_marker);
+                CHECK(element_length.get_value() == test_number);
+                CHECK(element_id.get_value() == value_with_marker);
 
                 // Remove marker
-                CHECK(with_marker._s_remove_vint_marker(with_marker.m_value) == test_number);
+                CHECK(EbmlVintUtils::remove_vint_marker(element_id.get_value()) == test_number);
 
                 // Check minimal size
-                CHECK(i + 1 == without_marker.m_minimal_encoded_size);
-                CHECK(i + 1 == with_marker.m_minimal_encoded_size);
+                CHECK(i + 1 == element_length.get_minimal_encoded_size());
+                CHECK(i + 1 == element_id.get_encoded_size());
 
                 /************************************ TESTING USING FILE ************************************/
-                // Write to file
-                size_t mid_pos = 0;
-                size_t end_pos = 0;
+
                 test_file.seekp(0);
 
-                without_marker.write(test_file);
-                mid_pos = test_file.tellp();
-                with_marker.write(test_file);
-                end_pos = test_file.tellp();
+                // Encoding the VINT with the marker using original length
+                element_id.write(test_file);
+                stream_position_indices[0] = test_file.tellp();
 
-                // Read from file in reversed order and verify stream positions
+                for (uint32_t j = i + 1; j <= sizeof(uint64_t); ++j)
+                {
+                    WriteLine4("Encoding at length " << j);
+                    
+                    // Encode to file and remember stream position
+                    element_length.write(test_file, j);
+                    stream_position_indices[j] = test_file.tellp();
+                }
+
                 test_file.seekg(0);
-                with_marker = EbmlVint<true>(test_file);
-                CHECK(mid_pos == test_file.tellg());
-                without_marker = EbmlVint<false>(test_file);
-                CHECK(end_pos == test_file.tellg());
 
-                // Check values
-                CHECK(without_marker.m_value == test_number);
-                CHECK(with_marker.m_value == value_with_marker);
+                // Decoding and checking the VINT with the marker
+                element_id = EbmlElementID(test_file);
+                CHECK(i + 1 == element_id.get_encoded_size());
+                CHECK(element_id.get_value() == value_with_marker);
 
-                // Check minimal size
-                CHECK(i + 1 == without_marker.m_minimal_encoded_size);
-                CHECK(i + 1 == with_marker.m_minimal_encoded_size);
+                for (uint32_t j = i + 1; j <= sizeof(uint64_t); ++j)
+                {
+                    WriteLine4("Decoding at length " << j);
 
-                // TODO: encode with a bigger length
+                    // Read from file and verify stream positions
+                    element_length = EbmlElementLength(test_file);
+                    CHECK(stream_position_indices[j] == test_file.tellg());
+
+                    // Check value
+                    CHECK(element_length.get_value() == test_number);
+
+                    // Check minimal size
+                    CHECK(i + 1 == element_length.get_minimal_encoded_size());
+                }
             }
         }
-
-        EbmlVint<false> qwe = 0;
-        cout << qwe;
-
     }
 
     void no_marker()

@@ -39,7 +39,7 @@ inline uint64_t Utility::get_msb(uint64_t num)
     return num + 1;
 }
 
-size_t Utility::get_msb_index(uint64_t num)
+inline size_t Utility::get_msb_index(uint64_t num)
 {
     size_t msb_index = 0;
     while (0 != (num >>= 1)) ++msb_index;
