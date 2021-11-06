@@ -1,12 +1,12 @@
 #include "EbmlElementID.h"
 
-EbmlElementID::EbmlElementID(uint64_t value) :
+EbmlElementID::EbmlElementID(EbmlElementIDType value) :
     m_value(value),
     m_encoded_size(EbmlVintUtils::get_minimal_encoded_size(value, true))
 {}
 
 EbmlElementID::EbmlElementID(std::istream& stream) :
-    m_value(EbmlVintUtils::extract_from_stream(stream, true)),
+    m_value(EbmlVintUtils::extract_from_stream<EbmlElementIDType>(stream, true)),
     m_encoded_size(EbmlVintUtils::get_minimal_encoded_size(m_value, true))
 {}
 
