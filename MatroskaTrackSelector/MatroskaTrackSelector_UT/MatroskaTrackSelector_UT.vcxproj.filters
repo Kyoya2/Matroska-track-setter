@@ -4,6 +4,9 @@
     <Filter Include="Tests">
       <UniqueIdentifier>{9ade0cf9-ec27-4653-bb40-b6bf64fd0b83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Sources">
+      <UniqueIdentifier>{bb340962-db81-44ff-83ce-ade0113cc369}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EbmlVintUT.h">
@@ -13,5 +16,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="..\MatroskaTrackSelector\EbmlElementID.cpp">
+      <Filter>Tests\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MatroskaTrackSelector\EbmlElementLength.cpp">
+      <Filter>Tests\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

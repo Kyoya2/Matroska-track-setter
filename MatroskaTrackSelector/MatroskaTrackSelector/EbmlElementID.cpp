@@ -5,7 +5,7 @@ EbmlElementID::EbmlElementID(uint64_t value) :
     m_encoded_size(EbmlVintUtils::get_minimal_encoded_size(value, true))
 {}
 
-inline EbmlElementID::EbmlElementID(std::istream& stream) :
+EbmlElementID::EbmlElementID(std::istream& stream) :
     m_value(EbmlVintUtils::extract_from_stream(stream, true)),
     m_encoded_size(EbmlVintUtils::get_minimal_encoded_size(m_value, true))
 {}

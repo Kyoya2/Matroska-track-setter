@@ -161,7 +161,6 @@
     <ClInclude Include="EbmlVintUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Common.cpp" />
     <ClCompile Include="EbmlElementID.cpp" />
     <ClCompile Include="EbmlElementLength.cpp" />
     <ClCompile Include="Main.cpp" />

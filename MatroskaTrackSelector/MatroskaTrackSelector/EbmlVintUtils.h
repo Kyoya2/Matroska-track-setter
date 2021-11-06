@@ -3,10 +3,10 @@
 
 namespace EbmlVintUtils
 {
-    inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
-    inline uint64_t extract_from_stream(std::istream& stream, bool value_with_vint_marker);
-    inline uint64_t remove_vint_marker(uint64_t value);
-    void encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream);
+    static inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
+    static inline uint64_t extract_from_stream(std::istream& stream, bool value_with_vint_marker);
+    static inline uint64_t remove_vint_marker(uint64_t value);
+    static void encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream);
 }
 
 inline size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker)

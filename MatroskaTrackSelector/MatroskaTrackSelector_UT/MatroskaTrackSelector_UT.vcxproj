@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="EbmlVintUT.h" />
+    <ClCompile Include="..\MatroskaTrackSelector\EbmlElementID.cpp" />
+    <ClCompile Include="..\MatroskaTrackSelector\EbmlElementLength.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
