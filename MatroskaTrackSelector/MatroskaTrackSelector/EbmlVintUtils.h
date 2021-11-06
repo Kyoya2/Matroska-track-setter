@@ -26,7 +26,7 @@ namespace EbmlVintUtils
     }
 
     template<typename T>
-    static inline T extract_from_stream(std::istream& stream, bool value_with_vint_marker)
+    static inline T extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr)
     {
         T result = stream.get();
 
@@ -47,6 +47,9 @@ namespace EbmlVintUtils
         {
             result = (result << 8) | stream.get();
         }
+
+        if (nullptr != out_encoded_size)
+            *out_encoded_size = size_of_vint;
 
         return result;
     }
