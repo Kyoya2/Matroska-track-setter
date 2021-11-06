@@ -226,10 +226,10 @@ def main():
     elements_string = elements_string[:-2]
     enums_string = enums_string[:-1]
 
-    with open('EbmlElementSpecification.template.h', 'r') as template_file:
+    with open('MatroskaElementSpecification.template.h', 'r') as template_file:
         template = template_file.read()
 
-    with open('../MatroskaTrackSelector/MatroskaTrackSelector/EbmlElementSpecification.h', 'w') as f:
+    with open('../MatroskaTrackSelector/MatroskaTrackSelector/MatroskaElementSpecification.h', 'w') as f:
         f.write(template.replace('{ELEMENTS}', elements_string).replace('{ENUM_ELEMENTS}', enums_string))
 
 

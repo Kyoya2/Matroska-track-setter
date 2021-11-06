@@ -22,7 +22,7 @@ struct EbmlElementSpecification
 };
 #pragma pack(pop)
 
-namespace EbmlElements
+namespace Matroska
 {
     const std::unordered_map<EbmlElementIDType, EbmlElementSpecification> ELEMENTS
     {
