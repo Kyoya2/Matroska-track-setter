@@ -201,8 +201,14 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
                 enum_string += re.sub(r'(^\w|[ -]\(?\w|\(\w)', make_uppercamel, name.lower().replace('/', ' or ').replace(')', '').replace(' - ', ' to ').replace('.', '_').replace("'", '').replace(',', '').replace('  ', ' ').replace('`',''))
             enum_string += f' = {repr(value)},\n'
 
+
         # cut out last ',\n'
-        enum_string = enum_string[:-2] + '\n' + ' ' * 4 + '};\n'
+        enum_string = enum_string[:-2] + '\n' + ' ' * 4 + '};'
+
+        # elegantly comment-out non-number elements to remind myself to handle it in the future (maybe map it to dummy indices which will mapped to actual strings in an unordered_map)
+        if element.original_type not in (EbmlSchemaElementType.Int, EbmlSchemaElementType.UInt):
+            enum_string = f'/*{enum_string}*/'
+        enum_string += '\n'
 
     return (element_string, enum_string)
 

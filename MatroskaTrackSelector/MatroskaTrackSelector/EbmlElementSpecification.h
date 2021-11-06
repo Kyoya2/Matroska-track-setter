@@ -492,7 +492,7 @@ namespace EbmlElements
         SubtrackOrPartOrMovementOrScene = 20,
         Shot = 10
     };
-    enum class TargetTypeValues {
+/*    enum class TargetTypeValues {
         Collection = 'COLLECTION',
         Edition = 'EDITION',
         Issue = 'ISSUE',
@@ -514,5 +514,5 @@ namespace EbmlElements
         Movement = 'MOVEMENT',
         Scene = 'SCENE',
         Shot = 'SHOT'
-    };
+    };*/
 }
