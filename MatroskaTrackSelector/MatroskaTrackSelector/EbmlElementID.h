@@ -16,9 +16,12 @@ public:
     EbmlElementID& operator=(const EbmlElementID& other) = default;
 
 public:
-    inline EbmlElementIDType get_value() { return m_value; }
-    inline size_t get_encoded_size() { return m_encoded_size; }
-    void write(std::ostream& stream);
+    inline EbmlElementIDType get_value() const { return m_value; }
+    inline size_t get_encoded_size() const { return m_encoded_size; }
+    void write(std::ostream& stream) const;
+
+    friend std::ostream& operator<<(std::ostream& stream, const EbmlElementID& element_id);
+    friend std::istream& operator>>(std::istream& stream, EbmlElementID& element_id);
 
 private:
     EbmlElementIDType m_value;

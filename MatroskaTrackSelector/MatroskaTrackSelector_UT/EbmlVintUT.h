@@ -57,12 +57,12 @@ namespace EbmlVintUT
                 /************************************ TESTING USING FILE ************************************/
 
                     // Encoding the VINT with the marker using original length
-                    element_id.write(test_file);
+                    test_file << element_id;
                     stream_position_indices[0] = test_file.tellp();
 
                     test_file.seekg(0);
                     // Decoding and checking the VINT with the marker
-                    element_id = EbmlElementID(test_file);
+                    test_file >> element_id;
                     CHECK(i + 1 == element_id.get_encoded_size());
                     CHECK(element_id.get_value() == value_with_marker);
 
@@ -84,7 +84,8 @@ namespace EbmlVintUT
                     WriteLine4("Decoding at length " << j);
 
                     // Read from file and verify stream positions
-                    element_length = EbmlElementLength(test_file);
+                    test_file >> element_length;
+
                     CHECK(stream_position_indices[j] == test_file.tellg());
 
                     // Check value
