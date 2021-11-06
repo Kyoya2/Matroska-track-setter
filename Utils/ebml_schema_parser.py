@@ -4,6 +4,7 @@ This module is responsible for parsing an EBML Schema file and generating a c++ 
 is generated from the template EbmlElements.template
 for more information, see: https://www.rfc-editor.org/rfc/rfc8794.html#name-ebml-schema
 """
+import re
 import xml.etree.ElementTree as ElementTree
 from collections import namedtuple
 
@@ -54,31 +55,6 @@ class EbmlSchemaElement:
 
     def add_possible_enum(self, value: str, name: int):
         self.possible_enum_values.update({value: name})
-
-    def is_first_degree_child(self, path: str) -> bool:
-        """
-        Returns true if the given path describes a first-degree
-        parent of the current element
-        """
-        if not self.path.startswith(path):
-            return False
-
-        # If this is the root element than any first-degree child of
-        # the root has a single path separator at the beginning
-        if path == EBML_SCHEMA_PATH_SEPARATOR:
-            return (self.path.count(EBML_SCHEMA_PATH_SEPARATOR) == 1)
-
-        # at this point we know that the curent element is indeed a child of some degree
-        # of the given parent. We cut out the part that the child shares with
-        # the parent to get a relative path, for example:
-        #   parent = '/Segment/a'
-        #   child = '/Segment/a/b/c'
-        #   relative_child_path = '/b/c'
-        # now we can count the number of path separators inside the relative
-        # path to determine the level of the child inside the parent, if the
-        # level is 1 then he's the father, 2 for granfather and so on
-        relative_child_path = self.path[len(path):]
-        return (relative_child_path.count(EBML_SCHEMA_PATH_SEPARATOR) == 1)
 
 
 def parse_value_by_type(value, value_type: str):
@@ -149,7 +125,6 @@ def get_elements(schema_file: str):
                 restriction_element = child
                 break
 
-
         original_type = element.attrib['type']
 
         default_value = None
@@ -179,32 +154,13 @@ def get_elements(schema_file: str):
                             )
 
         schema_elements.append(current_element)
-
-    # Genrating numeric paths paths
-    for element in schema_elements:
-        numeric_path = []
-        # loop over the parts of the path that don't include the name of the element
-        # example: '/Segment/a/b/c' -> ['Segment', 'a', 'b']
-        for element_name in element.path[:-len(element.name)].strip(EBML_SCHEMA_PATH_SEPARATOR).split(EBML_SCHEMA_PATH_SEPARATOR):
-            for element2 in schema_elements:
-                if element2.name == element_name:
-                    numeric_path.append(element2.id)
-                    break
-
-        if len(numeric_path) > 0:
-            element.numeric_path = tuple(numeric_path)
-
+    
     return schema_elements
 
 
-    # this is a dummy for the root element
-    root_element = EbmlSchemaElement('root', 0, EbmlSchemaElementType.Master, EBML_SCHEMA_PATH_SEPARATOR)
-    add_children_recursively(root_element, schema_elements)
-    return root_element
-
-
 def get_ebml_elements_string(element: EbmlSchemaElement):
-    string = ''
+    element_string = ''
+    enum_string = ''
 
     types_dict = {
         EbmlSchemaElementType.Master        : 'Master',
@@ -218,47 +174,57 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
         EbmlSchemaElementType.Enum          : 'Enum'
     }
 
-    string += ' ' * 4
-    string += hex(element.id).ljust(10) + ' : '
-    string += f'EbmlElementSpecification(\'{element.name}\''
-    string += ', EbmlElementType.' + types_dict[element.type]
+    crnt_type = element.original_type
+    if crnt_type is None:
+        crnt_type = element.type
 
-    if element.default_value is not None:
-        # default value
-        string += ', default = ' + repr(element.default_value)
-
-    if element.numeric_path is not None:
-        string += ', numeric_path = (' + ''.join([(hex(path_part_id) + ', ') for path_part_id in element.numeric_path])[:-1] + ')'
+    element_string += ' ' * 8
+    element_string += '{' + hex(element.id).ljust(10) + ', {'
+    element_string += f'"{element.name}", EbmlElementType::{types_dict[crnt_type]}' + '}}'
 
     if element.type == EbmlSchemaElementType.Enum:
-        # enum
-        string += ', enum_type = EbmlElementType.' + types_dict[element.original_type]
-        string += ', possible_values = {\n'
+        # function to convert space seperated string to UpperCamelCase
+        def make_uppercamel(match_obj):
+            match = match_obj.group(1)
+            if len(match) == 1:
+                return match.upper()
+            else:
+                return match[-1].upper()
+
+        enum_string = ' ' * 4
+        enum_string += 'enum class ' + element.name + 'Values {\n'
         for value, name in element.possible_enum_values.items():
-            string += ' ' * 48
-            string += f'{repr(value)} : {repr(name)},\n'
+            enum_string += ' ' * 8
+            if name == '3DES':
+                enum_string += 'ThreeDes'
+            else:
+                enum_string += re.sub(r'(^\w|[ -]\(?\w|\(\w)', make_uppercamel, name.lower().replace('/', ' or ').replace(')', '').replace(' - ', ' to ').replace('.', '_').replace("'", '').replace(',', '').replace('  ', ' ').replace('`',''))
+            enum_string += f' = {repr(value)},\n'
 
         # cut out last ',\n'
-        string = string[:-2] + '}'
-    string += ')'
-    return string
+        enum_string = enum_string[:-2] + '\n' + ' ' * 4 + '};\n'
+
+    return (element_string, enum_string)
 
 def main():
     elements = get_elements('ebml_matroska.xml')
 
     # Generating 
-    string = '{\n'
+    elements_string = ''
+    enums_string = ''
     for element in elements:
-        string += get_ebml_elements_string(element)
-        string += ',\n'
+        element_string, enum_string = get_ebml_elements_string(element)
+        elements_string += element_string + ',\n'
+        enums_string += enum_string
 
-    string = string[:-2] + '\n}'
+    elements_string = elements_string[:-2]
+    enums_string = enums_string[:-1]
 
-    with open('EbmlElements.template', 'r') as template_file:
+    with open('EbmlElementSpecification.template.h', 'r') as template_file:
         template = template_file.read()
 
-    with open('../EbmlElements.py', 'w') as f:
-        f.write(template.format(ebml_elements_placeholder = string))
+    with open('../MatroskaTrackSelector/MatroskaTrackSelector/EbmlElementSpecification.h', 'w') as f:
+        f.write(template.replace('{ELEMENTS}', elements_string).replace('{ENUM_ELEMENTS}', enums_string))
 
 
 if __name__ == '__main__':

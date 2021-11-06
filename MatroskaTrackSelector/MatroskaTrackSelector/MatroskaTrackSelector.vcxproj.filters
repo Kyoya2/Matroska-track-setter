@@ -19,9 +19,6 @@
     <ClCompile Include="EbmlElementLength.cpp">
       <Filter>Ebml\EbmlVint</Filter>
     </ClCompile>
-    <ClCompile Include="EbmlElements.cpp">
-      <Filter>Ebml\EbmlParser</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EbmlElementID.h">
