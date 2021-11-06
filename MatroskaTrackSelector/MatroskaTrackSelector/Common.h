@@ -19,6 +19,7 @@ using Buffer = vector<uint8_t>;
 namespace Utility
 {
     inline uint64_t get_msb(uint64_t num);
+    inline uint32_t get_msb(uint32_t num);
     inline size_t get_msb_index(uint64_t num);
 }
 
@@ -35,6 +36,22 @@ inline uint64_t Utility::get_msb(uint64_t num)
     num |= num >> 8;
     num |= num >> 16;
     num |= num >> 32;
+
+    return num + 1;
+}
+
+inline uint32_t Utility::get_msb(uint32_t num)
+{
+    if (0 == num)
+        return 0;
+
+    num = num >> 1;
+
+    num |= num >> 1;
+    num |= num >> 2;
+    num |= num >> 4;
+    num |= num >> 8;
+    num |= num >> 16;
 
     return num + 1;
 }

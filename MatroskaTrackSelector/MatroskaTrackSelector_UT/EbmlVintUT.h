@@ -17,7 +17,7 @@ namespace EbmlVintUT
         // 10 test numbers of all possible encodable sizes (1-8 bytes) including highest and lowest
         constexpr array<array<uint64_t, 10>, 8> test_numers
         {{  // Lowest                Highest                       Random . . .
-            {(uint64_t)1 << (7 * 0), ((uint64_t)1 << (7 * 1)) - 1, 3, 21, 23, 33, 40, 48, 63, 104},
+            {(uint64_t)1 << (7 * 0), ((uint64_t)1 << (7 * 1)) - 1, 0, 21, 23, 33, 40, 48, 63, 104},
             {(uint64_t)1 << (7 * 1), ((uint64_t)1 << (7 * 2)) - 1, 2145, 2611, 5116, 5713, 6920, 7183, 8527, 13726},
             {(uint64_t)1 << (7 * 2), ((uint64_t)1 << (7 * 3)) - 1, 20192, 30931, 194895, 325646, 360101, 411640, 584949, 1020706},
             {(uint64_t)1 << (7 * 3), ((uint64_t)1 << (7 * 4)) - 1, 60760031, 74896690, 85532447, 162698622, 209156049, 230218164, 237236699, 247558183},
@@ -41,49 +41,51 @@ namespace EbmlVintUT
                 uint64_t value_with_marker = test_number | ((uint64_t)1 << (7 * (i + 1)));
 
                 EbmlElementLength element_length = test_number;
-                EbmlElementID element_id = value_with_marker;
-
-                // Sanity
-                CHECK(element_length.get_value() == test_number);
-                CHECK(element_id.get_value() == value_with_marker);
-
-                // Remove marker
-                CHECK(EbmlVintUtils::remove_vint_marker(element_id.get_value()) == test_number);
-
-                // Check minimal size
-                CHECK(i + 1 == element_length.get_minimal_encoded_size());
-                CHECK(i + 1 == element_id.get_encoded_size());
-
-                /************************************ TESTING USING FILE ************************************/
+                CHECK(element_length.get_value() == test_number); // Sanity
+                CHECK(i + 1 == element_length.get_minimal_encoded_size());// Check minimal size
 
                 test_file.seekp(0);
 
-                // Encoding the VINT with the marker using original length
-                element_id.write(test_file);
-                stream_position_indices[0] = test_file.tellp();
+                // Test the ID only if the current number group supports its' size
+                if (i + 1 <= sizeof(EbmlElementIDType))
+                {
+                    EbmlElementID element_id = static_cast<EbmlElementIDType>(value_with_marker);
+                    CHECK(element_id.get_value() == value_with_marker);
+                    CHECK(EbmlVintUtils::remove_vint_marker(element_id.get_value()) == test_number); // Remove marker
+                    CHECK(i + 1 == element_id.get_encoded_size());
 
-                for (uint32_t j = i + 1; j <= sizeof(uint64_t); ++j)
+                /************************************ TESTING USING FILE ************************************/
+
+                    // Encoding the VINT with the marker using original length
+                    test_file << element_id;
+                    stream_position_indices[0] = test_file.tellp();
+
+                    test_file.seekg(0);
+                    // Decoding and checking the VINT with the marker
+                    test_file >> element_id;
+                    CHECK(i + 1 == element_id.get_encoded_size());
+                    CHECK(element_id.get_value() == value_with_marker);
+
+                    test_file.seekp(0);
+                }
+
+                for (uint32_t j = i + 1; j <= sizeof(EbmlElementLengthType); ++j)
                 {
                     WriteLine4("Encoding at length " << j);
-                    
+
                     // Encode to file and remember stream position
                     element_length.write(test_file, j);
                     stream_position_indices[j] = test_file.tellp();
                 }
-
+                
                 test_file.seekg(0);
-
-                // Decoding and checking the VINT with the marker
-                element_id = EbmlElementID(test_file);
-                CHECK(i + 1 == element_id.get_encoded_size());
-                CHECK(element_id.get_value() == value_with_marker);
-
-                for (uint32_t j = i + 1; j <= sizeof(uint64_t); ++j)
+                for (uint32_t j = i + 1; j <= sizeof(EbmlElementLengthType); ++j)
                 {
                     WriteLine4("Decoding at length " << j);
 
                     // Read from file and verify stream positions
-                    element_length = EbmlElementLength(test_file);
+                    test_file >> element_length;
+
                     CHECK(stream_position_indices[j] == test_file.tellg());
 
                     // Check value
@@ -95,10 +97,4 @@ namespace EbmlVintUT
             }
         }
     }
-
-    void no_marker()
-    {
-
-    }
-
 }

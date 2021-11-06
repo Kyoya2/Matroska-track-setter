@@ -1,16 +1,16 @@
 #include "EbmlElementLength.h"
 
-EbmlElementLength::EbmlElementLength(uint64_t value) :
+EbmlElementLength::EbmlElementLength(EbmlElementLengthType value) :
     m_value(value),
     m_minimal_encoded_size(EbmlVintUtils::get_minimal_encoded_size(value, false))
 {}
 
 EbmlElementLength::EbmlElementLength(std::istream& stream) :
-    m_value(EbmlVintUtils::extract_from_stream(stream, false)),
+    m_value(EbmlVintUtils::extract_from_stream<EbmlElementLengthType>(stream, false)),
     m_minimal_encoded_size(EbmlVintUtils::get_minimal_encoded_size(m_value, false))
 {}
 
-void EbmlElementLength::write(std::ostream& stream, size_t encoded_length)
+void EbmlElementLength::write(std::ostream& stream, size_t encoded_length) const
 {
     if (0 == encoded_length)
     {
@@ -20,20 +20,26 @@ void EbmlElementLength::write(std::ostream& stream, size_t encoded_length)
     {
         throw std::length_error("The given length is too small");
     }
-    else if (encoded_length > sizeof(uint64_t))
+    else if (encoded_length > sizeof(EbmlElementLengthType))
     {
         throw std::length_error("The given length is too big");
     }
 
     // Add marker to value
-    uint64_t encoded_value = m_value;
-    encoded_value |= ((uint64_t)1 << (7 * encoded_length));
+    EbmlElementLengthType encoded_value = m_value;
+    encoded_value |= ((EbmlElementLengthType)1 << (7 * encoded_length));
 
     EbmlVintUtils::encode_and_write(encoded_value, encoded_length, stream);
 }
 
-std::ostream& operator<<(std::ostream& stream, EbmlElementLength ebml_vint)
+std::ostream& operator<<(std::ostream& stream, const EbmlElementLength& element_length)
 {
-    ebml_vint.write(stream);
+    element_length.write(stream);
+    return stream;
+}
+
+std::istream& operator>>(std::istream& stream, EbmlElementLength& element_length)
+{
+    element_length = EbmlElementLength(stream);
     return stream;
 }
