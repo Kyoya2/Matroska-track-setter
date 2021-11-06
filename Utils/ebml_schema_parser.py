@@ -191,9 +191,15 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
             else:
                 return match[-1].upper()
 
+        seen_enum_names = {}
         enum_string = ' ' * 4
         enum_string += 'enum class ' + element.name + 'Values {\n'
         for value, name in element.possible_enum_values.items():
+            if name in seen_enum_names:
+                seen_enum_names[name] += 1
+                name += str(seen_enum_names[name])
+            else:
+                seen_enum_names.update({name:1})
             enum_string += ' ' * 8
             if name == '3DES':
                 enum_string += 'ThreeDes'
