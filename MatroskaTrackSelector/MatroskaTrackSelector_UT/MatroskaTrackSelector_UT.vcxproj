@@ -159,9 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="EbmlVintUT.hpp" />
+    <ClInclude Include="EbmlVintUT.h" />
     <ClCompile Include="Main.cpp" />
-    <ClInclude Include="UTCommon.hpp" />
+    <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
