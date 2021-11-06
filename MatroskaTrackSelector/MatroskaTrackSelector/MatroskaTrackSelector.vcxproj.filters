@@ -19,6 +19,9 @@
     <ClCompile Include="EbmlElementLength.cpp">
       <Filter>Ebml\EbmlVint</Filter>
     </ClCompile>
+    <ClCompile Include="EbmlElement.cpp">
+      <Filter>Ebml\EbmlParser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EbmlElementID.h">
@@ -31,7 +34,13 @@
     <ClInclude Include="EbmlElementLength.h">
       <Filter>Ebml\EbmlVint</Filter>
     </ClInclude>
-    <ClInclude Include="EbmlElementSpecification.h">
+    <ClInclude Include="MatroskaElementSpecification.h">
+      <Filter>Ebml\EbmlParser</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlElement.h">
+      <Filter>Ebml\EbmlParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Utils\MatroskaElementSpecification.template.h">
       <Filter>Ebml\EbmlParser</Filter>
     </ClInclude>
   </ItemGroup>
