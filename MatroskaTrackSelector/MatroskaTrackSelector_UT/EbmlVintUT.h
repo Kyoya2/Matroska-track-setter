@@ -97,10 +97,4 @@ namespace EbmlVintUT
             }
         }
     }
-
-    void no_marker()
-    {
-
-    }
-
 }
