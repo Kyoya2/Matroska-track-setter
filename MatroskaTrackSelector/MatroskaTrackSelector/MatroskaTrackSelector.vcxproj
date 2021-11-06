@@ -158,11 +158,13 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="EbmlElementLength.h" />
     <ClInclude Include="EbmlElementID.h" />
+    <ClInclude Include="EbmlElementSpecification.h" />
     <ClInclude Include="EbmlVintUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EbmlElementID.cpp" />
     <ClCompile Include="EbmlElementLength.cpp" />
+    <ClCompile Include="EbmlElements.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

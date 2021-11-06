@@ -1,29 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="EbmlVint">
+    <Filter Include="Ebml">
+      <UniqueIdentifier>{1d2a3327-4016-40cc-89db-8d03169e8019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ebml\EbmlVint">
       <UniqueIdentifier>{8481996c-a845-4a59-958b-4f6f69e941d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ebml\EbmlParser">
+      <UniqueIdentifier>{c16d4ab5-c0c0-4f46-9d23-6d5fc14a5587}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="EbmlElementID.cpp">
-      <Filter>EbmlVint</Filter>
+      <Filter>Ebml\EbmlVint</Filter>
     </ClCompile>
     <ClCompile Include="EbmlElementLength.cpp">
-      <Filter>EbmlVint</Filter>
+      <Filter>Ebml\EbmlVint</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlElements.cpp">
+      <Filter>Ebml\EbmlParser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EbmlElementID.h">
-      <Filter>EbmlVint</Filter>
+      <Filter>Ebml\EbmlVint</Filter>
     </ClInclude>
     <ClInclude Include="Common.h" />
     <ClInclude Include="EbmlVintUtils.h">
-      <Filter>EbmlVint</Filter>
+      <Filter>Ebml\EbmlVint</Filter>
     </ClInclude>
     <ClInclude Include="EbmlElementLength.h">
-      <Filter>EbmlVint</Filter>
+      <Filter>Ebml\EbmlVint</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlElementSpecification.h">
+      <Filter>Ebml\EbmlParser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
