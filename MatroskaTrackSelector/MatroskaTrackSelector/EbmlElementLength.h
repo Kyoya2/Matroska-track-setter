@@ -18,6 +18,8 @@ public:
 public:
     inline EbmlElementLengthType get_value() const { return m_value; }
     inline size_t get_minimal_encoded_size() const { return m_minimal_encoded_size; }
+    inline size_t get_encoded_size() const { return m_encoded_size; }
+
     void write(std::ostream& stream, size_t encoded_length = 0) const;
 
     friend std::ostream& operator<<(std::ostream& stream, const EbmlElementLength& element_length);
@@ -26,4 +28,5 @@ public:
 private:
     EbmlElementLengthType m_value;
     size_t m_minimal_encoded_size;
+    mutable size_t m_encoded_size; // Changes based on last write/read
 };
