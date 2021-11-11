@@ -5,6 +5,7 @@
 #include <array>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 using std::cout;
 using std::endl;

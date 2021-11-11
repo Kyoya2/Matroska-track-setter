@@ -11,21 +11,46 @@ enum class EbmlSeekPosition
     End
 };
 
-using EbmlElementSpecifications = std::unordered_map<EbmlElementIDType, EbmlElementSpecification>;
-
-template <const EbmlElementSpecifications& element_specificaion>
 class EbmlElement
 {
-    EbmlElement(std::iostream& stream, EbmlElement* parent) :
-        m_stream(stream),
-        m_offset(stream.tellg()),
-        m_id(stream),
-        m_length(stream),
-        m_parent(parent)
-    {}
+    EbmlElement(std::iostream& stream, EbmlElement* parent);
 
+    /******************************************************************************************************/
+    /********************************************** Getters ***********************************************/
+    /******************************************************************************************************/
+    EbmlElementID get_id() const { return m_id; }
+    EbmlElementLength get_length() const { return m_length; }
+
+public:
+    /******************************************************************************************************/
+    /******************************************* Iterator Stuff *******************************************/
+    /******************************************************************************************************/
+    struct Iterator
+    {
+        // end_pos is the end offset of the parent element
+        Iterator(const std::iostream& stream, uint64_t end_pos);
+
+        EbmlElement operator*() const;
+        Iterator& operator++();
+
+        friend bool operator==(const Iterator& a, const Iterator& b);
+        friend bool operator!=(const Iterator& a, const Iterator& b);
+
+    private:
+        const std::iostream& m_stream;
+
+        // store stream pos to avoid calling 'tellg' twice (once in 'EbmlElement' Ctor [unavoidable] and once in 'operator==' [avoided])
+        uint64_t m_stream_pos;
+    };
+
+    Iterator begin() { return Iterator(m_stream, _get_offset(EbmlSeekPosition::Data)); }
+    uint64_t end() { return _get_offset(EbmlSeekPosition::End); }
 
 private:
+    /******************************************************************************************************/
+    /****************************************** Internal Utility ******************************************/
+    /******************************************************************************************************/
+    constexpr uint64_t _get_offset(const EbmlSeekPosition seek_pos) const;
     inline void _seek_to(const EbmlSeekPosition seek_pos) const;
 
 private:
