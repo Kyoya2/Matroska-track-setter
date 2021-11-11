@@ -27,14 +27,13 @@ public:
     /******************************************************************************************************/
     struct Iterator
     {
-        // end_pos is the end offset of the parent element
-        Iterator(const std::iostream& stream, uint64_t end_pos);
+        // start_pos is the offset to the data of the current element
+        Iterator(const std::iostream& stream, uint64_t start_pos);
 
         EbmlElement operator*() const;
         Iterator& operator++();
 
-        friend bool operator==(const Iterator& a, const Iterator& b);
-        friend bool operator!=(const Iterator& a, const Iterator& b);
+        friend bool operator!=(const Iterator& current, uint64_t end_offset);
 
     private:
         const std::iostream& m_stream;
