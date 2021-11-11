@@ -117,7 +117,6 @@ def get_elements(schema_file: str):
         #EbmlSchemaElement('EBMLMaxSizeLength', 0x42F3, EbmlSchemaElementType.UInt, '\\EBML\\EBMLMaxSizeLength'),
     ]
 
-
     for element in root:
         restriction_element = None
         for child in element:
@@ -159,28 +158,27 @@ def get_elements(schema_file: str):
 
 
 def get_ebml_elements_string(element: EbmlSchemaElement):
-    element_string = ''
     enum_string = ''
 
     types_dict = {
-        EbmlSchemaElementType.Master        : 'Master',
-        EbmlSchemaElementType.Int           : 'Int',
-        EbmlSchemaElementType.UInt          : 'UInt',
-        EbmlSchemaElementType.Float         : 'Float',
-        EbmlSchemaElementType.AsciiString   : 'AsciiString',
-        EbmlSchemaElementType.Utf8String    : 'Utf8String',
-        EbmlSchemaElementType.Date          : 'Date',
+        EbmlSchemaElementType.Master        : 'Master',     # unused
+        EbmlSchemaElementType.Int           : 'int64_t',
+        EbmlSchemaElementType.UInt          : 'uint64_t',
+        EbmlSchemaElementType.Float         : 'float_t',
+        EbmlSchemaElementType.AsciiString   : 'string',
+        EbmlSchemaElementType.Utf8String    : 'string',
+        EbmlSchemaElementType.Date          : 'Date',       # unimplemented
         EbmlSchemaElementType.Binary        : 'Binary',
-        EbmlSchemaElementType.Enum          : 'Enum'
+        EbmlSchemaElementType.Enum          : 'Enum'        # unimplemented
     }
 
     crnt_type = element.original_type
     if crnt_type is None:
         crnt_type = element.type
-
-    element_string += ' ' * 8
-    element_string += '{' + hex(element.id).ljust(10) + ', {'
-    element_string += f'"{element.name}", EbmlElementType::{types_dict[crnt_type]}' + '}}'
+        
+    element.name = element.name.replace('-', '_')
+    element_string = f'#define {element.name}_ID ({hex(element.id)})' + '\n'
+    element_string += f'#define {element.name}_TYPE ({types_dict[crnt_type]})'
 
     if element.type == EbmlSchemaElementType.Enum:
         # function to convert space seperated string to UpperCamelCase
@@ -226,7 +224,7 @@ def main():
     enums_string = ''
     for element in elements:
         element_string, enum_string = get_ebml_elements_string(element)
-        elements_string += element_string + ',\n'
+        elements_string += element_string + '\n'
         enums_string += enum_string
 
     elements_string = elements_string[:-2]
@@ -236,7 +234,7 @@ def main():
         template = template_file.read()
 
     with open('../MatroskaTrackSelector/MatroskaTrackSelector/MatroskaElementSpecification.h', 'w') as f:
-        f.write(template.replace('{ELEMENTS}', elements_string).replace('{ENUM_ELEMENTS}', enums_string))
+        f.write(template.replace('{ELEMENTS_INFO}', elements_string).replace('{ENUM_ELEMENTS}', enums_string))
 
 
 if __name__ == '__main__':

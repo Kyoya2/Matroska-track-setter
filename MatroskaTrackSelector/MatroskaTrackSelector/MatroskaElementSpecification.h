@@ -1,300 +1,546 @@
 #pragma once
-#include "Common.h"
-#include "EbmlElementID.h"
 
-enum class EbmlElementType
-{
-    Master,
-    Int,
-    UInt,
-    Float,
-    AsciiString,
-    Utf8String,
-    Date,
-    Binary
-};
+#define GET_ID(element_name) (element_name##_ID)
+#define GET_TYPE(element_name) (element_name##_TYPE)
 
-#pragma pack(push, 1)
-struct EbmlElementSpecification
-{
-    const std::string_view name;
-    const EbmlElementType element_type;
-};
-#pragma pack(pop)
+// Element specification
+#define EBML_ID (0x1a45dfa3)
+#define EBML_TYPE (Master)
+#define EBMLVersion_ID (0x4286)
+#define EBMLVersion_TYPE (uint64_t)
+#define EBMLReadVersion_ID (0x42f7)
+#define EBMLReadVersion_TYPE (uint64_t)
+#define DocType_ID (0x4282)
+#define DocType_TYPE (string)
+#define DocTypeVersion_ID (0x4287)
+#define DocTypeVersion_TYPE (uint64_t)
+#define DocTypeReadVersion_ID (0x4285)
+#define DocTypeReadVersion_TYPE (uint64_t)
+#define DocTypeExtension_ID (0x4281)
+#define DocTypeExtension_TYPE (Master)
+#define DocTypeExtensionName_ID (0x4283)
+#define DocTypeExtensionName_TYPE (string)
+#define DocTypeExtensionVersion_ID (0x4284)
+#define DocTypeExtensionVersion_TYPE (uint64_t)
+#define CRC_32_ID (0xbf)
+#define CRC_32_TYPE (Binary)
+#define Void_ID (0xec)
+#define Void_TYPE (Binary)
+#define EBMLMaxIDLength_ID (0x42f2)
+#define EBMLMaxIDLength_TYPE (uint64_t)
+#define EBMLMaxSizeLength_ID (0x42f3)
+#define EBMLMaxSizeLength_TYPE (uint64_t)
+#define Segment_ID (0x18538067)
+#define Segment_TYPE (Master)
+#define SeekHead_ID (0x114d9b74)
+#define SeekHead_TYPE (Master)
+#define Seek_ID (0x4dbb)
+#define Seek_TYPE (Master)
+#define SeekID_ID (0x53ab)
+#define SeekID_TYPE (Binary)
+#define SeekPosition_ID (0x53ac)
+#define SeekPosition_TYPE (uint64_t)
+#define Info_ID (0x1549a966)
+#define Info_TYPE (Master)
+#define SegmentUID_ID (0x73a4)
+#define SegmentUID_TYPE (Binary)
+#define SegmentFilename_ID (0x7384)
+#define SegmentFilename_TYPE (string)
+#define PrevUID_ID (0x3cb923)
+#define PrevUID_TYPE (Binary)
+#define PrevFilename_ID (0x3c83ab)
+#define PrevFilename_TYPE (string)
+#define NextUID_ID (0x3eb923)
+#define NextUID_TYPE (Binary)
+#define NextFilename_ID (0x3e83bb)
+#define NextFilename_TYPE (string)
+#define SegmentFamily_ID (0x4444)
+#define SegmentFamily_TYPE (Binary)
+#define ChapterTranslate_ID (0x6924)
+#define ChapterTranslate_TYPE (Master)
+#define ChapterTranslateID_ID (0x69a5)
+#define ChapterTranslateID_TYPE (Binary)
+#define ChapterTranslateCodec_ID (0x69bf)
+#define ChapterTranslateCodec_TYPE (uint64_t)
+#define ChapterTranslateEditionUID_ID (0x69fc)
+#define ChapterTranslateEditionUID_TYPE (uint64_t)
+#define TimestampScale_ID (0x2ad7b1)
+#define TimestampScale_TYPE (uint64_t)
+#define Duration_ID (0x4489)
+#define Duration_TYPE (float_t)
+#define DateUTC_ID (0x4461)
+#define DateUTC_TYPE (Date)
+#define Title_ID (0x7ba9)
+#define Title_TYPE (string)
+#define MuxingApp_ID (0x4d80)
+#define MuxingApp_TYPE (string)
+#define WritingApp_ID (0x5741)
+#define WritingApp_TYPE (string)
+#define Cluster_ID (0x1f43b675)
+#define Cluster_TYPE (Master)
+#define Timestamp_ID (0xe7)
+#define Timestamp_TYPE (uint64_t)
+#define SilentTracks_ID (0x5854)
+#define SilentTracks_TYPE (Master)
+#define SilentTrackNumber_ID (0x58d7)
+#define SilentTrackNumber_TYPE (uint64_t)
+#define Position_ID (0xa7)
+#define Position_TYPE (uint64_t)
+#define PrevSize_ID (0xab)
+#define PrevSize_TYPE (uint64_t)
+#define SimpleBlock_ID (0xa3)
+#define SimpleBlock_TYPE (Binary)
+#define BlockGroup_ID (0xa0)
+#define BlockGroup_TYPE (Master)
+#define Block_ID (0xa1)
+#define Block_TYPE (Binary)
+#define BlockVirtual_ID (0xa2)
+#define BlockVirtual_TYPE (Binary)
+#define BlockAdditions_ID (0x75a1)
+#define BlockAdditions_TYPE (Master)
+#define BlockMore_ID (0xa6)
+#define BlockMore_TYPE (Master)
+#define BlockAddID_ID (0xee)
+#define BlockAddID_TYPE (uint64_t)
+#define BlockAdditional_ID (0xa5)
+#define BlockAdditional_TYPE (Binary)
+#define BlockDuration_ID (0x9b)
+#define BlockDuration_TYPE (uint64_t)
+#define ReferencePriority_ID (0xfa)
+#define ReferencePriority_TYPE (uint64_t)
+#define ReferenceBlock_ID (0xfb)
+#define ReferenceBlock_TYPE (int64_t)
+#define ReferenceVirtual_ID (0xfd)
+#define ReferenceVirtual_TYPE (int64_t)
+#define CodecState_ID (0xa4)
+#define CodecState_TYPE (Binary)
+#define DiscardPadding_ID (0x75a2)
+#define DiscardPadding_TYPE (int64_t)
+#define Slices_ID (0x8e)
+#define Slices_TYPE (Master)
+#define TimeSlice_ID (0xe8)
+#define TimeSlice_TYPE (Master)
+#define LaceNumber_ID (0xcc)
+#define LaceNumber_TYPE (uint64_t)
+#define FrameNumber_ID (0xcd)
+#define FrameNumber_TYPE (uint64_t)
+#define BlockAdditionID_ID (0xcb)
+#define BlockAdditionID_TYPE (uint64_t)
+#define Delay_ID (0xce)
+#define Delay_TYPE (uint64_t)
+#define SliceDuration_ID (0xcf)
+#define SliceDuration_TYPE (uint64_t)
+#define ReferenceFrame_ID (0xc8)
+#define ReferenceFrame_TYPE (Master)
+#define ReferenceOffset_ID (0xc9)
+#define ReferenceOffset_TYPE (uint64_t)
+#define ReferenceTimestamp_ID (0xca)
+#define ReferenceTimestamp_TYPE (uint64_t)
+#define EncryptedBlock_ID (0xaf)
+#define EncryptedBlock_TYPE (Binary)
+#define Tracks_ID (0x1654ae6b)
+#define Tracks_TYPE (Master)
+#define TrackEntry_ID (0xae)
+#define TrackEntry_TYPE (Master)
+#define TrackNumber_ID (0xd7)
+#define TrackNumber_TYPE (uint64_t)
+#define TrackUID_ID (0x73c5)
+#define TrackUID_TYPE (uint64_t)
+#define TrackType_ID (0x83)
+#define TrackType_TYPE (uint64_t)
+#define FlagEnabled_ID (0xb9)
+#define FlagEnabled_TYPE (uint64_t)
+#define FlagDefault_ID (0x88)
+#define FlagDefault_TYPE (uint64_t)
+#define FlagForced_ID (0x55aa)
+#define FlagForced_TYPE (uint64_t)
+#define FlagHearingImpaired_ID (0x55ab)
+#define FlagHearingImpaired_TYPE (uint64_t)
+#define FlagVisualImpaired_ID (0x55ac)
+#define FlagVisualImpaired_TYPE (uint64_t)
+#define FlagTextDescriptions_ID (0x55ad)
+#define FlagTextDescriptions_TYPE (uint64_t)
+#define FlagOriginal_ID (0x55ae)
+#define FlagOriginal_TYPE (uint64_t)
+#define FlagCommentary_ID (0x55af)
+#define FlagCommentary_TYPE (uint64_t)
+#define FlagLacing_ID (0x9c)
+#define FlagLacing_TYPE (uint64_t)
+#define MinCache_ID (0x6de7)
+#define MinCache_TYPE (uint64_t)
+#define MaxCache_ID (0x6df8)
+#define MaxCache_TYPE (uint64_t)
+#define DefaultDuration_ID (0x23e383)
+#define DefaultDuration_TYPE (uint64_t)
+#define DefaultDecodedFieldDuration_ID (0x234e7a)
+#define DefaultDecodedFieldDuration_TYPE (uint64_t)
+#define TrackTimestampScale_ID (0x23314f)
+#define TrackTimestampScale_TYPE (float_t)
+#define TrackOffset_ID (0x537f)
+#define TrackOffset_TYPE (int64_t)
+#define MaxBlockAdditionID_ID (0x55ee)
+#define MaxBlockAdditionID_TYPE (uint64_t)
+#define BlockAdditionMapping_ID (0x41e4)
+#define BlockAdditionMapping_TYPE (Master)
+#define BlockAddIDValue_ID (0x41f0)
+#define BlockAddIDValue_TYPE (uint64_t)
+#define BlockAddIDName_ID (0x41a4)
+#define BlockAddIDName_TYPE (string)
+#define BlockAddIDType_ID (0x41e7)
+#define BlockAddIDType_TYPE (uint64_t)
+#define BlockAddIDExtraData_ID (0x41ed)
+#define BlockAddIDExtraData_TYPE (Binary)
+#define Name_ID (0x536e)
+#define Name_TYPE (string)
+#define Language_ID (0x22b59c)
+#define Language_TYPE (string)
+#define LanguageIETF_ID (0x22b59d)
+#define LanguageIETF_TYPE (string)
+#define CodecID_ID (0x86)
+#define CodecID_TYPE (string)
+#define CodecPrivate_ID (0x63a2)
+#define CodecPrivate_TYPE (Binary)
+#define CodecName_ID (0x258688)
+#define CodecName_TYPE (string)
+#define AttachmentLink_ID (0x7446)
+#define AttachmentLink_TYPE (uint64_t)
+#define CodecSettings_ID (0x3a9697)
+#define CodecSettings_TYPE (string)
+#define CodecInfoURL_ID (0x3b4040)
+#define CodecInfoURL_TYPE (string)
+#define CodecDownloadURL_ID (0x26b240)
+#define CodecDownloadURL_TYPE (string)
+#define CodecDecodeAll_ID (0xaa)
+#define CodecDecodeAll_TYPE (uint64_t)
+#define TrackOverlay_ID (0x6fab)
+#define TrackOverlay_TYPE (uint64_t)
+#define CodecDelay_ID (0x56aa)
+#define CodecDelay_TYPE (uint64_t)
+#define SeekPreRoll_ID (0x56bb)
+#define SeekPreRoll_TYPE (uint64_t)
+#define TrackTranslate_ID (0x6624)
+#define TrackTranslate_TYPE (Master)
+#define TrackTranslateTrackID_ID (0x66a5)
+#define TrackTranslateTrackID_TYPE (Binary)
+#define TrackTranslateCodec_ID (0x66bf)
+#define TrackTranslateCodec_TYPE (uint64_t)
+#define TrackTranslateEditionUID_ID (0x66fc)
+#define TrackTranslateEditionUID_TYPE (uint64_t)
+#define Video_ID (0xe0)
+#define Video_TYPE (Master)
+#define FlagInterlaced_ID (0x9a)
+#define FlagInterlaced_TYPE (uint64_t)
+#define FieldOrder_ID (0x9d)
+#define FieldOrder_TYPE (uint64_t)
+#define StereoMode_ID (0x53b8)
+#define StereoMode_TYPE (uint64_t)
+#define AlphaMode_ID (0x53c0)
+#define AlphaMode_TYPE (uint64_t)
+#define OldStereoMode_ID (0x53b9)
+#define OldStereoMode_TYPE (uint64_t)
+#define PixelWidth_ID (0xb0)
+#define PixelWidth_TYPE (uint64_t)
+#define PixelHeight_ID (0xba)
+#define PixelHeight_TYPE (uint64_t)
+#define PixelCropBottom_ID (0x54aa)
+#define PixelCropBottom_TYPE (uint64_t)
+#define PixelCropTop_ID (0x54bb)
+#define PixelCropTop_TYPE (uint64_t)
+#define PixelCropLeft_ID (0x54cc)
+#define PixelCropLeft_TYPE (uint64_t)
+#define PixelCropRight_ID (0x54dd)
+#define PixelCropRight_TYPE (uint64_t)
+#define DisplayWidth_ID (0x54b0)
+#define DisplayWidth_TYPE (uint64_t)
+#define DisplayHeight_ID (0x54ba)
+#define DisplayHeight_TYPE (uint64_t)
+#define DisplayUnit_ID (0x54b2)
+#define DisplayUnit_TYPE (uint64_t)
+#define AspectRatioType_ID (0x54b3)
+#define AspectRatioType_TYPE (uint64_t)
+#define UncompressedFourCC_ID (0x2eb524)
+#define UncompressedFourCC_TYPE (Binary)
+#define GammaValue_ID (0x2fb523)
+#define GammaValue_TYPE (float_t)
+#define FrameRate_ID (0x2383e3)
+#define FrameRate_TYPE (float_t)
+#define Colour_ID (0x55b0)
+#define Colour_TYPE (Master)
+#define MatrixCoefficients_ID (0x55b1)
+#define MatrixCoefficients_TYPE (uint64_t)
+#define BitsPerChannel_ID (0x55b2)
+#define BitsPerChannel_TYPE (uint64_t)
+#define ChromaSubsamplingHorz_ID (0x55b3)
+#define ChromaSubsamplingHorz_TYPE (uint64_t)
+#define ChromaSubsamplingVert_ID (0x55b4)
+#define ChromaSubsamplingVert_TYPE (uint64_t)
+#define CbSubsamplingHorz_ID (0x55b5)
+#define CbSubsamplingHorz_TYPE (uint64_t)
+#define CbSubsamplingVert_ID (0x55b6)
+#define CbSubsamplingVert_TYPE (uint64_t)
+#define ChromaSitingHorz_ID (0x55b7)
+#define ChromaSitingHorz_TYPE (uint64_t)
+#define ChromaSitingVert_ID (0x55b8)
+#define ChromaSitingVert_TYPE (uint64_t)
+#define Range_ID (0x55b9)
+#define Range_TYPE (uint64_t)
+#define TransferCharacteristics_ID (0x55ba)
+#define TransferCharacteristics_TYPE (uint64_t)
+#define Primaries_ID (0x55bb)
+#define Primaries_TYPE (uint64_t)
+#define MaxCLL_ID (0x55bc)
+#define MaxCLL_TYPE (uint64_t)
+#define MaxFALL_ID (0x55bd)
+#define MaxFALL_TYPE (uint64_t)
+#define MasteringMetadata_ID (0x55d0)
+#define MasteringMetadata_TYPE (Master)
+#define PrimaryRChromaticityX_ID (0x55d1)
+#define PrimaryRChromaticityX_TYPE (float_t)
+#define PrimaryRChromaticityY_ID (0x55d2)
+#define PrimaryRChromaticityY_TYPE (float_t)
+#define PrimaryGChromaticityX_ID (0x55d3)
+#define PrimaryGChromaticityX_TYPE (float_t)
+#define PrimaryGChromaticityY_ID (0x55d4)
+#define PrimaryGChromaticityY_TYPE (float_t)
+#define PrimaryBChromaticityX_ID (0x55d5)
+#define PrimaryBChromaticityX_TYPE (float_t)
+#define PrimaryBChromaticityY_ID (0x55d6)
+#define PrimaryBChromaticityY_TYPE (float_t)
+#define WhitePointChromaticityX_ID (0x55d7)
+#define WhitePointChromaticityX_TYPE (float_t)
+#define WhitePointChromaticityY_ID (0x55d8)
+#define WhitePointChromaticityY_TYPE (float_t)
+#define LuminanceMax_ID (0x55d9)
+#define LuminanceMax_TYPE (float_t)
+#define LuminanceMin_ID (0x55da)
+#define LuminanceMin_TYPE (float_t)
+#define Projection_ID (0x7670)
+#define Projection_TYPE (Master)
+#define ProjectionType_ID (0x7671)
+#define ProjectionType_TYPE (uint64_t)
+#define ProjectionPrivate_ID (0x7672)
+#define ProjectionPrivate_TYPE (Binary)
+#define ProjectionPoseYaw_ID (0x7673)
+#define ProjectionPoseYaw_TYPE (float_t)
+#define ProjectionPosePitch_ID (0x7674)
+#define ProjectionPosePitch_TYPE (float_t)
+#define ProjectionPoseRoll_ID (0x7675)
+#define ProjectionPoseRoll_TYPE (float_t)
+#define Audio_ID (0xe1)
+#define Audio_TYPE (Master)
+#define SamplingFrequency_ID (0xb5)
+#define SamplingFrequency_TYPE (float_t)
+#define OutputSamplingFrequency_ID (0x78b5)
+#define OutputSamplingFrequency_TYPE (float_t)
+#define Channels_ID (0x9f)
+#define Channels_TYPE (uint64_t)
+#define ChannelPositions_ID (0x7d7b)
+#define ChannelPositions_TYPE (Binary)
+#define BitDepth_ID (0x6264)
+#define BitDepth_TYPE (uint64_t)
+#define TrackOperation_ID (0xe2)
+#define TrackOperation_TYPE (Master)
+#define TrackCombinePlanes_ID (0xe3)
+#define TrackCombinePlanes_TYPE (Master)
+#define TrackPlane_ID (0xe4)
+#define TrackPlane_TYPE (Master)
+#define TrackPlaneUID_ID (0xe5)
+#define TrackPlaneUID_TYPE (uint64_t)
+#define TrackPlaneType_ID (0xe6)
+#define TrackPlaneType_TYPE (uint64_t)
+#define TrackJoinBlocks_ID (0xe9)
+#define TrackJoinBlocks_TYPE (Master)
+#define TrackJoinUID_ID (0xed)
+#define TrackJoinUID_TYPE (uint64_t)
+#define TrickTrackUID_ID (0xc0)
+#define TrickTrackUID_TYPE (uint64_t)
+#define TrickTrackSegmentUID_ID (0xc1)
+#define TrickTrackSegmentUID_TYPE (Binary)
+#define TrickTrackFlag_ID (0xc6)
+#define TrickTrackFlag_TYPE (uint64_t)
+#define TrickMasterTrackUID_ID (0xc7)
+#define TrickMasterTrackUID_TYPE (uint64_t)
+#define TrickMasterTrackSegmentUID_ID (0xc4)
+#define TrickMasterTrackSegmentUID_TYPE (Binary)
+#define ContentEncodings_ID (0x6d80)
+#define ContentEncodings_TYPE (Master)
+#define ContentEncoding_ID (0x6240)
+#define ContentEncoding_TYPE (Master)
+#define ContentEncodingOrder_ID (0x5031)
+#define ContentEncodingOrder_TYPE (uint64_t)
+#define ContentEncodingScope_ID (0x5032)
+#define ContentEncodingScope_TYPE (uint64_t)
+#define ContentEncodingType_ID (0x5033)
+#define ContentEncodingType_TYPE (uint64_t)
+#define ContentCompression_ID (0x5034)
+#define ContentCompression_TYPE (Master)
+#define ContentCompAlgo_ID (0x4254)
+#define ContentCompAlgo_TYPE (uint64_t)
+#define ContentCompSettings_ID (0x4255)
+#define ContentCompSettings_TYPE (Binary)
+#define ContentEncryption_ID (0x5035)
+#define ContentEncryption_TYPE (Master)
+#define ContentEncAlgo_ID (0x47e1)
+#define ContentEncAlgo_TYPE (uint64_t)
+#define ContentEncKeyID_ID (0x47e2)
+#define ContentEncKeyID_TYPE (Binary)
+#define ContentEncAESSettings_ID (0x47e7)
+#define ContentEncAESSettings_TYPE (Master)
+#define AESSettingsCipherMode_ID (0x47e8)
+#define AESSettingsCipherMode_TYPE (uint64_t)
+#define ContentSignature_ID (0x47e3)
+#define ContentSignature_TYPE (Binary)
+#define ContentSigKeyID_ID (0x47e4)
+#define ContentSigKeyID_TYPE (Binary)
+#define ContentSigAlgo_ID (0x47e5)
+#define ContentSigAlgo_TYPE (uint64_t)
+#define ContentSigHashAlgo_ID (0x47e6)
+#define ContentSigHashAlgo_TYPE (uint64_t)
+#define Cues_ID (0x1c53bb6b)
+#define Cues_TYPE (Master)
+#define CuePoint_ID (0xbb)
+#define CuePoint_TYPE (Master)
+#define CueTime_ID (0xb3)
+#define CueTime_TYPE (uint64_t)
+#define CueTrackPositions_ID (0xb7)
+#define CueTrackPositions_TYPE (Master)
+#define CueTrack_ID (0xf7)
+#define CueTrack_TYPE (uint64_t)
+#define CueClusterPosition_ID (0xf1)
+#define CueClusterPosition_TYPE (uint64_t)
+#define CueRelativePosition_ID (0xf0)
+#define CueRelativePosition_TYPE (uint64_t)
+#define CueDuration_ID (0xb2)
+#define CueDuration_TYPE (uint64_t)
+#define CueBlockNumber_ID (0x5378)
+#define CueBlockNumber_TYPE (uint64_t)
+#define CueCodecState_ID (0xea)
+#define CueCodecState_TYPE (uint64_t)
+#define CueReference_ID (0xdb)
+#define CueReference_TYPE (Master)
+#define CueRefTime_ID (0x96)
+#define CueRefTime_TYPE (uint64_t)
+#define CueRefCluster_ID (0x97)
+#define CueRefCluster_TYPE (uint64_t)
+#define CueRefNumber_ID (0x535f)
+#define CueRefNumber_TYPE (uint64_t)
+#define CueRefCodecState_ID (0xeb)
+#define CueRefCodecState_TYPE (uint64_t)
+#define Attachments_ID (0x1941a469)
+#define Attachments_TYPE (Master)
+#define AttachedFile_ID (0x61a7)
+#define AttachedFile_TYPE (Master)
+#define FileDescription_ID (0x467e)
+#define FileDescription_TYPE (string)
+#define FileName_ID (0x466e)
+#define FileName_TYPE (string)
+#define FileMimeType_ID (0x4660)
+#define FileMimeType_TYPE (string)
+#define FileData_ID (0x465c)
+#define FileData_TYPE (Binary)
+#define FileUID_ID (0x46ae)
+#define FileUID_TYPE (uint64_t)
+#define FileReferral_ID (0x4675)
+#define FileReferral_TYPE (Binary)
+#define FileUsedStartTime_ID (0x4661)
+#define FileUsedStartTime_TYPE (uint64_t)
+#define FileUsedEndTime_ID (0x4662)
+#define FileUsedEndTime_TYPE (uint64_t)
+#define Chapters_ID (0x1043a770)
+#define Chapters_TYPE (Master)
+#define EditionEntry_ID (0x45b9)
+#define EditionEntry_TYPE (Master)
+#define EditionUID_ID (0x45bc)
+#define EditionUID_TYPE (uint64_t)
+#define EditionFlagHidden_ID (0x45bd)
+#define EditionFlagHidden_TYPE (uint64_t)
+#define EditionFlagDefault_ID (0x45db)
+#define EditionFlagDefault_TYPE (uint64_t)
+#define EditionFlagOrdered_ID (0x45dd)
+#define EditionFlagOrdered_TYPE (uint64_t)
+#define ChapterAtom_ID (0xb6)
+#define ChapterAtom_TYPE (Master)
+#define ChapterUID_ID (0x73c4)
+#define ChapterUID_TYPE (uint64_t)
+#define ChapterStringUID_ID (0x5654)
+#define ChapterStringUID_TYPE (string)
+#define ChapterTimeStart_ID (0x91)
+#define ChapterTimeStart_TYPE (uint64_t)
+#define ChapterTimeEnd_ID (0x92)
+#define ChapterTimeEnd_TYPE (uint64_t)
+#define ChapterFlagHidden_ID (0x98)
+#define ChapterFlagHidden_TYPE (uint64_t)
+#define ChapterFlagEnabled_ID (0x4598)
+#define ChapterFlagEnabled_TYPE (uint64_t)
+#define ChapterSegmentUID_ID (0x6e67)
+#define ChapterSegmentUID_TYPE (Binary)
+#define ChapterSegmentEditionUID_ID (0x6ebc)
+#define ChapterSegmentEditionUID_TYPE (uint64_t)
+#define ChapterPhysicalEquiv_ID (0x63c3)
+#define ChapterPhysicalEquiv_TYPE (uint64_t)
+#define ChapterTrack_ID (0x8f)
+#define ChapterTrack_TYPE (Master)
+#define ChapterTrackUID_ID (0x89)
+#define ChapterTrackUID_TYPE (uint64_t)
+#define ChapterDisplay_ID (0x80)
+#define ChapterDisplay_TYPE (Master)
+#define ChapString_ID (0x85)
+#define ChapString_TYPE (string)
+#define ChapLanguage_ID (0x437c)
+#define ChapLanguage_TYPE (string)
+#define ChapLanguageIETF_ID (0x437d)
+#define ChapLanguageIETF_TYPE (string)
+#define ChapCountry_ID (0x437e)
+#define ChapCountry_TYPE (string)
+#define ChapProcess_ID (0x6944)
+#define ChapProcess_TYPE (Master)
+#define ChapProcessCodecID_ID (0x6955)
+#define ChapProcessCodecID_TYPE (uint64_t)
+#define ChapProcessPrivate_ID (0x450d)
+#define ChapProcessPrivate_TYPE (Binary)
+#define ChapProcessCommand_ID (0x6911)
+#define ChapProcessCommand_TYPE (Master)
+#define ChapProcessTime_ID (0x6922)
+#define ChapProcessTime_TYPE (uint64_t)
+#define ChapProcessData_ID (0x6933)
+#define ChapProcessData_TYPE (Binary)
+#define Tags_ID (0x1254c367)
+#define Tags_TYPE (Master)
+#define Tag_ID (0x7373)
+#define Tag_TYPE (Master)
+#define Targets_ID (0x63c0)
+#define Targets_TYPE (Master)
+#define TargetTypeValue_ID (0x68ca)
+#define TargetTypeValue_TYPE (uint64_t)
+#define TargetType_ID (0x63ca)
+#define TargetType_TYPE (string)
+#define TagTrackUID_ID (0x63c5)
+#define TagTrackUID_TYPE (uint64_t)
+#define TagEditionUID_ID (0x63c9)
+#define TagEditionUID_TYPE (uint64_t)
+#define TagChapterUID_ID (0x63c4)
+#define TagChapterUID_TYPE (uint64_t)
+#define TagAttachmentUID_ID (0x63c6)
+#define TagAttachmentUID_TYPE (uint64_t)
+#define SimpleTag_ID (0x67c8)
+#define SimpleTag_TYPE (Master)
+#define TagName_ID (0x45a3)
+#define TagName_TYPE (string)
+#define TagLanguage_ID (0x447a)
+#define TagLanguage_TYPE (string)
+#define TagLanguageIETF_ID (0x447b)
+#define TagLanguageIETF_TYPE (string)
+#define TagDefault_ID (0x4484)
+#define TagDefault_TYPE (uint64_t)
+#define TagDefaultBogus_ID (0x44b4)
+#define TagDefaultBogus_TYPE (uint64_t)
+#define TagString_ID (0x4487)
+#define TagString_TYPE (string)
+#define TagBinary_ID (0x4485)
+#define TagBinary_TYPE (Binary
 
 namespace Matroska
 {
-    const std::unordered_map<EbmlElementIDType, EbmlElementSpecification> ELEMENTS
-    {
-        {0x1a45dfa3, {"EBML", EbmlElementType::Master}},
-        {0x4286    , {"EBMLVersion", EbmlElementType::UInt}},
-        {0x42f7    , {"EBMLReadVersion", EbmlElementType::UInt}},
-        {0x4282    , {"DocType", EbmlElementType::AsciiString}},
-        {0x4287    , {"DocTypeVersion", EbmlElementType::UInt}},
-        {0x4285    , {"DocTypeReadVersion", EbmlElementType::UInt}},
-        {0x4281    , {"DocTypeExtension", EbmlElementType::Master}},
-        {0x4283    , {"DocTypeExtensionName", EbmlElementType::AsciiString}},
-        {0x4284    , {"DocTypeExtensionVersion", EbmlElementType::UInt}},
-        {0xbf      , {"CRC-32", EbmlElementType::Binary}},
-        {0xec      , {"Void", EbmlElementType::Binary}},
-        {0x42f2    , {"EBMLMaxIDLength", EbmlElementType::UInt}},
-        {0x42f3    , {"EBMLMaxSizeLength", EbmlElementType::UInt}},
-        {0x18538067, {"Segment", EbmlElementType::Master}},
-        {0x114d9b74, {"SeekHead", EbmlElementType::Master}},
-        {0x4dbb    , {"Seek", EbmlElementType::Master}},
-        {0x53ab    , {"SeekID", EbmlElementType::Binary}},
-        {0x53ac    , {"SeekPosition", EbmlElementType::UInt}},
-        {0x1549a966, {"Info", EbmlElementType::Master}},
-        {0x73a4    , {"SegmentUID", EbmlElementType::Binary}},
-        {0x7384    , {"SegmentFilename", EbmlElementType::Utf8String}},
-        {0x3cb923  , {"PrevUID", EbmlElementType::Binary}},
-        {0x3c83ab  , {"PrevFilename", EbmlElementType::Utf8String}},
-        {0x3eb923  , {"NextUID", EbmlElementType::Binary}},
-        {0x3e83bb  , {"NextFilename", EbmlElementType::Utf8String}},
-        {0x4444    , {"SegmentFamily", EbmlElementType::Binary}},
-        {0x6924    , {"ChapterTranslate", EbmlElementType::Master}},
-        {0x69a5    , {"ChapterTranslateID", EbmlElementType::Binary}},
-        {0x69bf    , {"ChapterTranslateCodec", EbmlElementType::UInt}},
-        {0x69fc    , {"ChapterTranslateEditionUID", EbmlElementType::UInt}},
-        {0x2ad7b1  , {"TimestampScale", EbmlElementType::UInt}},
-        {0x4489    , {"Duration", EbmlElementType::Float}},
-        {0x4461    , {"DateUTC", EbmlElementType::Date}},
-        {0x7ba9    , {"Title", EbmlElementType::Utf8String}},
-        {0x4d80    , {"MuxingApp", EbmlElementType::Utf8String}},
-        {0x5741    , {"WritingApp", EbmlElementType::Utf8String}},
-        {0x1f43b675, {"Cluster", EbmlElementType::Master}},
-        {0xe7      , {"Timestamp", EbmlElementType::UInt}},
-        {0x5854    , {"SilentTracks", EbmlElementType::Master}},
-        {0x58d7    , {"SilentTrackNumber", EbmlElementType::UInt}},
-        {0xa7      , {"Position", EbmlElementType::UInt}},
-        {0xab      , {"PrevSize", EbmlElementType::UInt}},
-        {0xa3      , {"SimpleBlock", EbmlElementType::Binary}},
-        {0xa0      , {"BlockGroup", EbmlElementType::Master}},
-        {0xa1      , {"Block", EbmlElementType::Binary}},
-        {0xa2      , {"BlockVirtual", EbmlElementType::Binary}},
-        {0x75a1    , {"BlockAdditions", EbmlElementType::Master}},
-        {0xa6      , {"BlockMore", EbmlElementType::Master}},
-        {0xee      , {"BlockAddID", EbmlElementType::UInt}},
-        {0xa5      , {"BlockAdditional", EbmlElementType::Binary}},
-        {0x9b      , {"BlockDuration", EbmlElementType::UInt}},
-        {0xfa      , {"ReferencePriority", EbmlElementType::UInt}},
-        {0xfb      , {"ReferenceBlock", EbmlElementType::Int}},
-        {0xfd      , {"ReferenceVirtual", EbmlElementType::Int}},
-        {0xa4      , {"CodecState", EbmlElementType::Binary}},
-        {0x75a2    , {"DiscardPadding", EbmlElementType::Int}},
-        {0x8e      , {"Slices", EbmlElementType::Master}},
-        {0xe8      , {"TimeSlice", EbmlElementType::Master}},
-        {0xcc      , {"LaceNumber", EbmlElementType::UInt}},
-        {0xcd      , {"FrameNumber", EbmlElementType::UInt}},
-        {0xcb      , {"BlockAdditionID", EbmlElementType::UInt}},
-        {0xce      , {"Delay", EbmlElementType::UInt}},
-        {0xcf      , {"SliceDuration", EbmlElementType::UInt}},
-        {0xc8      , {"ReferenceFrame", EbmlElementType::Master}},
-        {0xc9      , {"ReferenceOffset", EbmlElementType::UInt}},
-        {0xca      , {"ReferenceTimestamp", EbmlElementType::UInt}},
-        {0xaf      , {"EncryptedBlock", EbmlElementType::Binary}},
-        {0x1654ae6b, {"Tracks", EbmlElementType::Master}},
-        {0xae      , {"TrackEntry", EbmlElementType::Master}},
-        {0xd7      , {"TrackNumber", EbmlElementType::UInt}},
-        {0x73c5    , {"TrackUID", EbmlElementType::UInt}},
-        {0x83      , {"TrackType", EbmlElementType::UInt}},
-        {0xb9      , {"FlagEnabled", EbmlElementType::UInt}},
-        {0x88      , {"FlagDefault", EbmlElementType::UInt}},
-        {0x55aa    , {"FlagForced", EbmlElementType::UInt}},
-        {0x55ab    , {"FlagHearingImpaired", EbmlElementType::UInt}},
-        {0x55ac    , {"FlagVisualImpaired", EbmlElementType::UInt}},
-        {0x55ad    , {"FlagTextDescriptions", EbmlElementType::UInt}},
-        {0x55ae    , {"FlagOriginal", EbmlElementType::UInt}},
-        {0x55af    , {"FlagCommentary", EbmlElementType::UInt}},
-        {0x9c      , {"FlagLacing", EbmlElementType::UInt}},
-        {0x6de7    , {"MinCache", EbmlElementType::UInt}},
-        {0x6df8    , {"MaxCache", EbmlElementType::UInt}},
-        {0x23e383  , {"DefaultDuration", EbmlElementType::UInt}},
-        {0x234e7a  , {"DefaultDecodedFieldDuration", EbmlElementType::UInt}},
-        {0x23314f  , {"TrackTimestampScale", EbmlElementType::Float}},
-        {0x537f    , {"TrackOffset", EbmlElementType::Int}},
-        {0x55ee    , {"MaxBlockAdditionID", EbmlElementType::UInt}},
-        {0x41e4    , {"BlockAdditionMapping", EbmlElementType::Master}},
-        {0x41f0    , {"BlockAddIDValue", EbmlElementType::UInt}},
-        {0x41a4    , {"BlockAddIDName", EbmlElementType::AsciiString}},
-        {0x41e7    , {"BlockAddIDType", EbmlElementType::UInt}},
-        {0x41ed    , {"BlockAddIDExtraData", EbmlElementType::Binary}},
-        {0x536e    , {"Name", EbmlElementType::Utf8String}},
-        {0x22b59c  , {"Language", EbmlElementType::AsciiString}},
-        {0x22b59d  , {"LanguageIETF", EbmlElementType::AsciiString}},
-        {0x86      , {"CodecID", EbmlElementType::AsciiString}},
-        {0x63a2    , {"CodecPrivate", EbmlElementType::Binary}},
-        {0x258688  , {"CodecName", EbmlElementType::Utf8String}},
-        {0x7446    , {"AttachmentLink", EbmlElementType::UInt}},
-        {0x3a9697  , {"CodecSettings", EbmlElementType::Utf8String}},
-        {0x3b4040  , {"CodecInfoURL", EbmlElementType::AsciiString}},
-        {0x26b240  , {"CodecDownloadURL", EbmlElementType::AsciiString}},
-        {0xaa      , {"CodecDecodeAll", EbmlElementType::UInt}},
-        {0x6fab    , {"TrackOverlay", EbmlElementType::UInt}},
-        {0x56aa    , {"CodecDelay", EbmlElementType::UInt}},
-        {0x56bb    , {"SeekPreRoll", EbmlElementType::UInt}},
-        {0x6624    , {"TrackTranslate", EbmlElementType::Master}},
-        {0x66a5    , {"TrackTranslateTrackID", EbmlElementType::Binary}},
-        {0x66bf    , {"TrackTranslateCodec", EbmlElementType::UInt}},
-        {0x66fc    , {"TrackTranslateEditionUID", EbmlElementType::UInt}},
-        {0xe0      , {"Video", EbmlElementType::Master}},
-        {0x9a      , {"FlagInterlaced", EbmlElementType::UInt}},
-        {0x9d      , {"FieldOrder", EbmlElementType::UInt}},
-        {0x53b8    , {"StereoMode", EbmlElementType::UInt}},
-        {0x53c0    , {"AlphaMode", EbmlElementType::UInt}},
-        {0x53b9    , {"OldStereoMode", EbmlElementType::UInt}},
-        {0xb0      , {"PixelWidth", EbmlElementType::UInt}},
-        {0xba      , {"PixelHeight", EbmlElementType::UInt}},
-        {0x54aa    , {"PixelCropBottom", EbmlElementType::UInt}},
-        {0x54bb    , {"PixelCropTop", EbmlElementType::UInt}},
-        {0x54cc    , {"PixelCropLeft", EbmlElementType::UInt}},
-        {0x54dd    , {"PixelCropRight", EbmlElementType::UInt}},
-        {0x54b0    , {"DisplayWidth", EbmlElementType::UInt}},
-        {0x54ba    , {"DisplayHeight", EbmlElementType::UInt}},
-        {0x54b2    , {"DisplayUnit", EbmlElementType::UInt}},
-        {0x54b3    , {"AspectRatioType", EbmlElementType::UInt}},
-        {0x2eb524  , {"UncompressedFourCC", EbmlElementType::Binary}},
-        {0x2fb523  , {"GammaValue", EbmlElementType::Float}},
-        {0x2383e3  , {"FrameRate", EbmlElementType::Float}},
-        {0x55b0    , {"Colour", EbmlElementType::Master}},
-        {0x55b1    , {"MatrixCoefficients", EbmlElementType::UInt}},
-        {0x55b2    , {"BitsPerChannel", EbmlElementType::UInt}},
-        {0x55b3    , {"ChromaSubsamplingHorz", EbmlElementType::UInt}},
-        {0x55b4    , {"ChromaSubsamplingVert", EbmlElementType::UInt}},
-        {0x55b5    , {"CbSubsamplingHorz", EbmlElementType::UInt}},
-        {0x55b6    , {"CbSubsamplingVert", EbmlElementType::UInt}},
-        {0x55b7    , {"ChromaSitingHorz", EbmlElementType::UInt}},
-        {0x55b8    , {"ChromaSitingVert", EbmlElementType::UInt}},
-        {0x55b9    , {"Range", EbmlElementType::UInt}},
-        {0x55ba    , {"TransferCharacteristics", EbmlElementType::UInt}},
-        {0x55bb    , {"Primaries", EbmlElementType::UInt}},
-        {0x55bc    , {"MaxCLL", EbmlElementType::UInt}},
-        {0x55bd    , {"MaxFALL", EbmlElementType::UInt}},
-        {0x55d0    , {"MasteringMetadata", EbmlElementType::Master}},
-        {0x55d1    , {"PrimaryRChromaticityX", EbmlElementType::Float}},
-        {0x55d2    , {"PrimaryRChromaticityY", EbmlElementType::Float}},
-        {0x55d3    , {"PrimaryGChromaticityX", EbmlElementType::Float}},
-        {0x55d4    , {"PrimaryGChromaticityY", EbmlElementType::Float}},
-        {0x55d5    , {"PrimaryBChromaticityX", EbmlElementType::Float}},
-        {0x55d6    , {"PrimaryBChromaticityY", EbmlElementType::Float}},
-        {0x55d7    , {"WhitePointChromaticityX", EbmlElementType::Float}},
-        {0x55d8    , {"WhitePointChromaticityY", EbmlElementType::Float}},
-        {0x55d9    , {"LuminanceMax", EbmlElementType::Float}},
-        {0x55da    , {"LuminanceMin", EbmlElementType::Float}},
-        {0x7670    , {"Projection", EbmlElementType::Master}},
-        {0x7671    , {"ProjectionType", EbmlElementType::UInt}},
-        {0x7672    , {"ProjectionPrivate", EbmlElementType::Binary}},
-        {0x7673    , {"ProjectionPoseYaw", EbmlElementType::Float}},
-        {0x7674    , {"ProjectionPosePitch", EbmlElementType::Float}},
-        {0x7675    , {"ProjectionPoseRoll", EbmlElementType::Float}},
-        {0xe1      , {"Audio", EbmlElementType::Master}},
-        {0xb5      , {"SamplingFrequency", EbmlElementType::Float}},
-        {0x78b5    , {"OutputSamplingFrequency", EbmlElementType::Float}},
-        {0x9f      , {"Channels", EbmlElementType::UInt}},
-        {0x7d7b    , {"ChannelPositions", EbmlElementType::Binary}},
-        {0x6264    , {"BitDepth", EbmlElementType::UInt}},
-        {0xe2      , {"TrackOperation", EbmlElementType::Master}},
-        {0xe3      , {"TrackCombinePlanes", EbmlElementType::Master}},
-        {0xe4      , {"TrackPlane", EbmlElementType::Master}},
-        {0xe5      , {"TrackPlaneUID", EbmlElementType::UInt}},
-        {0xe6      , {"TrackPlaneType", EbmlElementType::UInt}},
-        {0xe9      , {"TrackJoinBlocks", EbmlElementType::Master}},
-        {0xed      , {"TrackJoinUID", EbmlElementType::UInt}},
-        {0xc0      , {"TrickTrackUID", EbmlElementType::UInt}},
-        {0xc1      , {"TrickTrackSegmentUID", EbmlElementType::Binary}},
-        {0xc6      , {"TrickTrackFlag", EbmlElementType::UInt}},
-        {0xc7      , {"TrickMasterTrackUID", EbmlElementType::UInt}},
-        {0xc4      , {"TrickMasterTrackSegmentUID", EbmlElementType::Binary}},
-        {0x6d80    , {"ContentEncodings", EbmlElementType::Master}},
-        {0x6240    , {"ContentEncoding", EbmlElementType::Master}},
-        {0x5031    , {"ContentEncodingOrder", EbmlElementType::UInt}},
-        {0x5032    , {"ContentEncodingScope", EbmlElementType::UInt}},
-        {0x5033    , {"ContentEncodingType", EbmlElementType::UInt}},
-        {0x5034    , {"ContentCompression", EbmlElementType::Master}},
-        {0x4254    , {"ContentCompAlgo", EbmlElementType::UInt}},
-        {0x4255    , {"ContentCompSettings", EbmlElementType::Binary}},
-        {0x5035    , {"ContentEncryption", EbmlElementType::Master}},
-        {0x47e1    , {"ContentEncAlgo", EbmlElementType::UInt}},
-        {0x47e2    , {"ContentEncKeyID", EbmlElementType::Binary}},
-        {0x47e7    , {"ContentEncAESSettings", EbmlElementType::Master}},
-        {0x47e8    , {"AESSettingsCipherMode", EbmlElementType::UInt}},
-        {0x47e3    , {"ContentSignature", EbmlElementType::Binary}},
-        {0x47e4    , {"ContentSigKeyID", EbmlElementType::Binary}},
-        {0x47e5    , {"ContentSigAlgo", EbmlElementType::UInt}},
-        {0x47e6    , {"ContentSigHashAlgo", EbmlElementType::UInt}},
-        {0x1c53bb6b, {"Cues", EbmlElementType::Master}},
-        {0xbb      , {"CuePoint", EbmlElementType::Master}},
-        {0xb3      , {"CueTime", EbmlElementType::UInt}},
-        {0xb7      , {"CueTrackPositions", EbmlElementType::Master}},
-        {0xf7      , {"CueTrack", EbmlElementType::UInt}},
-        {0xf1      , {"CueClusterPosition", EbmlElementType::UInt}},
-        {0xf0      , {"CueRelativePosition", EbmlElementType::UInt}},
-        {0xb2      , {"CueDuration", EbmlElementType::UInt}},
-        {0x5378    , {"CueBlockNumber", EbmlElementType::UInt}},
-        {0xea      , {"CueCodecState", EbmlElementType::UInt}},
-        {0xdb      , {"CueReference", EbmlElementType::Master}},
-        {0x96      , {"CueRefTime", EbmlElementType::UInt}},
-        {0x97      , {"CueRefCluster", EbmlElementType::UInt}},
-        {0x535f    , {"CueRefNumber", EbmlElementType::UInt}},
-        {0xeb      , {"CueRefCodecState", EbmlElementType::UInt}},
-        {0x1941a469, {"Attachments", EbmlElementType::Master}},
-        {0x61a7    , {"AttachedFile", EbmlElementType::Master}},
-        {0x467e    , {"FileDescription", EbmlElementType::Utf8String}},
-        {0x466e    , {"FileName", EbmlElementType::Utf8String}},
-        {0x4660    , {"FileMimeType", EbmlElementType::AsciiString}},
-        {0x465c    , {"FileData", EbmlElementType::Binary}},
-        {0x46ae    , {"FileUID", EbmlElementType::UInt}},
-        {0x4675    , {"FileReferral", EbmlElementType::Binary}},
-        {0x4661    , {"FileUsedStartTime", EbmlElementType::UInt}},
-        {0x4662    , {"FileUsedEndTime", EbmlElementType::UInt}},
-        {0x1043a770, {"Chapters", EbmlElementType::Master}},
-        {0x45b9    , {"EditionEntry", EbmlElementType::Master}},
-        {0x45bc    , {"EditionUID", EbmlElementType::UInt}},
-        {0x45bd    , {"EditionFlagHidden", EbmlElementType::UInt}},
-        {0x45db    , {"EditionFlagDefault", EbmlElementType::UInt}},
-        {0x45dd    , {"EditionFlagOrdered", EbmlElementType::UInt}},
-        {0xb6      , {"ChapterAtom", EbmlElementType::Master}},
-        {0x73c4    , {"ChapterUID", EbmlElementType::UInt}},
-        {0x5654    , {"ChapterStringUID", EbmlElementType::Utf8String}},
-        {0x91      , {"ChapterTimeStart", EbmlElementType::UInt}},
-        {0x92      , {"ChapterTimeEnd", EbmlElementType::UInt}},
-        {0x98      , {"ChapterFlagHidden", EbmlElementType::UInt}},
-        {0x4598    , {"ChapterFlagEnabled", EbmlElementType::UInt}},
-        {0x6e67    , {"ChapterSegmentUID", EbmlElementType::Binary}},
-        {0x6ebc    , {"ChapterSegmentEditionUID", EbmlElementType::UInt}},
-        {0x63c3    , {"ChapterPhysicalEquiv", EbmlElementType::UInt}},
-        {0x8f      , {"ChapterTrack", EbmlElementType::Master}},
-        {0x89      , {"ChapterTrackUID", EbmlElementType::UInt}},
-        {0x80      , {"ChapterDisplay", EbmlElementType::Master}},
-        {0x85      , {"ChapString", EbmlElementType::Utf8String}},
-        {0x437c    , {"ChapLanguage", EbmlElementType::AsciiString}},
-        {0x437d    , {"ChapLanguageIETF", EbmlElementType::AsciiString}},
-        {0x437e    , {"ChapCountry", EbmlElementType::AsciiString}},
-        {0x6944    , {"ChapProcess", EbmlElementType::Master}},
-        {0x6955    , {"ChapProcessCodecID", EbmlElementType::UInt}},
-        {0x450d    , {"ChapProcessPrivate", EbmlElementType::Binary}},
-        {0x6911    , {"ChapProcessCommand", EbmlElementType::Master}},
-        {0x6922    , {"ChapProcessTime", EbmlElementType::UInt}},
-        {0x6933    , {"ChapProcessData", EbmlElementType::Binary}},
-        {0x1254c367, {"Tags", EbmlElementType::Master}},
-        {0x7373    , {"Tag", EbmlElementType::Master}},
-        {0x63c0    , {"Targets", EbmlElementType::Master}},
-        {0x68ca    , {"TargetTypeValue", EbmlElementType::UInt}},
-        {0x63ca    , {"TargetType", EbmlElementType::AsciiString}},
-        {0x63c5    , {"TagTrackUID", EbmlElementType::UInt}},
-        {0x63c9    , {"TagEditionUID", EbmlElementType::UInt}},
-        {0x63c4    , {"TagChapterUID", EbmlElementType::UInt}},
-        {0x63c6    , {"TagAttachmentUID", EbmlElementType::UInt}},
-        {0x67c8    , {"SimpleTag", EbmlElementType::Master}},
-        {0x45a3    , {"TagName", EbmlElementType::Utf8String}},
-        {0x447a    , {"TagLanguage", EbmlElementType::AsciiString}},
-        {0x447b    , {"TagLanguageIETF", EbmlElementType::AsciiString}},
-        {0x4484    , {"TagDefault", EbmlElementType::UInt}},
-        {0x44b4    , {"TagDefaultBogus", EbmlElementType::UInt}},
-        {0x4487    , {"TagString", EbmlElementType::Utf8String}},
-        {0x4485    , {"TagBinary", EbmlElementType::Binary}}
-    };
-
     enum class ChapterTranslateCodecValues {
         MatroskaScript = 0,
         DvdMenu = 1
