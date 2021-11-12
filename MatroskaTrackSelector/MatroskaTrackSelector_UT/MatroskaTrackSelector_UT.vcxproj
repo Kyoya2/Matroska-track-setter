@@ -163,7 +163,7 @@
     <ClCompile Include="..\MatroskaTrackSelector\EbmlElementID.cpp" />
     <ClCompile Include="..\MatroskaTrackSelector\EbmlElementLength.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClInclude Include="SimpleSharedPtrUT.h" />
+    <ClInclude Include="BasicSharedPtrUT.h" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

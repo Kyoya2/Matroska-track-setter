@@ -2,9 +2,9 @@
 #include "UTCommon.h"
 
 #define private public
-#include "SimpleSharedPtr.h"
+#include "BasicSharedPtr.h"
 
-namespace SimpleSharedPtrUT
+namespace BasicSharedPtrUT
 {
     uint32_t ctor_calls;
     uint32_t dtor_calls;
@@ -23,14 +23,14 @@ namespace SimpleSharedPtrUT
     {
         ctor_calls = 0;
         dtor_calls = 0;
-        SimpleSharedPtr<Test> a = SimpleSharedPtr<Test>::make_shared(1, 2);
+        BasicSharedPtr<Test> a = BasicSharedPtr<Test>::make_shared(1, 2);
         CHECK(1 == a->m_a);
         CHECK(2 == a->m_b);
         CHECK(1 == ctor_calls);
         CHECK(0 == dtor_calls);
         CHECK(1 == a.get_refcount());
 
-        SimpleSharedPtr<Test> b = a;
+        BasicSharedPtr<Test> b = a;
         CHECK(b.m_ptr == a.m_ptr);
         CHECK(b.m_refcount_ptr == a.m_refcount_ptr);
         CHECK(1 == b->m_a);

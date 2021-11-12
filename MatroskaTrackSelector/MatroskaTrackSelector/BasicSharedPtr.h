@@ -4,25 +4,25 @@
 
 // Basically an implementation of 'shared_ptr' with the addition of the function 'release_ownership_unsafe'
 template <typename T>
-class SimpleSharedPtr
+class BasicSharedPtr
 {
 public:
     /******************************************************************************************************/
     /***************************************** (Con|De)structors ******************************************/
     /******************************************************************************************************/
-    SimpleSharedPtr(T* ptr) :
+    BasicSharedPtr(T* ptr) :
         m_ptr(ptr),
         m_refcount_ptr(new size_t(1))
     {}
 
     // Dopy
-    SimpleSharedPtr(const SimpleSharedPtr& other) :
+    BasicSharedPtr(const BasicSharedPtr& other) :
         m_ptr(other.m_ptr),
         m_refcount_ptr(other.m_refcount_ptr)
     {
         ++(*m_refcount_ptr);
     }
-    SimpleSharedPtr& operator=(const SimpleSharedPtr& other)
+    BasicSharedPtr& operator=(const BasicSharedPtr& other)
     {
         m_ptr = other.m_ptr;
         m_refcount_ptr = other.m_refcount_ptr;
@@ -30,11 +30,11 @@ public:
     }
 
     // Move
-    SimpleSharedPtr(SimpleSharedPtr&& other) = delete;
-    SimpleSharedPtr& operator=(SimpleSharedPtr&& other) = delete;
+    BasicSharedPtr(BasicSharedPtr&& other) = delete;
+    BasicSharedPtr& operator=(BasicSharedPtr&& other) = delete;
  
     // Dtor
-    ~SimpleSharedPtr()
+    ~BasicSharedPtr()
     {
         if (0 == --(*m_refcount_ptr))
         {
@@ -53,9 +53,9 @@ public:
     /************************************************ Misc ************************************************/
     /******************************************************************************************************/
     template <class... Args>
-    static SimpleSharedPtr make_shared(Args&&... args)
+    static BasicSharedPtr make_shared(Args&&... args)
     {
-        return SimpleSharedPtr(new T(std::forward<Args>(args)...));
+        return BasicSharedPtr(new T(std::forward<Args>(args)...));
     }
 
     size_t get_refcount() { return *m_refcount_ptr; }

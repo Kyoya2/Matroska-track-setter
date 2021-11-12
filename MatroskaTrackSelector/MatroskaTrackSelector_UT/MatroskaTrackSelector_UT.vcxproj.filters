@@ -10,7 +10,7 @@
     <Filter Include="Tests\EbmlVint\Sources">
       <UniqueIdentifier>{bb340962-db81-44ff-83ce-ade0113cc369}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\SimpleSharedPtr">
+    <Filter Include="Tests\BasicSharedPtr">
       <UniqueIdentifier>{bfe74ed3-380f-481b-bd3d-6a0bdac8582d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -19,8 +19,8 @@
     <ClInclude Include="EbmlVintUT.h">
       <Filter>Tests\EbmlVint</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleSharedPtrUT.h">
-      <Filter>Tests\SimpleSharedPtr</Filter>
+    <ClInclude Include="BasicSharedPtrUT.h">
+      <Filter>Tests\BasicSharedPtr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
