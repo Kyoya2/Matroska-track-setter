@@ -13,7 +13,7 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     }
 }
 
-EbmlElement::EbmlElement(std::shared_ptr<EbmlElement> parent) :
+EbmlElement::EbmlElement(shared_ptr<EbmlElement> parent) :
     m_stream(parent->m_stream),
     m_offset(parent->m_stream.tellg()),
     m_id(parent->m_stream),
@@ -65,7 +65,7 @@ EbmlElement::Iterator::Iterator(EbmlElement& parent) :
     }
 }
 
-std::shared_ptr<EbmlElement> EbmlElement::Iterator::operator*()
+shared_ptr<EbmlElement> EbmlElement::Iterator::operator*()
 {
     return m_current_element;
 }

@@ -31,21 +31,33 @@ public:
     {
         Iterator(EbmlElement& parent);
 
-        std::shared_ptr<EbmlElement> operator*();
+        shared_ptr<EbmlElement> operator*();
         Iterator& operator++();
 
         friend bool operator!=(const Iterator& current, uint64_t end_offset);
 
     private:
         EbmlElement& m_parent;
-        std::shared_ptr<EbmlElement> m_current_element;
+        shared_ptr<EbmlElement> m_current_element;
     };
 
     Iterator begin() { return Iterator(*this); }
     constexpr uint64_t end() { return _get_offset(EbmlOffset::End); }
 
+public:
+    /******************************************************************************************************/
+    /******************************************* Iterator Stuff *******************************************/
+    /******************************************************************************************************/
+    shared_ptr<EbmlElement> get_next_element();
+    shared_ptr<EbmlElement> get_next_element(EbmlElementIDType id);
+    shared_ptr<EbmlElement> get_first_child();
+    shared_ptr<EbmlElement> get_child(EbmlElementIDType id);
+
 private:
-    EbmlElement(std::shared_ptr<EbmlElement> parent);
+    /******************************************************************************************************/
+    /**************************************** Internal Constructors ***************************************/
+    /******************************************************************************************************/
+    EbmlElement(shared_ptr<EbmlElement> parent);
 
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
@@ -59,5 +71,5 @@ private:
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;
-    std::shared_ptr<EbmlElement> m_parent;
+    shared_ptr<EbmlElement> m_parent;
 };

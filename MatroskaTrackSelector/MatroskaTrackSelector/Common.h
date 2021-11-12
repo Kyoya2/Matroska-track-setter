@@ -12,6 +12,7 @@ using std::endl;
 using std::vector;
 using std::string;
 using std::array;
+using std::shared_ptr;
 
 using Buffer = vector<uint8_t>;
 
