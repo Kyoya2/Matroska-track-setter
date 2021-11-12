@@ -7,13 +7,15 @@ template <typename T>
 class SimpleSharedPtr
 {
 public:
-    // regular ctor
+    /******************************************************************************************************/
+    /***************************************** (Con|De)structors ******************************************/
+    /******************************************************************************************************/
     SimpleSharedPtr(T* ptr) :
         m_ptr(ptr),
         m_refcount_ptr(new size_t(1))
     {}
 
-    // copy ctor
+    // Dopy
     SimpleSharedPtr(const SimpleSharedPtr& other) :
         m_ptr(other.m_ptr),
         m_refcount_ptr(other.m_refcount_ptr)
@@ -27,11 +29,11 @@ public:
         ++(*m_refcount_ptr);
     }
 
-    // move ctor
+    // Move
     SimpleSharedPtr(SimpleSharedPtr&& other) = delete;
     SimpleSharedPtr& operator=(SimpleSharedPtr&& other) = delete;
  
-    // dtor
+    // Dtor
     ~SimpleSharedPtr()
     {
         if (0 == --(*m_refcount_ptr))
@@ -41,11 +43,15 @@ public:
         }
     }
 
-    // operators
+    /******************************************************************************************************/
+    /********************************************* Operators **********************************************/
+    /******************************************************************************************************/
     T* operator->() { return m_ptr; }
     T operator*() { return *m_ptr; }
 
-    // misc
+    /******************************************************************************************************/
+    /************************************************ Misc ************************************************/
+    /******************************************************************************************************/
     template <class... Args>
     static SimpleSharedPtr make_shared(Args&&... args)
     {
