@@ -13,14 +13,40 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     }
 }
 
+/******************************************************************************************************/
+/*************************************** Functions for iteration **************************************/
+/******************************************************************************************************/
+shared_ptr<EbmlElement> EbmlElement::get_next_element()
+{
+    _seek_to(EbmlOffset::End);
+    return std::make_shared<EbmlElement>(*this);
+}
+
+shared_ptr<EbmlElement> EbmlElement::get_next_element(EbmlElementIDType id)
+{
+    return shared_ptr<EbmlElement>();
+}
+
+shared_ptr<EbmlElement> EbmlElement::get_first_child()
+{
+    return shared_ptr<EbmlElement>();
+}
+
+shared_ptr<EbmlElement> EbmlElement::get_child(EbmlElementIDType id)
+{
+    return shared_ptr<EbmlElement>();
+}
+
+/******************************************************************************************************/
+/**************************************** Internal Constructors ***************************************/
+/******************************************************************************************************/
 EbmlElement::EbmlElement(shared_ptr<EbmlElement> parent) :
     m_stream(parent->m_stream),
     m_offset(parent->m_stream.tellg()),
     m_id(parent->m_stream),
     m_length(parent->m_stream),
     m_parent(parent)
-{
-}
+{}
 
 /******************************************************************************************************/
 /****************************************** Internal Utility ******************************************/
@@ -61,7 +87,7 @@ EbmlElement::Iterator::Iterator(EbmlElement& parent) :
     if (parent.get_length().get_value() != 0)
     {
         m_parent._seek_to(EbmlOffset::Data);
-        m_current_element = std::make_shared<EbmlElement>(EbmlElement(m_parent.m_stream));
+        m_current_element = std::make_shared<EbmlElement>(m_parent.m_stream);
     }
 }
 
