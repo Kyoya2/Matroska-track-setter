@@ -1,10 +1,8 @@
 #pragma once
 #include <cstdint>
-#include <intrin.h>
 #include <iostream>
 #include <array>
 #include <vector>
-#include <unordered_map>
 #include <memory>
 
 using std::cout;

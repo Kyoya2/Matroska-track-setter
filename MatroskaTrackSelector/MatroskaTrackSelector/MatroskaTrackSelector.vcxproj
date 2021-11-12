@@ -167,10 +167,12 @@
     </ClInclude>
     <ClInclude Include="Common.h" />
     <ClInclude Include="EbmlElement.h" />
+    <ClInclude Include="EbmlElementInitializer.h" />
     <ClInclude Include="EbmlElementLength.h" />
     <ClInclude Include="EbmlElementID.h" />
     <ClInclude Include="MatroskaElementSpecification.h" />
     <ClInclude Include="EbmlVintUtils.h" />
+    <ClInclude Include="SimpleSharedPtr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EbmlElementID.cpp" />

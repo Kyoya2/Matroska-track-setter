@@ -4,7 +4,6 @@
 #include <ios>
 #include <fstream>
 
-//#define private public
 #include "EbmlElementLength.h"
 #include "EbmlElementID.h"
 
