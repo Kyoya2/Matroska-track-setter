@@ -1,11 +1,11 @@
 #include "EbmlElement.h"
 
-EbmlElement::EbmlElement(std::iostream& stream, EbmlElement* parent) :
+EbmlElement::EbmlElement(std::iostream& stream) :
     m_stream(stream),
     m_offset(stream.tellg()),
     m_id(stream),
     m_length(stream),
-    m_parent(parent)
+    m_parent(nullptr)
 {
     if (GET_ID(EBML) == m_id.get_value())
     {
@@ -13,48 +13,72 @@ EbmlElement::EbmlElement(std::iostream& stream, EbmlElement* parent) :
     }
 }
 
+EbmlElement::EbmlElement(std::shared_ptr<EbmlElement> parent) :
+    m_stream(parent->m_stream),
+    m_offset(parent->m_stream.tellg()),
+    m_id(parent->m_stream),
+    m_length(parent->m_stream),
+    m_parent(parent)
+{
+}
+
 /******************************************************************************************************/
 /****************************************** Internal Utility ******************************************/
 /******************************************************************************************************/
-constexpr uint64_t EbmlElement::_get_offset(const EbmlSeekPosition seek_pos) const
+constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
 {
     switch (seek_pos)
     {
-    case EbmlSeekPosition::Header:
+    case EbmlOffset::Header:
         return m_offset;
 
-    case EbmlSeekPosition::Data:
+    case EbmlOffset::Data:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size();
 
-    case EbmlSeekPosition::End:
+    case EbmlOffset::End:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value();
     }
+    throw std::runtime_error("Unrecognized value");
 }
 
-inline void EbmlElement::_seek_to(const EbmlSeekPosition seek_pos) const
+inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
 {
-    m_stream.seekp(_get_offset(seek_pos));
+    _seek_to(_get_offset(seek_pos));
+}
+
+inline void EbmlElement::_seek_to(uint64_t seek_pos) const
+{
+    m_stream.seekp(seek_pos);
 }
 
 /******************************************************************************************************/
 /******************************************* Iterator Stuff *******************************************/
 /******************************************************************************************************/
-EbmlElement::Iterator::Iterator(const std::iostream& stream, uint64_t start_pos) :
-    m_stream(stream),
-    m_stream_pos(start_pos)
-{}
-
-EbmlElement EbmlElement::Iterator::operator*() const
+EbmlElement::Iterator::Iterator(EbmlElement& parent) :
+    m_parent(parent),
+    m_current_element(nullptr)
 {
-    return EbmlElement();
+    if (parent.get_length().get_value() != 0)
+    {
+        m_parent._seek_to(EbmlOffset::Data);
+        m_current_element = std::make_shared<EbmlElement>(EbmlElement(m_parent.m_stream));
+    }
+}
+
+std::shared_ptr<EbmlElement> EbmlElement::Iterator::operator*()
+{
+    return m_current_element;
 }
 
 EbmlElement::Iterator& EbmlElement::Iterator::operator++()
 {
-    // TODO: insert return statement here
+    // Seek to end of last element and read
+    m_current_element->_seek_to(EbmlOffset::End);
+    m_current_element = std::make_shared<EbmlElement>(m_parent.m_stream);
+    return *this;
 }
 
-bool operator!=(const Iterator& current, uint64_t end_offset)
+bool operator!=(const EbmlElement::Iterator& current, uint64_t end_offset)
 {
-    return false;
+    return (current.m_parent.get_length().get_value() != 0) && (current.m_current_element->end() != end_offset);
 }

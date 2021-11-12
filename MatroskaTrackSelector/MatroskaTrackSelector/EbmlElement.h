@@ -4,16 +4,18 @@
 #include "EbmlElementLength.h"
 #include "MatroskaElementSpecification.h"
 
-enum class EbmlSeekPosition
+// Offsets relative to the current element
+enum class EbmlOffset
 {
-    Header,
-    Data,
-    End
+    Header, // Offset to the first character of the EBML ID
+    Data,   // Offset to the first character if the data (after EBML ID and Length)
+    End     // Offset to the first character after the end of the data
 };
 
 class EbmlElement
 {
-    EbmlElement(std::iostream& stream, EbmlElement* parent);
+public:
+    EbmlElement(std::iostream& stream);
 
     /******************************************************************************************************/
     /********************************************** Getters ***********************************************/
@@ -27,35 +29,35 @@ public:
     /******************************************************************************************************/
     struct Iterator
     {
-        // start_pos is the offset to the data of the current element
-        Iterator(const std::iostream& stream, uint64_t start_pos);
+        Iterator(EbmlElement& parent);
 
-        EbmlElement operator*() const;
+        std::shared_ptr<EbmlElement> operator*();
         Iterator& operator++();
 
         friend bool operator!=(const Iterator& current, uint64_t end_offset);
 
     private:
-        const std::iostream& m_stream;
-
-        // store stream pos to avoid calling 'tellg' twice (once in 'EbmlElement' Ctor [unavoidable] and once in 'operator==' [avoided])
-        uint64_t m_stream_pos;
+        EbmlElement& m_parent;
+        std::shared_ptr<EbmlElement> m_current_element;
     };
 
-    Iterator begin() { return Iterator(m_stream, _get_offset(EbmlSeekPosition::Data)); }
-    uint64_t end() { return _get_offset(EbmlSeekPosition::End); }
+    Iterator begin() { return Iterator(*this); }
+    constexpr uint64_t end() { return _get_offset(EbmlOffset::End); }
 
 private:
+    EbmlElement(std::shared_ptr<EbmlElement> parent);
+
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
     /******************************************************************************************************/
-    constexpr uint64_t _get_offset(const EbmlSeekPosition seek_pos) const;
-    inline void _seek_to(const EbmlSeekPosition seek_pos) const;
+    constexpr uint64_t _get_offset(EbmlOffset seek_pos) const;
+    inline void _seek_to(EbmlOffset seek_pos) const;
+    inline void _seek_to(uint64_t seek_pos) const;
 
 private:
     std::iostream& m_stream;
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;
-    EbmlElement* m_parent;
+    std::shared_ptr<EbmlElement> m_parent;
 };
