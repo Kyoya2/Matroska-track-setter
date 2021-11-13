@@ -48,8 +48,6 @@ public:
         m_owned(other.m_owned) // Although there's no reason to move non-owned objects, it's still possible
     {
         other.m_owned = false;
-
-        // This is not really necessary but I'll leave it for a while to find potential bugs
         other.m_ptr = nullptr;
         other.m_refcount_ptr = nullptr;
     }
@@ -61,7 +59,6 @@ public:
         m_owned = other.m_owned; // Although there's no reason to move non-owned objects, it's still possible
 
         other.m_owned = false;
-        // This is not really necessary but I'll leave it for a while to find potential bugs
         other.m_ptr = nullptr;
         other.m_refcount_ptr = nullptr;
 
@@ -74,8 +71,7 @@ public:
         if (m_owned &&
            (0 == --(*m_refcount_ptr)))
         {
-            if (nullptr != m_ptr)
-                delete m_ptr;
+            delete m_ptr;
             delete m_refcount_ptr;
         }
     }
