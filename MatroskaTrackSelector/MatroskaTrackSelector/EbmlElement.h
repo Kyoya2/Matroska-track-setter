@@ -6,6 +6,10 @@
 #include "EbmlElementLength.h"
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
+#include "ElementIterator.h"
+//#include "ElementIDIterator.h"
+
+class ElementIterator;
 
 // Offsets relative to the current element
 enum class EbmlOffset
@@ -35,22 +39,8 @@ public:
     /******************************************************************************************************/
     /******************************************* Iterator Stuff *******************************************/
     /******************************************************************************************************/
-    struct Iterator
-    {
-        Iterator(EbmlElement& parent);
-
-        BasicSharedPtr<EbmlElement> operator*();
-        Iterator& operator++();
-
-        friend bool operator!=(const Iterator& current, uint64_t end_offset);
-
-    private:
-        EbmlElement& m_parent;
-        BasicSharedPtr<EbmlElement> m_current_element;
-    };
-
-    Iterator begin() { return Iterator(*this); }
-    constexpr uint64_t end() { return _get_offset(EbmlOffset::End); }
+    //ElementIterator begin() { return ElementIterator(*this); }
+    //constexpr uint64_t end() { return _get_offset(EbmlOffset::End); }
 
 public:
     /******************************************************************************************************/

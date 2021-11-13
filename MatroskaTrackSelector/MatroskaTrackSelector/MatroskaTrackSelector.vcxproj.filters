@@ -13,6 +13,9 @@
     <Filter Include="Common">
       <UniqueIdentifier>{8d167dee-cc59-4c6a-892f-bb84d6ee661a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ebml\EbmlParser\Iterators">
+      <UniqueIdentifier>{849d2d08-f575-4c45-8c94-6cbee8d67185}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -50,6 +53,12 @@
     </ClInclude>
     <ClInclude Include="BasicSharedPtr.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementIterator.h">
+      <Filter>Ebml\EbmlParser\Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementIDIterator.h">
+      <Filter>Ebml\EbmlParser\Iterators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

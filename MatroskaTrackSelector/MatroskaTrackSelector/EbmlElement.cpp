@@ -84,35 +84,3 @@ inline void EbmlElement::_seek_to(uint64_t seek_pos) const
 {
     m_stream.seekp(seek_pos);
 }
-
-/******************************************************************************************************/
-/******************************************* Iterator Stuff *******************************************/
-/******************************************************************************************************/
-EbmlElement::Iterator::Iterator(EbmlElement& parent) :
-    m_parent(parent),
-    m_current_element(nullptr)
-{
-    if (parent.get_length().get_value() != 0)
-    {
-        m_parent._seek_to(EbmlOffset::Data);
-        m_current_element = std::make_shared<EbmlElement>(m_parent.m_stream);
-    }
-}
-
-shared_ptr<EbmlElement> EbmlElement::Iterator::operator*()
-{
-    return m_current_element;
-}
-
-EbmlElement::Iterator& EbmlElement::Iterator::operator++()
-{
-    // Seek to end of last element and read
-    m_current_element->_seek_to(EbmlOffset::End);
-    m_current_element = std::make_shared<EbmlElement>(m_parent.m_stream);
-    return *this;
-}
-
-bool operator!=(const EbmlElement::Iterator& current, uint64_t end_offset)
-{
-    return (current.m_parent.get_length().get_value() != 0) && (current.m_current_element->end() != end_offset);
-}
