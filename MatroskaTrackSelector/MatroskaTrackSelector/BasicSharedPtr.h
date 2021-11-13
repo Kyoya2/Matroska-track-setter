@@ -19,7 +19,7 @@ class BasicSharedPtr
 private:
     struct Internal
     {
-        template <class... Args>
+        template <typename... Args>
         Internal(Args&&... args) :
             obj(std::forward<Args>(args)...),
             refcount(1)
@@ -99,7 +99,7 @@ public:
     /******************************************************************************************************/
     /************************************************ Misc ************************************************/
     /******************************************************************************************************/
-    template <class... Args>
+    template <typename... Args>
     static BasicSharedPtr make_shared(Args&&... args)
     {
         //return BasicSharedPtr(new T(std::forward<Args>(args)...), new size_t(1));

@@ -1,11 +1,21 @@
 #include "EbmlElement.h"
 
+template<typename ...Args>
+inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
+{
+    BasicSharedPtr<EbmlElement> result = BasicSharedPtr<EbmlElement>::make_shared(std::forward<Args>(args)...);
+    result->m_self = result;
+    result->m_self.release_ownership_unsafe();
+    return result;
+}
+
+// Public constructor
 EbmlElement::EbmlElement(std::iostream& stream) :
     m_stream(stream),
     m_offset(stream.tellg()),
     m_id(stream),
     m_length(stream),
-    m_parent(nullptr)
+    m_parent()
 {
     if (GET_ID(EBML) == m_id.get_value())
     {
@@ -16,31 +26,29 @@ EbmlElement::EbmlElement(std::iostream& stream) :
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
-shared_ptr<EbmlElement> EbmlElement::get_next_element()
+BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 {
     _seek_to(EbmlOffset::End);
-    return std::make_shared<EbmlElement>(*this);
+    return s_get(m_self);
 }
 
-shared_ptr<EbmlElement> EbmlElement::get_next_element(EbmlElementIDType id)
+BasicSharedPtr<EbmlElement> EbmlElement::get_next_element(EbmlElementIDType id)
 {
-    return shared_ptr<EbmlElement>();
+    return BasicSharedPtr<EbmlElement>();
 }
 
-shared_ptr<EbmlElement> EbmlElement::get_first_child()
+BasicSharedPtr<EbmlElement> EbmlElement::get_first_child()
 {
-    return shared_ptr<EbmlElement>();
+    return BasicSharedPtr<EbmlElement>();
 }
 
-shared_ptr<EbmlElement> EbmlElement::get_child(EbmlElementIDType id)
+BasicSharedPtr<EbmlElement> EbmlElement::get_child(EbmlElementIDType id)
 {
-    return shared_ptr<EbmlElement>();
+    return BasicSharedPtr<EbmlElement>();
 }
 
-/******************************************************************************************************/
-/**************************************** Internal Constructors ***************************************/
-/******************************************************************************************************/
-EbmlElement::EbmlElement(shared_ptr<EbmlElement> parent) :
+// Private constructor
+EbmlElement::EbmlElement(BasicSharedPtr<EbmlElement> parent) :
     m_stream(parent->m_stream),
     m_offset(parent->m_stream.tellg()),
     m_id(parent->m_stream),

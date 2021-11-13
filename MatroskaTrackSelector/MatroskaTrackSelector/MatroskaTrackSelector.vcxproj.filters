@@ -45,9 +45,6 @@
     <ClInclude Include="..\..\Utils\MatroskaElementSpecification.template.h">
       <Filter>Ebml\EbmlParser</Filter>
     </ClInclude>
-    <ClInclude Include="EbmlElementInitializer.h">
-      <Filter>Ebml\EbmlParser</Filter>
-    </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>Common</Filter>
     </ClInclude>
