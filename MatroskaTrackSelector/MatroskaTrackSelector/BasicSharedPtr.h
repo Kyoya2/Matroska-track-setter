@@ -2,7 +2,17 @@
 #include <utility>
 #include "Common.h"
 
-// Basically an implementation of 'shared_ptr' with the addition of the function 'release_ownership_unsafe'
+/*
+    This class is identical to std::share_pointer except it has a function that allows a pointer object to
+    relinquish himself from ownership of the stored object while still allowing it to be copied validly.
+    This is usefull for building dynamic trees that are stored on the heap:
+    each node has a pointer of iteself which is not owned by himself, when it wants to create children it
+    passes it's own pointer to the child who takes ownership of the object. when all of the children of a
+    certain object are destroyed, the object itself will also be destroyed because although it holds a pointer
+    to itself, it doesn't own it.
+    Note that this example requires some "Node initializer" class that creates a node, sets their own self-pointer
+    and sets this pointer to an unowned state.
+*/
 template <typename T>
 class BasicSharedPtr
 {
