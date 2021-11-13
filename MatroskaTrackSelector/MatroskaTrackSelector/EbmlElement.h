@@ -7,7 +7,7 @@
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
 #include "ElementIterator.h"
-//#include "ElementIDIterator.h"
+#include "SpecificElementIterator.h"
 
 class ElementIterator;
 
@@ -39,17 +39,17 @@ public:
     /******************************************************************************************************/
     /******************************************* Iterator Stuff *******************************************/
     /******************************************************************************************************/
-    //ElementIterator begin() { return ElementIterator(*this); }
-    //constexpr uint64_t end() { return _get_offset(EbmlOffset::End); }
+    ElementIterator begin();
+    constexpr void* end() { return nullptr; }
 
 public:
     /******************************************************************************************************/
     /*************************************** Functions for iteration **************************************/
     /******************************************************************************************************/
     BasicSharedPtr<EbmlElement> get_next_element();
-    BasicSharedPtr<EbmlElement> get_next_element(EbmlElementIDType id);
     BasicSharedPtr<EbmlElement> get_first_child();
-    BasicSharedPtr<EbmlElement> get_child(EbmlElementIDType id);
+
+    bool is_last() { return this->_get_offset(EbmlOffset::End) == m_parent->_get_offset(EbmlOffset::End); }
 
 private:
     // Construct an element from the position of the parent's stream

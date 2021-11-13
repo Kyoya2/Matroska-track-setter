@@ -23,28 +23,27 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     }
 }
 
+ElementIterator EbmlElement::begin()
+{
+    return ElementIterator(m_self);
+}
+
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
 BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 {
-    _seek_to(EbmlOffset::End);
-    return s_get(m_self);
-}
+    if (this->is_last())
+        throw std::out_of_range("No next element");
 
-BasicSharedPtr<EbmlElement> EbmlElement::get_next_element(EbmlElementIDType id)
-{
-    return BasicSharedPtr<EbmlElement>();
+    _seek_to(EbmlOffset::End);
+    return s_get(m_parent);
 }
 
 BasicSharedPtr<EbmlElement> EbmlElement::get_first_child()
 {
-    return BasicSharedPtr<EbmlElement>();
-}
-
-BasicSharedPtr<EbmlElement> EbmlElement::get_child(EbmlElementIDType id)
-{
-    return BasicSharedPtr<EbmlElement>();
+    _seek_to(EbmlOffset::Data);
+    return s_get(m_self);
 }
 
 // Private constructor

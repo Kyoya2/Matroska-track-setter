@@ -16,6 +16,12 @@
     <Filter Include="Ebml\EbmlParser\Iterators">
       <UniqueIdentifier>{849d2d08-f575-4c45-8c94-6cbee8d67185}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ebml\EbmlParser\Iterators\ElementIterator">
+      <UniqueIdentifier>{c9fc50d5-f316-4419-90ac-e4265cc1eb13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ebml\EbmlParser\Iterators\SpecificElementIterator">
+      <UniqueIdentifier>{c232c1d3-ad88-44ea-954e-d48c86b5052c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -27,6 +33,12 @@
     </ClCompile>
     <ClCompile Include="EbmlElement.cpp">
       <Filter>Ebml\EbmlParser</Filter>
+    </ClCompile>
+    <ClCompile Include="ElementIterator.cpp">
+      <Filter>Ebml\EbmlParser\Iterators\ElementIterator</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecificElementIterator.cpp">
+      <Filter>Ebml\EbmlParser\Iterators\SpecificElementIterator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,10 +67,10 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="ElementIterator.h">
-      <Filter>Ebml\EbmlParser\Iterators</Filter>
+      <Filter>Ebml\EbmlParser\Iterators\ElementIterator</Filter>
     </ClInclude>
-    <ClInclude Include="ElementIDIterator.h">
-      <Filter>Ebml\EbmlParser\Iterators</Filter>
+    <ClInclude Include="SpecificElementIterator.h">
+      <Filter>Ebml\EbmlParser\Iterators\SpecificElementIterator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
