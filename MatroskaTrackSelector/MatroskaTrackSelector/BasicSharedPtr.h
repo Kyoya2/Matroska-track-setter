@@ -10,67 +10,72 @@
     passes it's own pointer to the child who takes ownership of the object. when all of the children of a
     certain object are destroyed, the object itself will also be destroyed because although it holds a pointer
     to itself, it doesn't own it.
-    Note that this example requires some "Node initializer" class that creates a node, sets their own self-pointer
-    and sets this pointer to an unowned state.
+    Note that this example requires some static 'Create' function in that class that creates a node, sets their 
+    own self-pointer and sets this pointer to an unowned state.
 */
 template <typename T>
 class BasicSharedPtr
 {
+private:
+    struct Internal
+    {
+        template <class... Args>
+        Internal(Args&&... args) :
+            obj(std::forward<Args>(args)...),
+            refcount(1)
+        {}
+
+        T obj;
+        size_t refcount;
+    };
+
     /******************************************************************************************************/
     /***************************************** (Con|De)structors ******************************************/
     /******************************************************************************************************/
 private:
-    BasicSharedPtr(T* ptr, size_t* refcount_ptr) :
-        m_ptr(ptr),
-        m_refcount_ptr(refcount_ptr),
+    BasicSharedPtr(Internal* internal_ptr) :
+        m_internal_ptr(internal_ptr),
         m_owned(true)
     {}
 
 public:
     BasicSharedPtr() :
-        m_ptr(nullptr),
-        m_refcount_ptr(nullptr),
+        m_internal_ptr(nullptr),
         m_owned(false)
     {}
 
     // Copy
     BasicSharedPtr(const BasicSharedPtr& other) :
-        m_ptr(other.m_ptr),
-        m_refcount_ptr(other.m_refcount_ptr),
+        m_internal_ptr(other.m_internal_ptr),
         m_owned(true)
     {
-        ++(*m_refcount_ptr);
+        ++m_internal_ptr->refcount;
     }
     BasicSharedPtr& operator=(const BasicSharedPtr& other)
     {
-        m_ptr = other.m_ptr;
-        m_refcount_ptr = other.m_refcount_ptr;
+        m_internal_ptr = other.m_internal_ptr;
         m_owned = true;
-        ++(*m_refcount_ptr);
+        ++m_internal_ptr->refcount;
 
         return *this;
     }
 
     // Move
     BasicSharedPtr(BasicSharedPtr&& other) noexcept :
-        m_ptr(other.m_ptr),
-        m_refcount_ptr(other.m_refcount_ptr),
+        m_internal_ptr(other.m_internal_ptr),
         m_owned(other.m_owned) // Although there's no reason to move non-owned objects, it's still possible
     {
         other.m_owned = false;
-        other.m_ptr = nullptr;
-        other.m_refcount_ptr = nullptr;
+        other.m_internal_ptr = nullptr;
     }
 
     BasicSharedPtr& operator=(BasicSharedPtr&& other) noexcept
     {
-        m_ptr = other.m_ptr;
-        m_refcount_ptr = other.m_refcount_ptr;
+        m_internal_ptr = other.m_internal_ptr;
         m_owned = other.m_owned; // Although there's no reason to move non-owned objects, it's still possible
 
         other.m_owned = false;
-        other.m_ptr = nullptr;
-        other.m_refcount_ptr = nullptr;
+        other.m_internal_ptr = nullptr;
 
         return *this;
     }
@@ -79,18 +84,17 @@ public:
     ~BasicSharedPtr()
     {
         if (m_owned &&
-           (0 == --(*m_refcount_ptr)))
+           (0 == --m_internal_ptr->refcount))
         {
-            delete m_ptr;
-            delete m_refcount_ptr;
+            delete m_internal_ptr;
         }
     }
 
     /******************************************************************************************************/
     /********************************************* Operators **********************************************/
     /******************************************************************************************************/
-    inline T* operator->() { return m_ptr; }
-    inline T operator*() { return *m_ptr; }
+    inline T* operator->() { return &m_internal_ptr->obj; }
+    inline T operator*() { return m_internal_ptr->obj; }
 
     /******************************************************************************************************/
     /************************************************ Misc ************************************************/
@@ -98,19 +102,20 @@ public:
     template <class... Args>
     static BasicSharedPtr make_shared(Args&&... args)
     {
-        return BasicSharedPtr(new T(std::forward<Args>(args)...), new size_t(1));
+        //return BasicSharedPtr(new T(std::forward<Args>(args)...), new size_t(1));
+        return BasicSharedPtr(new Internal(std::forward<Args>(args)...));
     }
 
-    inline size_t get_refcount() { return *m_refcount_ptr; }
+    inline size_t get_refcount() { return m_internal_ptr->refcount; }
 
-    inline bool is_null() { return nullptr == m_ptr; }
+    inline bool is_null() { return nullptr == m_internal_ptr; }
 
     // Decreases refcount but doesn't invalidate object
     void release_ownership_unsafe()
     {
         if (get_refcount() > 1 && m_owned)
         {
-            --(*m_refcount_ptr);
+            --m_internal_ptr->refcount;
             m_owned = false;
         }
         else
@@ -120,7 +125,6 @@ public:
     }
 
 private:
-    T* m_ptr;
-    size_t* m_refcount_ptr;
+    Internal* m_internal_ptr;
     bool m_owned;
 };

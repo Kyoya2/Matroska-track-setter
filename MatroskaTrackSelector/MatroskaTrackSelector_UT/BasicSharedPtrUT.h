@@ -39,7 +39,7 @@ namespace BasicSharedPtrUT
         CHECK(1 == regular_ctor_calls);
         CHECK(0 == dtor_calls);
         CHECK(1 == a.get_refcount());
-        CHECK(nullptr == a->m_self.m_ptr);
+        CHECK(nullptr == a->m_self.m_internal_ptr);
 
         a->set_self(a);
         CHECK(1 == a.get_refcount());
@@ -47,17 +47,17 @@ namespace BasicSharedPtrUT
         BasicSharedPtr<Test> b_1 = a->get_child();
         CHECK(2 == a.get_refcount());
         CHECK(1 == b_1.get_refcount());
-        CHECK(b_1.m_ptr == b_1->m_self.m_ptr);
+        CHECK(b_1.m_internal_ptr == b_1->m_self.m_internal_ptr);
 
         BasicSharedPtr<Test> b_2 = a->get_child();
         CHECK(3 == a.get_refcount());
         CHECK(1 == b_2.get_refcount());
-        CHECK(b_2.m_ptr == b_2->m_self.m_ptr);
+        CHECK(b_2.m_internal_ptr == b_2->m_self.m_internal_ptr);
 
         BasicSharedPtr<Test> c_1 = b_1->get_child();
         CHECK(3 == a.get_refcount());
         CHECK(2 == b_1.get_refcount());
-        CHECK(c_1.m_ptr == c_1->m_self.m_ptr);
+        CHECK(c_1.m_internal_ptr == c_1->m_self.m_internal_ptr);
     }
 
     void run_tests()
