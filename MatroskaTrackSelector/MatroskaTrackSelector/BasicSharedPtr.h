@@ -33,62 +33,22 @@ private:
     /***************************************** (Con|De)structors ******************************************/
     /******************************************************************************************************/
 private:
-    BasicSharedPtr(Internal* internal_ptr) :
-        m_internal_ptr(internal_ptr),
-        m_owned(true)
-    {}
+    explicit BasicSharedPtr(Internal* internal_ptr);
 
 public:
-    BasicSharedPtr() :
-        m_internal_ptr(nullptr),
-        m_owned(false)
-    {}
+    // Default
+    BasicSharedPtr();
 
     // Copy
-    BasicSharedPtr(const BasicSharedPtr& other) :
-        m_internal_ptr(other.m_internal_ptr),
-        m_owned(true)
-    {
-        ++m_internal_ptr->refcount;
-    }
-    BasicSharedPtr& operator=(const BasicSharedPtr& other)
-    {
-        m_internal_ptr = other.m_internal_ptr;
-        m_owned = true;
-        ++m_internal_ptr->refcount;
-
-        return *this;
-    }
+    BasicSharedPtr(const BasicSharedPtr& other);
+    BasicSharedPtr& operator=(const BasicSharedPtr& other);
 
     // Move
-    BasicSharedPtr(BasicSharedPtr&& other) noexcept :
-        m_internal_ptr(other.m_internal_ptr),
-        m_owned(other.m_owned) // Although there's no reason to move non-owned objects, it's still possible
-    {
-        other.m_owned = false;
-        other.m_internal_ptr = nullptr;
-    }
-
-    BasicSharedPtr& operator=(BasicSharedPtr&& other) noexcept
-    {
-        m_internal_ptr = other.m_internal_ptr;
-        m_owned = other.m_owned; // Although there's no reason to move non-owned objects, it's still possible
-
-        other.m_owned = false;
-        other.m_internal_ptr = nullptr;
-
-        return *this;
-    }
+    BasicSharedPtr(BasicSharedPtr&& other) noexcept;
+    BasicSharedPtr& operator=(BasicSharedPtr&& other) noexcept;
  
     // Dtor
-    ~BasicSharedPtr()
-    {
-        if (m_owned &&
-           (0 == --m_internal_ptr->refcount))
-        {
-            delete m_internal_ptr;
-        }
-    }
+    ~BasicSharedPtr();
 
     /******************************************************************************************************/
     /********************************************* Operators **********************************************/
@@ -100,31 +60,95 @@ public:
     /************************************************ Misc ************************************************/
     /******************************************************************************************************/
     template <typename... Args>
-    static BasicSharedPtr make_shared(Args&&... args)
-    {
-        //return BasicSharedPtr(new T(std::forward<Args>(args)...), new size_t(1));
-        return BasicSharedPtr(new Internal(std::forward<Args>(args)...));
-    }
+    static BasicSharedPtr make_shared(Args&&... args) { return BasicSharedPtr(new Internal(std::forward<Args>(args)...)); }
 
     inline size_t get_refcount() { return m_internal_ptr->refcount; }
 
     inline bool is_null() { return nullptr == m_internal_ptr; }
 
     // Decreases refcount but doesn't invalidate object
-    void release_ownership_unsafe()
-    {
-        if (get_refcount() > 1 && m_owned)
-        {
-            --m_internal_ptr->refcount;
-            m_owned = false;
-        }
-        else
-        {
-            throw std::exception("Can't release ownership of single-owned object or can't release ownership twice");
-        }
-    }
+    void release_ownership_unsafe();
 
 private:
     Internal* m_internal_ptr;
     bool m_owned;
 };
+
+// Regular ctors
+template<typename T>
+inline BasicSharedPtr<T>::BasicSharedPtr(Internal* internal_ptr) :
+    m_internal_ptr(internal_ptr),
+    m_owned(true)
+{}
+
+template<typename T>
+inline BasicSharedPtr<T>::BasicSharedPtr() :
+    m_internal_ptr(nullptr),
+    m_owned(false)
+{}
+
+// Copy
+template<typename T>
+inline BasicSharedPtr<T>::BasicSharedPtr(const BasicSharedPtr & other) :
+    m_internal_ptr(other.m_internal_ptr),
+    m_owned(true)
+{
+    ++m_internal_ptr->refcount;
+}
+
+template<typename T>
+inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(const BasicSharedPtr<T>& other)
+{
+    m_internal_ptr = other.m_internal_ptr;
+    m_owned = true;
+    ++m_internal_ptr->refcount;
+
+    return *this;
+}
+
+// Move
+template<typename T>
+inline BasicSharedPtr<T>::BasicSharedPtr(BasicSharedPtr&& other) noexcept :
+    m_internal_ptr(other.m_internal_ptr),
+    m_owned(other.m_owned) // Although there's no reason to move non-owned objects, it's still possible
+{
+    other.m_owned = false;
+    other.m_internal_ptr = nullptr;
+}
+
+template<typename T>
+inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(BasicSharedPtr<T>&& other) noexcept
+{
+    m_internal_ptr = other.m_internal_ptr;
+    m_owned = other.m_owned; // Although there's no reason to move non-owned objects, it's still possible
+
+    other.m_owned = false;
+    other.m_internal_ptr = nullptr;
+
+    return *this;
+}
+
+// Dtor
+template<typename T>
+inline BasicSharedPtr<T>::~BasicSharedPtr()
+{
+    if (m_owned &&
+        (0 == --m_internal_ptr->refcount))
+    {
+        delete m_internal_ptr;
+    }
+}
+
+template<typename T>
+inline void BasicSharedPtr<T>::release_ownership_unsafe()
+{
+    if (get_refcount() > 1 && m_owned)
+    {
+        --m_internal_ptr->refcount;
+        m_owned = false;
+    }
+    else
+    {
+        throw std::exception("Can't release ownership of single-owned object or can't release ownership twice");
+    }
+}
