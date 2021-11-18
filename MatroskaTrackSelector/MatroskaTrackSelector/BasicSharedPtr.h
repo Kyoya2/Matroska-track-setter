@@ -91,17 +91,22 @@ inline BasicSharedPtr<T>::BasicSharedPtr() :
 template<typename T>
 inline BasicSharedPtr<T>::BasicSharedPtr(const BasicSharedPtr & other) :
     m_internal_ptr(other.m_internal_ptr),
-    m_owned(true)
+    m_owned(nullptr != other.m_internal_ptr)
 {
-    ++m_internal_ptr->refcount;
+    // Increase the refcout only if the object is owned
+    if (m_owned)
+        ++m_internal_ptr->refcount;
 }
 
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(const BasicSharedPtr<T>& other)
 {
     m_internal_ptr = other.m_internal_ptr;
-    m_owned = true;
-    ++m_internal_ptr->refcount;
+    m_owned = nullptr != other.m_internal_ptr;
+
+    // Increase the refcout only if the object is owned
+    if (m_owned)
+        ++m_internal_ptr->refcount;
 
     return *this;
 }
