@@ -28,7 +28,7 @@ namespace EbmlVintUT
         }};
 
         // Init test file
-        std::fstream test_file("test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
+        std::fstream test_file("..\\..\\Test files\\test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
         array<uint32_t, 9> stream_position_indices;
 
         for (uint64_t i = 0; i < test_numers.size(); ++i)
