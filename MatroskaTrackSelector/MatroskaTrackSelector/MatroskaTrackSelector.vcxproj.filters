@@ -72,5 +72,8 @@
     <ClInclude Include="ElementIterator.h">
       <Filter>Ebml\EbmlParser\Iterators</Filter>
     </ClInclude>
+    <ClInclude Include="EbmlParserUT.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

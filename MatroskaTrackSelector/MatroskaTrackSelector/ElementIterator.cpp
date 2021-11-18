@@ -22,6 +22,6 @@ inline BasicSharedPtr<EbmlElement> ElementIterator::operator*()
 
 inline bool ElementIterator::operator!=(void* ptr)
 {
-    ptr;
+    ptr; // Unreferenced
     return !m_current_element.is_null() && !m_current_element->is_last();
 }

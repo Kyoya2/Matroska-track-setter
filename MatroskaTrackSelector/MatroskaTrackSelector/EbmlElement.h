@@ -7,7 +7,6 @@
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
 #include "ElementIterator.h"
-#include "SpecificElementIterator.h"
 
 class ElementIterator;
 

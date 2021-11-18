@@ -170,6 +170,7 @@
     <ClInclude Include="EbmlElement.h" />
     <ClInclude Include="EbmlElementLength.h" />
     <ClInclude Include="EbmlElementID.h" />
+    <ClInclude Include="EbmlParserUT.h" />
     <ClInclude Include="EbmlVintUT.h" />
     <ClInclude Include="ElementIterator.h" />
     <ClInclude Include="MatroskaElementSpecification.h" />
