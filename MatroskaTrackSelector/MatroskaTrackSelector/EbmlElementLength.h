@@ -26,7 +26,7 @@ public:
     friend std::istream& operator>>(std::istream& stream, EbmlElementLength& element_length);
 
 private:
+    mutable size_t m_encoded_size; // Changes based on last write/read
     EbmlElementLengthType m_value;
     size_t m_minimal_encoded_size;
-    mutable size_t m_encoded_size; // Changes based on last write/read
 };
