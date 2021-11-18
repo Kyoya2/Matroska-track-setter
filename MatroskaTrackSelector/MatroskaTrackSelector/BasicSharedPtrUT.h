@@ -15,9 +15,9 @@ namespace BasicSharedPtrUT
     {
     public:
         TestArg() { ++arg_ctor_calls; };
-        TestArg(const TestArg& other) {  ++arg_copy_ctor_calls; }
+        TestArg(const TestArg&) {++arg_copy_ctor_calls; }
         TestArg& operator=(const TestArg& other) = delete;
-        TestArg(TestArg&& other) noexcept { ++arg_move_ctor_calls; }
+        TestArg(TestArg&&) noexcept { ++arg_move_ctor_calls; }
         TestArg& operator=(TestArg&& other) = delete;
     };
 
