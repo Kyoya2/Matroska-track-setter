@@ -31,11 +31,11 @@ namespace BasicSharedPtrUT
         void set_self(BasicSharedPtr<TestPointee> self)
         {
             m_self = self;
-            m_self.release_ownership_unsafe();
+            m_self.release_ownership();
         }
         BasicSharedPtr<TestPointee> get_child()
         {
-            BasicSharedPtr<TestPointee> reult = BasicSharedPtr<TestPointee>::make_shared(m_self);
+            BasicSharedPtr<TestPointee> reult = BasicSharedPtr<TestPointee>::make_basic_shared(m_self);
             reult->set_self(reult);
             return reult;
         }
@@ -57,7 +57,7 @@ namespace BasicSharedPtrUT
         TestArg qwe;
         CHECK(1 == arg_ctor_calls);
 
-        BasicSharedPtr<TestPointee> a = BasicSharedPtr<TestPointee>::make_shared(qwe);
+        BasicSharedPtr<TestPointee> a = BasicSharedPtr<TestPointee>::make_basic_shared(qwe);
         CHECK(1 == regular_ctor_calls);
         CHECK(0 == dtor_calls);
         CHECK(1 == a.get_refcount());

@@ -60,14 +60,14 @@ public:
     /************************************************ Misc ************************************************/
     /******************************************************************************************************/
     template <typename... Args>
-    static BasicSharedPtr make_shared(Args&&... args) { return BasicSharedPtr(new Internal(std::forward<Args>(args)...)); }
+    static BasicSharedPtr make_basic_shared(Args&&... args) { return BasicSharedPtr(new Internal(std::forward<Args>(args)...)); }
 
     inline size_t get_refcount() { return m_internal_ptr->refcount; }
 
     inline bool is_null() { return nullptr == m_internal_ptr; }
 
     // Decreases refcount but doesn't invalidate object
-    void release_ownership_unsafe();
+    void release_ownership();
 
 private:
     Internal* m_internal_ptr;
@@ -140,7 +140,7 @@ inline BasicSharedPtr<T>::~BasicSharedPtr()
 }
 
 template<typename T>
-inline void BasicSharedPtr<T>::release_ownership_unsafe()
+inline void BasicSharedPtr<T>::release_ownership()
 {
     if (get_refcount() > 1 && m_owned)
     {

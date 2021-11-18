@@ -3,9 +3,9 @@
 template<typename ...Args>
 inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
 {
-    BasicSharedPtr<EbmlElement> result = BasicSharedPtr<EbmlElement>::make_shared(std::forward<Args>(args)...);
+    BasicSharedPtr<EbmlElement> result = BasicSharedPtr<EbmlElement>::make_basic_shared(std::forward<Args>(args)...);
     result->m_self = result;
-    result->m_self.release_ownership_unsafe();
+    result->m_self.release_ownership();
     return result;
 }
 
