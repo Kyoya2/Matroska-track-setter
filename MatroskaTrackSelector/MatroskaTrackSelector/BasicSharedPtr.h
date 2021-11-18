@@ -101,6 +101,9 @@ inline BasicSharedPtr<T>::BasicSharedPtr(const BasicSharedPtr & other) :
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(const BasicSharedPtr<T>& other)
 {
+    // Destroy current
+    this->~BasicSharedPtr();
+
     m_internal_ptr = other.m_internal_ptr;
     m_owned = nullptr != other.m_internal_ptr;
 
@@ -124,6 +127,9 @@ inline BasicSharedPtr<T>::BasicSharedPtr(BasicSharedPtr&& other) noexcept :
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(BasicSharedPtr<T>&& other) noexcept
 {
+    // Destroy current
+    this->~BasicSharedPtr();
+
     m_internal_ptr = other.m_internal_ptr;
     m_owned = other.m_owned; // Although there's no reason to move non-owned objects, it's still possible
 
