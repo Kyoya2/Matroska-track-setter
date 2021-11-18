@@ -1,5 +1,4 @@
 .vs/
-x64/
-x86/
+/MatroskaTrackSelector/Out/
 test_file.txt
 *.user
