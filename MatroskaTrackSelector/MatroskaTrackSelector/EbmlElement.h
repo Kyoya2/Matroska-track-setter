@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include <unordered_map>
 
 #include "Common.h"
 #include "EbmlElementID.h"
@@ -7,6 +8,8 @@
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
 #include "ElementIterator.h"
+
+using std::unordered_map;
 
 class ElementIterator;
 
@@ -27,6 +30,8 @@ public:
 
     // Construct an orphan element from stream in current position
     EbmlElement(std::iostream& stream);
+
+    ~EbmlElement();
 
     /******************************************************************************************************/
     /********************************************** Getters ***********************************************/
@@ -50,6 +55,11 @@ public:
 
     bool is_last() { return this->_get_offset(EbmlOffset::End) == m_parent->_get_offset(EbmlOffset::End); }
 
+    void find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children);
+
+    /*??????*/
+    void initialize_as_root();
+
 private:
     // Construct an element from the position of the parent's stream
     EbmlElement(BasicSharedPtr<EbmlElement> parent);
@@ -72,3 +82,12 @@ private:
 public:
     friend class BasicSharedPtr<EbmlElement>;
 };
+
+template<typename ...Args>
+inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
+{
+    BasicSharedPtr<EbmlElement> result = BasicSharedPtr<EbmlElement>::make_basic_shared(std::forward<Args>(args)...);
+    result->m_self = result;
+    result->m_self.release_ownership();
+    return result;
+}

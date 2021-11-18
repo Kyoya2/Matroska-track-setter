@@ -1,14 +1,5 @@
 #include "EbmlElement.h"
 
-template<typename ...Args>
-inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
-{
-    BasicSharedPtr<EbmlElement> result = BasicSharedPtr<EbmlElement>::make_basic_shared(std::forward<Args>(args)...);
-    result->m_self = result;
-    result->m_self.release_ownership();
-    return result;
-}
-
 // Public constructor
 EbmlElement::EbmlElement(std::iostream& stream) :
     m_stream(stream),
@@ -16,11 +7,10 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     m_id(stream),
     m_length(stream),
     m_parent()
-{
-    if (GET_ID(EBML) == m_id.get_value())
-    {
+{}
 
-    }
+EbmlElement::~EbmlElement()
+{
 }
 
 ElementIterator EbmlElement::begin()
@@ -44,6 +34,39 @@ BasicSharedPtr<EbmlElement> EbmlElement::get_first_child()
 {
     _seek_to(EbmlOffset::Data);
     return s_get(m_self);
+}
+
+void EbmlElement::find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children)
+{
+    BasicSharedPtr<EbmlElement> current_element = get_first_child();
+
+    while (true)
+    {
+        // Check if a child with the ID of the current element was requested
+        auto requested_child = children.find(current_element->get_id().get_value());
+        if (requested_child != children.end())
+        {
+            requested_child->second = current_element;
+        }
+
+        if (current_element->is_last())
+            break;
+
+        current_element = current_element->get_next_element();
+    }
+}
+
+void EbmlElement::initialize_as_root()
+{
+    if (GET_ID(EBML) != m_id.get_value())
+        throw std::exception("The current element is not a root element");
+    
+    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+        {GET_ID(EBMLMaxIDLength), {}},
+        {GET_ID(EBMLMaxSizeLength), {}}
+    };
+
+    find_children(children);
 }
 
 // Private constructor
