@@ -22,6 +22,9 @@
     <Filter Include="Ebml\EbmlParser\Iterators\SpecificElementIterator">
       <UniqueIdentifier>{c232c1d3-ad88-44ea-954e-d48c86b5052c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{4f052077-3f0c-4225-b4e7-968d17f8bd64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -71,6 +74,15 @@
     </ClInclude>
     <ClInclude Include="SpecificElementIterator.h">
       <Filter>Ebml\EbmlParser\Iterators\SpecificElementIterator</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlVintUT.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="UTCommon.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicSharedPtrUT.h">
+      <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
