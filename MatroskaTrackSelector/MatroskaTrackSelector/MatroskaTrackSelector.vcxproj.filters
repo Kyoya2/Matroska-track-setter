@@ -4,6 +4,9 @@
     <Filter Include="EbmlVint">
       <UniqueIdentifier>{8481996c-a845-4a59-958b-4f6f69e941d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{7d3eb822-af1c-4cb4-9b1b-3deb3a91fee7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -24,6 +27,12 @@
     </ClInclude>
     <ClInclude Include="EbmlElementLength.h">
       <Filter>EbmlVint</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlVintUT.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="UTCommon.h">
+      <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

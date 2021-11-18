@@ -72,23 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -158,7 +158,9 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="EbmlElementLength.h" />
     <ClInclude Include="EbmlElementID.h" />
+    <ClInclude Include="EbmlVintUT.h" />
     <ClInclude Include="EbmlVintUtils.h" />
+    <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EbmlElementID.cpp" />
