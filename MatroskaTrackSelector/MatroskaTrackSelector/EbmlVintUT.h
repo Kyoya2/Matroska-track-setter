@@ -58,7 +58,7 @@ namespace EbmlVintUT
 
                     // Encoding the VINT with the marker using original length
                     test_file << element_id;
-                    stream_position_indices[0] = test_file.tellp();
+                    stream_position_indices[0] = (uint32_t)test_file.tellp();
 
                     test_file.seekg(0);
                     // Decoding and checking the VINT with the marker
@@ -69,17 +69,17 @@ namespace EbmlVintUT
                     test_file.seekp(0);
                 }
 
-                for (uint32_t j = i + 1; j <= sizeof(EbmlElementLengthType); ++j)
+                for (uint32_t j = (uint32_t)i + 1; j <= sizeof(EbmlElementLengthType); ++j)
                 {
                     WriteLine4("Encoding at length " << j);
 
                     // Encode to file and remember stream position
                     element_length.write(test_file, j);
-                    stream_position_indices[j] = test_file.tellp();
+                    stream_position_indices[j] = (uint32_t)test_file.tellp();
                 }
                 
                 test_file.seekg(0);
-                for (uint32_t j = i + 1; j <= sizeof(EbmlElementLengthType); ++j)
+                for (uint32_t j = (uint32_t)i + 1; j <= sizeof(EbmlElementLengthType); ++j)
                 {
                     WriteLine4("Decoding at length " << j);
 
