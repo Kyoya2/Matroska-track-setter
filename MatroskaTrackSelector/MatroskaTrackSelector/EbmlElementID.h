@@ -24,6 +24,6 @@ public:
     friend std::istream& operator>>(std::istream& stream, EbmlElementID& element_id);
 
 private:
-    EbmlElementIDType m_value;
     size_t m_encoded_size;
+    EbmlElementIDType m_value;
 };

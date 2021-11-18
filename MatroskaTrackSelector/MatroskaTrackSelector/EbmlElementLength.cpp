@@ -1,18 +1,16 @@
 #include "EbmlElementLength.h"
 
 EbmlElementLength::EbmlElementLength(EbmlElementLengthType value) :
+    m_encoded_size(EbmlVintUtils::get_minimal_encoded_size(value, false)),
     m_value(value),
-    m_minimal_encoded_size(EbmlVintUtils::get_minimal_encoded_size(value, false)),
-    m_encoded_size(m_minimal_encoded_size)
+    m_minimal_encoded_size(m_encoded_size)
 {}
 
-EbmlElementLength::EbmlElementLength(std::istream& stream)
-{
-    // Initialize both value and encoded size
-    m_value = EbmlVintUtils::extract_from_stream<EbmlElementLengthType>(stream, false, &m_encoded_size);
-
-    m_minimal_encoded_size = EbmlVintUtils::get_minimal_encoded_size(m_value, false);
-}
+EbmlElementLength::EbmlElementLength(std::istream& stream) :
+    m_encoded_size(0),
+    m_value(EbmlVintUtils::extract_from_stream<EbmlElementLengthType>(stream, false, &m_encoded_size)),
+    m_minimal_encoded_size(EbmlVintUtils::get_minimal_encoded_size(m_value, false))
+{}
 
 void EbmlElementLength::write(std::ostream& stream, size_t encoded_length) const
 {
