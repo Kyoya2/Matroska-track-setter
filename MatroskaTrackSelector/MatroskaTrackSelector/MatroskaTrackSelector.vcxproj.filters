@@ -13,6 +13,12 @@
     <Filter Include="Common">
       <UniqueIdentifier>{8d167dee-cc59-4c6a-892f-bb84d6ee661a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TrackParser">
+      <UniqueIdentifier>{124665ef-d1d1-43d5-991b-cd8eee1dd5fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackParser\TrackElement">
+      <UniqueIdentifier>{b944767a-b2ba-450d-bf37-33cbf6a47e5c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Tests">
       <UniqueIdentifier>{4f052077-3f0c-4225-b4e7-968d17f8bd64}</UniqueIdentifier>
     </Filter>
@@ -27,6 +33,12 @@
     </ClCompile>
     <ClCompile Include="EbmlElement.cpp">
       <Filter>Ebml\EbmlParser</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackParser.cpp">
+      <Filter>TrackParser</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackElement.cpp">
+      <Filter>TrackParser\TrackElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="EbmlParserUT.h">
       <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackParser.h">
+      <Filter>TrackParser</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackElement.h">
+      <Filter>TrackParser\TrackElement</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

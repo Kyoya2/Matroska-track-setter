@@ -175,6 +175,8 @@
     <ClInclude Include="MatroskaElementSpecification.h" />
     <ClInclude Include="EbmlVintUtils.h" />
     <ClInclude Include="BasicSharedPtr.h" />
+    <ClInclude Include="TrackElement.h" />
+    <ClInclude Include="TrackParser.h" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +184,8 @@
     <ClCompile Include="EbmlElementLength.cpp" />
     <ClCompile Include="EbmlElement.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="TrackElement.cpp" />
+    <ClCompile Include="TrackParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
