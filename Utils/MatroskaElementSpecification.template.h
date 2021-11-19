@@ -15,7 +15,5 @@
 // Element specification
 {ELEMENTS_INFO}
 
-namespace Matroska
-{
+
 {ENUM_ELEMENTS}
-}

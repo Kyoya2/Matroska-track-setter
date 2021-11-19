@@ -190,15 +190,14 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
                 return match[-1].upper()
 
         seen_enum_names = {}
-        enum_string = ' ' * 4
-        enum_string += 'enum class ' + element.name + ' {\n'
+        enum_string = 'enum class ' + element.name + ' {\n'
         for value, name in element.possible_enum_values.items():
             if name in seen_enum_names:
                 seen_enum_names[name] += 1
                 name += str(seen_enum_names[name])
             else:
                 seen_enum_names.update({name:1})
-            enum_string += ' ' * 8
+            enum_string += ' ' * 4
             if name == '3DES':
                 enum_string += 'ThreeDes'
             else:
@@ -207,7 +206,7 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
 
 
         # cut out last ',\n'
-        enum_string = enum_string[:-2] + '\n' + ' ' * 4 + '};'
+        enum_string = enum_string[:-2] + '\n' + '};'
 
         # elegantly comment-out non-number elements to remind myself to handle it in the future (maybe map it to dummy indices which will mapped to actual strings in an unordered_map)
         if element.original_type not in (EbmlSchemaElementType.Int, EbmlSchemaElementType.UInt):
@@ -227,7 +226,7 @@ def main():
         elements_string += element_string + '\n'
         enums_string += enum_string
 
-    elements_string = elements_string[:-2]
+    elements_string = elements_string[:-1]
     enums_string = enums_string[:-1]
 
     with open('MatroskaElementSpecification.template.h', 'r') as template_file:
