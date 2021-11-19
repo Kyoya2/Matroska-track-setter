@@ -45,7 +45,7 @@ private:
 
 public:
     // Default
-    BasicSharedPtr();
+    BasicSharedPtr(std::nullptr_t ptr = nullptr);
 
     // Copy
     BasicSharedPtr(const BasicSharedPtr& other);
@@ -93,7 +93,7 @@ inline BasicSharedPtr<T>::BasicSharedPtr(Internal* internal_ptr) :
 {}
 
 template<typename T>
-inline BasicSharedPtr<T>::BasicSharedPtr() :
+inline BasicSharedPtr<T>::BasicSharedPtr(std::nullptr_t) :
     m_internal_ptr(nullptr),
     m_owned(false)
 {}
