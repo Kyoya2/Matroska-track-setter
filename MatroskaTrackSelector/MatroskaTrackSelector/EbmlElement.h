@@ -57,8 +57,11 @@ public:
 
     void find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children);
 
-    /*??????*/
-    void initialize_as_root();
+   /******************************************************************************************************/
+   /********************************************* Data getters *******************************************/
+   /******************************************************************************************************/
+    template <typename T>
+    T get_data();
 
 private:
     // Construct an element from the position of the parent's stream
@@ -89,5 +92,18 @@ inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
     BasicSharedPtr<EbmlElement> result = BasicSharedPtr<EbmlElement>::make_basic_shared(std::forward<Args>(args)...);
     result->m_self = result;
     result->m_self.release_ownership();
+
+    // If the current element is the root, verify some properties and then overwrite it to be the 'Segment' element
+    if (GET_ID(EBML) == result->get_id().get_value())
+    {
+        unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+            {GET_ID(EBMLMaxIDLength), {}},
+            {GET_ID(EBMLMaxSizeLength), {}}
+        };
+
+        result->find_children(children);
+
+        //if (children[GET_ID(EBMLMaxIDLength)])
+    }
     return result;
 }

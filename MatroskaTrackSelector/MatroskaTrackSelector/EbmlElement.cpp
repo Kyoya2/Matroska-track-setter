@@ -10,8 +10,7 @@ EbmlElement::EbmlElement(std::iostream& stream) :
 {}
 
 EbmlElement::~EbmlElement()
-{
-}
+{}
 
 ElementIterator EbmlElement::begin()
 {
@@ -56,17 +55,13 @@ void EbmlElement::find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<
     }
 }
 
-void EbmlElement::initialize_as_root()
+/******************************************************************************************************/
+/********************************************* Data getters *******************************************/
+/******************************************************************************************************/
+template<>
+Buffer EbmlElement::get_data()
 {
-    if (GET_ID(EBML) != m_id.get_value())
-        throw std::exception("The current element is not a root element");
     
-    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
-        {GET_ID(EBMLMaxIDLength), {}},
-        {GET_ID(EBMLMaxSizeLength), {}}
-    };
-
-    find_children(children);
 }
 
 // Private constructor
