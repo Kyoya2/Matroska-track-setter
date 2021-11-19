@@ -191,7 +191,7 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
 
         seen_enum_names = {}
         enum_string = ' ' * 4
-        enum_string += 'enum class ' + element.name + 'Values {\n'
+        enum_string += 'enum class ' + element.name + ' {\n'
         for value, name in element.possible_enum_values.items():
             if name in seen_enum_names:
                 seen_enum_names[name] += 1
