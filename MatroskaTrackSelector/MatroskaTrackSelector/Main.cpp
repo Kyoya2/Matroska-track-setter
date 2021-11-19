@@ -12,13 +12,15 @@ namespace BasicSharedPtrStats
 
 int wmain(int argc, wchar_t* argv[])
 {
+    // Unreferenced
     argc;
     argv;
+
     //EbmlVintUT::run_tests();
     //BasicSharedPtrUT::run_tests();
     EbmlParserUT::run_tests();
 
-    WriteLine("Creations: " << BasicSharedPtrStats::total_creations);
+    WriteLine(endl << "Creations: " << BasicSharedPtrStats::total_creations);
     WriteLine("Deletions: " << BasicSharedPtrStats::total_deletions);
 
     if (MatroskaTrackSelectorUT::tests_passed)
