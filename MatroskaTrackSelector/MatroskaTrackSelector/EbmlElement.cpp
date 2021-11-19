@@ -14,11 +14,11 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
 void EbmlElement::_initialize_as_root()
 {
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
-        {GET_ID(EBMLMaxIDLength), {}},
-        {GET_ID(EBMLMaxSizeLength), {}}
+        {GET_ID(EBMLMaxIDLength), nullptr},
+        {GET_ID(EBMLMaxSizeLength), nullptr}
     };
 
-    find_children(children);
+    get_unique_children(children);
 
     // Check that the maximum ID length of the current stream is supported
     if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
@@ -68,8 +68,11 @@ BasicSharedPtr<EbmlElement> EbmlElement::get_first_child()
     return _s_construct_from_parent(m_self);
 }
 
-void EbmlElement::find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children)
+void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children)
 {
+    const size_t number_of_children_to_find = children.size();
+    size_t children_found = 0;
+
     BasicSharedPtr<EbmlElement> current_element = get_first_child();
 
     while (true)
@@ -78,14 +81,55 @@ void EbmlElement::find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<
         auto requested_child = children.find(current_element->get_id().get_value());
         if (requested_child != children.end())
         {
+            ++children_found;
             requested_child->second = current_element;
         }
 
+        // Stop iterating when reached the end or if found all requested children
+        if (current_element->is_last() || (children_found == number_of_children_to_find))
+            break;
+
+        current_element = current_element->get_next_element();
+    }
+}
+
+BasicSharedPtr<EbmlElement> EbmlElement::find_child(const EbmlElementIDType id)
+{
+    BasicSharedPtr<EbmlElement> current_element = get_first_child();
+
+    while (true)
+    {
+        // If the current child has the requested ID, add it to the result vector
+        if (current_element->get_id().get_value() == id)
+            return current_element;
+
+        // Stop iterating when reached the end or if found all requested children
+        if (current_element->is_last())
+            return nullptr;
+
+        current_element = current_element->get_next_element();
+    }
+}
+
+vector<BasicSharedPtr<EbmlElement>> EbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
+{
+    vector<BasicSharedPtr<EbmlElement>> result;
+    BasicSharedPtr<EbmlElement> current_element = get_first_child();
+
+    while (true)
+    {
+        // If the current child has the requested ID, add it to the result vector
+        if (current_element->get_id().get_value() == id)
+            result.push_back(current_element);
+
+        // Stop iterating when reached the end or if found all requested children
         if (current_element->is_last())
             break;
 
         current_element = current_element->get_next_element();
     }
+
+    return result;
 }
 
 /******************************************************************************************************/

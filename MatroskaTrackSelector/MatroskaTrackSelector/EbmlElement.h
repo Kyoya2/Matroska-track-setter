@@ -48,7 +48,15 @@ public:
 
     bool is_last() { return this->_get_offset(EbmlOffset::End) == m_parent->_get_offset(EbmlOffset::End); }
 
-    void find_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children);
+    // Returns the first child element with the given ID or null if a child with that ID wasn't found
+    BasicSharedPtr<EbmlElement> find_child(const EbmlElementIDType id);
+
+    // Returns a vector with all children of the current element with the given ID
+    vector<BasicSharedPtr<EbmlElement>> get_identical_children_by_id(const EbmlElementIDType id);
+
+    // Sets the value of each {ID:Element} pair to a child of the current element with the corresponding key-ID.
+    // All requested children should be unique elements (ones that can't appear more then once in one parent).
+    void get_unique_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children);
 
    /******************************************************************************************************/
    /********************************************* Data getters *******************************************/
