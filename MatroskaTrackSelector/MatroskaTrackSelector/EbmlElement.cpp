@@ -48,11 +48,6 @@ void EbmlElement::_initialize_as_root()
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
-ElementIterator EbmlElement::begin()
-{
-    return ElementIterator(m_self);
-}
-
 BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 {
     if (this->is_last())
@@ -171,14 +166,14 @@ EbmlElement::EbmlElement(BasicSharedPtr<EbmlElement> parent) :
     m_parent(parent)
 {}
 
+/******************************************************************************************************/
+/****************************************** Internal Utility ******************************************/
+/******************************************************************************************************/
 BasicSharedPtr<EbmlElement> EbmlElement::_s_construct_from_parent(BasicSharedPtr<EbmlElement>& parent)
 {
     return s_get(parent);
 }
 
-/******************************************************************************************************/
-/****************************************** Internal Utility ******************************************/
-/******************************************************************************************************/
 constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
 {
     switch (seek_pos)

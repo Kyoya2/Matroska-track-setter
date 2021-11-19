@@ -13,9 +13,6 @@
     <Filter Include="Common">
       <UniqueIdentifier>{8d167dee-cc59-4c6a-892f-bb84d6ee661a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ebml\EbmlParser\Iterators">
-      <UniqueIdentifier>{849d2d08-f575-4c45-8c94-6cbee8d67185}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests">
       <UniqueIdentifier>{4f052077-3f0c-4225-b4e7-968d17f8bd64}</UniqueIdentifier>
     </Filter>
@@ -30,9 +27,6 @@
     </ClCompile>
     <ClCompile Include="EbmlElement.cpp">
       <Filter>Ebml\EbmlParser</Filter>
-    </ClCompile>
-    <ClCompile Include="ElementIterator.cpp">
-      <Filter>Ebml\EbmlParser\Iterators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="BasicSharedPtrUT.h">
       <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="ElementIterator.h">
-      <Filter>Ebml\EbmlParser\Iterators</Filter>
     </ClInclude>
     <ClInclude Include="EbmlParserUT.h">
       <Filter>Tests</Filter>

@@ -172,7 +172,6 @@
     <ClInclude Include="EbmlElementID.h" />
     <ClInclude Include="EbmlParserUT.h" />
     <ClInclude Include="EbmlVintUT.h" />
-    <ClInclude Include="ElementIterator.h" />
     <ClInclude Include="MatroskaElementSpecification.h" />
     <ClInclude Include="EbmlVintUtils.h" />
     <ClInclude Include="BasicSharedPtr.h" />
@@ -182,7 +181,6 @@
     <ClCompile Include="EbmlElementID.cpp" />
     <ClCompile Include="EbmlElementLength.cpp" />
     <ClCompile Include="EbmlElement.cpp" />
-    <ClCompile Include="ElementIterator.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

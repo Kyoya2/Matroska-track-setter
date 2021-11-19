@@ -7,11 +7,8 @@
 #include "EbmlElementLength.h"
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
-#include "ElementIterator.h"
 
 using std::unordered_map;
-
-class ElementIterator;
 
 // Offsets relative to the current element
 enum class EbmlOffset
@@ -31,13 +28,6 @@ public:
     /******************************************************************************************************/
     EbmlElementID get_id() const { return m_id; }
     EbmlElementLength get_length() const { return m_length; }
-
-public:
-    /******************************************************************************************************/
-    /******************************************* Iterator Stuff *******************************************/
-    /******************************************************************************************************/
-    ElementIterator begin();
-    constexpr void* end() { return nullptr; }
 
 public:
     /******************************************************************************************************/
