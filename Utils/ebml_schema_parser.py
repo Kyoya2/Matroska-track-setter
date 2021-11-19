@@ -168,7 +168,7 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
         EbmlSchemaElementType.AsciiString   : 'string',
         EbmlSchemaElementType.Utf8String    : 'string',
         EbmlSchemaElementType.Date          : 'Date',       # unimplemented
-        EbmlSchemaElementType.Binary        : 'Binary',
+        EbmlSchemaElementType.Binary        : 'Buffer',
         EbmlSchemaElementType.Enum          : 'Enum'        # unimplemented
     }
 
