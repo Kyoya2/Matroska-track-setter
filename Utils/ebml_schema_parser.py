@@ -162,13 +162,13 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
 
     types_dict = {
         EbmlSchemaElementType.Master        : 'Master',     # unused
-        EbmlSchemaElementType.Int           : 'int64_t',
-        EbmlSchemaElementType.UInt          : 'uint64_t',
-        EbmlSchemaElementType.Float         : 'float_t',
+        EbmlSchemaElementType.Int           : 'int',
+        EbmlSchemaElementType.UInt          : 'uint',
+        EbmlSchemaElementType.Float         : 'float',
         EbmlSchemaElementType.AsciiString   : 'string',
         EbmlSchemaElementType.Utf8String    : 'string',
         EbmlSchemaElementType.Date          : 'Date',       # unimplemented
-        EbmlSchemaElementType.Binary        : 'Buffer',
+        EbmlSchemaElementType.Binary        : 'binary',
         EbmlSchemaElementType.Enum          : 'Enum'        # unimplemented
     }
 
