@@ -21,6 +21,7 @@ namespace Utility
     inline uint64_t get_msb(uint64_t num);
     inline uint32_t get_msb(uint32_t num);
     inline size_t get_msb_index(uint64_t num);
+    inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
 }
 
 inline uint64_t Utility::get_msb(uint64_t num)
@@ -61,4 +62,17 @@ inline size_t Utility::get_msb_index(uint64_t num)
     size_t msb_index = 0;
     while (0 != (num >>= 1)) ++msb_index;
     return msb_index;
+}
+
+inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_t size)
+{
+    if (0 == size)
+        return 0;
+
+    uint64_t result = stream.get();
+    for (size_t i = 0; i < size - 1; ++i)
+    {
+        result = (result << 8) | stream.get();
+    }
+    return result;
 }
