@@ -550,11 +550,11 @@
 
 namespace Matroska
 {
-    enum class ChapterTranslateCodecValues {
+    enum class ChapterTranslateCodec {
         MatroskaScript = 0,
         DvdMenu = 1
     };
-    enum class TrackTypeValues {
+    enum class TrackType {
         Video = 1,
         Audio = 2,
         Complex = 3,
@@ -564,16 +564,16 @@ namespace Matroska
         Control = 32,
         Metadata = 33
     };
-    enum class TrackTranslateCodecValues {
+    enum class TrackTranslateCodec {
         MatroskaScript = 0,
         DvdMenu = 1
     };
-    enum class FlagInterlacedValues {
+    enum class FlagInterlaced {
         Undetermined = 0,
         Interlaced = 1,
         Progressive = 2
     };
-    enum class FieldOrderValues {
+    enum class FieldOrder {
         Progressive = 0,
         Tff = 1,
         Undetermined = 2,
@@ -581,7 +581,7 @@ namespace Matroska
         BffSwapped = 9,
         TffSwapped = 14
     };
-    enum class StereoModeValues {
+    enum class StereoMode {
         Mono = 0,
         SideBySideLeftEyeFirst = 1,
         TopToBottomRightEyeIsFirst = 2,
@@ -598,25 +598,25 @@ namespace Matroska
         BothEyesLacedInOneBlockLeftEyeIsFirst = 13,
         BothEyesLacedInOneBlockRightEyeIsFirst = 14
     };
-    enum class OldStereoModeValues {
+    enum class OldStereoMode {
         Mono = 0,
         RightEye = 1,
         LeftEye = 2,
         BothEyes = 3
     };
-    enum class DisplayUnitValues {
+    enum class DisplayUnit {
         Pixels = 0,
         Centimeters = 1,
         Inches = 2,
         DisplayAspectRatio = 3,
         Unknown = 4
     };
-    enum class AspectRatioTypeValues {
+    enum class AspectRatioType {
         FreeResizing = 0,
         KeepAspectRatio = 1,
         Fixed = 2
     };
-    enum class MatrixCoefficientsValues {
+    enum class MatrixCoefficients {
         Identity = 0,
         ItuRBt_709 = 1,
         Unspecified = 2,
@@ -633,23 +633,23 @@ namespace Matroska
         ChromaDerivedConstantLuminance = 13,
         ItuRBt_21000 = 14
     };
-    enum class ChromaSitingHorzValues {
+    enum class ChromaSitingHorz {
         Unspecified = 0,
         LeftCollocated = 1,
         Half = 2
     };
-    enum class ChromaSitingVertValues {
+    enum class ChromaSitingVert {
         Unspecified = 0,
         TopCollocated = 1,
         Half = 2
     };
-    enum class RangeValues {
+    enum class Range {
         Unspecified = 0,
         BroadcastRange = 1,
         FullRangeNoClipping = 2,
         DefinedByMatrixcoefficientsOrTransfercharacteristics = 3
     };
-    enum class TransferCharacteristicsValues {
+    enum class TransferCharacteristics {
         Reserved = 0,
         ItuRBt_709 = 1,
         Unspecified = 2,
@@ -670,7 +670,7 @@ namespace Matroska
         SmpteSt4281 = 17,
         AribStdB67Hlg = 18
     };
-    enum class PrimariesValues {
+    enum class Primaries {
         Reserved = 0,
         ItuRBt_709 = 1,
         Unspecified = 2,
@@ -686,33 +686,33 @@ namespace Matroska
         SmpteEg4322 = 12,
         EbuTech_3213EToJedecP22Phosphors = 22
     };
-    enum class ProjectionTypeValues {
+    enum class ProjectionType {
         Rectangular = 0,
         Equirectangular = 1,
         Cubemap = 2,
         Mesh = 3
     };
-    enum class TrackPlaneTypeValues {
+    enum class TrackPlaneType {
         LeftEye = 0,
         RightEye = 1,
         Background = 2
     };
-    enum class ContentEncodingScopeValues {
+    enum class ContentEncodingScope {
         AllFrameContentsExcludingLacingData = 1,
         TheTracksPrivateData = 2,
         TheNextContentencodingNextContentencodingorder_EitherTheDataInsideContentcompressionAndOrOrContentencryption = 4
     };
-    enum class ContentEncodingTypeValues {
+    enum class ContentEncodingType {
         Compression = 0,
         Encryption = 1
     };
-    enum class ContentCompAlgoValues {
+    enum class ContentCompAlgo {
         Zlib = 0,
         Bzlib = 1,
         Lzo1x = 2,
         HeaderStripping = 3
     };
-    enum class ContentEncAlgoValues {
+    enum class ContentEncAlgo {
         NotEncrypted = 0,
         Des = 1,
         ThreeDes = 2,
@@ -720,25 +720,25 @@ namespace Matroska
         Blowfish = 4,
         Aes = 5
     };
-    enum class AESSettingsCipherModeValues {
+    enum class AESSettingsCipherMode {
         AesCtrOrCounterNistSp80038a = 1,
         AesCbcOrCipherBlockChainingNistSp80038a = 2
     };
-    enum class ContentSigAlgoValues {
+    enum class ContentSigAlgo {
         NotSigned = 0,
         Rsa = 1
     };
-    enum class ContentSigHashAlgoValues {
+    enum class ContentSigHashAlgo {
         NotSigned = 0,
         Sha1160 = 1,
         Md5 = 2
     };
-    enum class ChapProcessTimeValues {
+    enum class ChapProcessTime {
         DuringTheWholeChapter = 0,
         BeforeStartingPlayback = 1,
         AfterPlaybackOfTheChapter = 2
     };
-    enum class TargetTypeValueValues {
+    enum class TargetTypeValue {
         Collection = 70,
         EditionOrIssueOrVolumeOrOpusOrSeasonOrSequel = 60,
         AlbumOrOperaOrConcertOrMovieOrEpisodeOrConcert = 50,
@@ -747,7 +747,7 @@ namespace Matroska
         SubtrackOrPartOrMovementOrScene = 20,
         Shot = 10
     };
-/*    enum class TargetTypeValues {
+/*    enum class TargetType {
         Collection = 'COLLECTION',
         Edition = 'EDITION',
         Issue = 'ISSUE',
