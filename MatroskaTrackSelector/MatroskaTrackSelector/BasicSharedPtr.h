@@ -2,6 +2,14 @@
 #include <utility>
 #include "Common.h"
 
+#ifdef _DEBUG
+namespace BasicSharedPtrStats
+{
+    extern uint32_t total_creations;
+    extern uint32_t total_deletions;
+}
+#endif
+
 /*
     This class is identical to std::share_pointer except it has a function that allows a pointer object to
     relinquish himself from ownership of the stored object while still allowing it to be copied validly.
@@ -60,7 +68,7 @@ public:
     /************************************************ Misc ************************************************/
     /******************************************************************************************************/
     template <typename... Args>
-    static BasicSharedPtr make_basic_shared(Args&&... args) { return BasicSharedPtr(new Internal(std::forward<Args>(args)...)); }
+    static BasicSharedPtr make_basic_shared(Args&&... args);
 
     inline size_t get_refcount() { return m_internal_ptr->refcount; }
 
@@ -74,6 +82,9 @@ private:
     bool m_owned;
 };
 
+/******************************************************************************************************/
+/***************************************** (Con|De)structors ******************************************/
+/******************************************************************************************************/
 // Regular ctors
 template<typename T>
 inline BasicSharedPtr<T>::BasicSharedPtr(Internal* internal_ptr) :
@@ -146,8 +157,24 @@ inline BasicSharedPtr<T>::~BasicSharedPtr()
     if (m_owned &&
         (0 == --m_internal_ptr->refcount))
     {
+#ifdef _DEBUG
+        ++BasicSharedPtrStats::total_deletions;
+#endif
         delete m_internal_ptr;
     }
+}
+
+/******************************************************************************************************/
+/************************************************ Misc ************************************************/
+/******************************************************************************************************/
+template <typename T>
+template <typename... Args>
+static BasicSharedPtr<T> BasicSharedPtr<T>::make_basic_shared(Args&&... args)
+{
+#ifdef _DEBUG
+    ++BasicSharedPtrStats::total_creations;
+#endif
+    return BasicSharedPtr(new Internal(std::forward<Args>(args)...));
 }
 
 template<typename T>
