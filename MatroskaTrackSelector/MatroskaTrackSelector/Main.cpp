@@ -20,8 +20,10 @@ int wmain(int argc, wchar_t* argv[])
     //BasicSharedPtrUT::run_tests();
     EbmlParserUT::run_tests();
 
+#ifdef _DEBUG
     WriteLine(endl << "Creations: " << BasicSharedPtrStats::total_creations);
     WriteLine("Deletions: " << BasicSharedPtrStats::total_deletions);
+#endif
 
     if (MatroskaTrackSelectorUT::tests_passed)
         WriteLine(endl << "All test passed!");
