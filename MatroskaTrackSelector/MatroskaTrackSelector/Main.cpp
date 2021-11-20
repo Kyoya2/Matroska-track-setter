@@ -12,6 +12,7 @@ namespace BasicSharedPtrStats
 
 int wmain(int argc, wchar_t* argv[])
 {
+    #error TODO: make schema parser script leave comments about enum value documentation and element documentation
     // Unreferenced
     argc;
     argv;
