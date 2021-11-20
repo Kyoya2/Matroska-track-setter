@@ -77,11 +77,6 @@ public:
     // Decreases refcount but doesn't invalidate object
     void release_ownership();
 
-    // If the refcount of the element is 1, replace the current element with another element constructed from the given arguments and
-    // return true. Otherwise, return false.
-    template <typename... Args>
-    bool try_replace_with(Args&&... args);
-
 private:
     Internal* m_internal_ptr;
     bool m_owned;
@@ -117,7 +112,7 @@ inline BasicSharedPtr<T>::BasicSharedPtr(const BasicSharedPtr & other) :
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(const BasicSharedPtr<T>& other)
 {
-    if (this == &other)
+    if (m_internal_ptr == other.m_internal_ptr)
         return *this;
 
     // Destroy current
@@ -146,7 +141,7 @@ inline BasicSharedPtr<T>::BasicSharedPtr(BasicSharedPtr&& other) noexcept :
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(BasicSharedPtr<T>&& other) noexcept
 {
-    if (this == &other)
+    if (m_internal_ptr == other.m_internal_ptr)
         return *this;
 
     // Destroy current
@@ -200,16 +195,4 @@ inline void BasicSharedPtr<T>::release_ownership()
     {
         throw std::exception("Can't release ownership of single-owned object or can't release ownership twice");
     }
-}
-
-template<typename T>
-template<typename ...Args>
-inline bool BasicSharedPtr<T>::try_replace_with(Args && ...args)
-{
-    if (get_refcount() == 1)
-    {
-        m_internal_ptr->obj = T(std::forward<Args>(args)...);
-        return true;
-    }
-    return false;
 }

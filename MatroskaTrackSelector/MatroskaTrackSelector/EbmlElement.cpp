@@ -45,17 +45,6 @@ void EbmlElement::_initialize_as_root()
         throw std::exception("Expected segment element");
 }
 
-void EbmlElement::_reconstruct_from_parent(BasicSharedPtr<EbmlElement>& parent)
-{
-    m_stream = parent->m_stream;
-    m_offset = parent->m_stream.get().tellg();
-    m_id = EbmlElementID(parent->m_stream.get());
-    m_length = EbmlElementLength(parent->m_stream.get());
-    m_parent = parent;
-
-    // Dont change m_self!
-}
-
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
@@ -65,8 +54,14 @@ BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
         throw std::out_of_range("No next element");
     
     _seek_to(EbmlOffset::End);
-    if (m_self.try_replace_with(m_stream))
+
+    if (1 == m_self.get_refcount())
     {
+        // This is an optimization: if the refcount of the current object is 1, this function will comstruct the next element INSTEAD
+        // of the current one to avoid unnecesarry memory allocations
+        m_offset = m_stream.get().tellg();
+        m_id = EbmlElementID(m_stream.get());
+        m_length = EbmlElementLength(m_stream.get());
         return m_self;
     }
     else
