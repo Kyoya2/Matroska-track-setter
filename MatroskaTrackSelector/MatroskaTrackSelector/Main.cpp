@@ -1,5 +1,5 @@
 #include "EbmlVintUT.h"
-#include "BasicSharedPtrUT.h"
+//#include "BasicSharedPtrUT.h"
 #include "EbmlParserUT.h"
 
 #ifdef _DEBUG

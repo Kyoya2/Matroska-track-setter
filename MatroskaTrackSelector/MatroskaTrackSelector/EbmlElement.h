@@ -61,6 +61,17 @@ private:
     /******************************************************************************************************/
     EbmlElement(BasicSharedPtr<EbmlElement> parent);
     EbmlElement(std::iostream& stream);
+    EbmlElement& operator=(const EbmlElement& other) = default;
+    EbmlElement& operator=(EbmlElement&& other)
+    {
+        m_stream = std::move(other.m_stream);
+        m_offset = std::move(other.m_offset);
+        m_id = std::move(other.m_id);
+        m_length = std::move(other.m_length);
+        m_parent = std::move(other.m_parent);
+        m_self = std::move(other.m_self);
+        return *this;
+    }
 
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
@@ -70,16 +81,16 @@ private:
     inline void _seek_to(EbmlOffset seek_pos) const;
     inline void _seek_to(uint64_t seek_pos) const;
     void _initialize_as_root();
+    void _reconstruct_from_parent(BasicSharedPtr<EbmlElement>& parent);
 
     template <typename... Args>
     static BasicSharedPtr<EbmlElement> s_get(Args&&... args);
-
 
     // Reads the raw content of the elemnt into the given container
     void _read_content(void* container) const;
 
 private:
-    std::iostream& m_stream;
+    reference_wrapper<std::iostream> m_stream;
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;

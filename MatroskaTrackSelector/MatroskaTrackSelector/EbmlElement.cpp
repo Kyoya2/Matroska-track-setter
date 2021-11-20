@@ -36,13 +36,24 @@ void EbmlElement::_initialize_as_root()
 
     // Set the current element to be the 'Segment' element
     _seek_to(EbmlOffset::End);
-    m_offset = m_stream.tellg();
-    m_id = EbmlElementID(m_stream);
-    m_length = EbmlElementLength(m_stream);
+    m_offset = m_stream.get().tellg();
+    m_id = EbmlElementID(m_stream.get());
+    m_length = EbmlElementLength(m_stream.get());
 
     // Make sure that it's indeed the 'Segment' element
     if (GET_ID(Segment) != m_id.get_value())
         throw std::exception("Expected segment element");
+}
+
+void EbmlElement::_reconstruct_from_parent(BasicSharedPtr<EbmlElement>& parent)
+{
+    m_stream = parent->m_stream;
+    m_offset = parent->m_stream.get().tellg();
+    m_id = EbmlElementID(parent->m_stream.get());
+    m_length = EbmlElementLength(parent->m_stream.get());
+    m_parent = parent;
+
+    // Dont change m_self!
 }
 
 /******************************************************************************************************/
@@ -54,7 +65,14 @@ BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
         throw std::out_of_range("No next element");
     
     _seek_to(EbmlOffset::End);
-    return _s_construct_from_parent(m_parent);
+    if (m_self.try_replace_with(m_stream))
+    {
+        return m_self;
+    }
+    else
+    {
+        return _s_construct_from_parent(m_parent);
+    }
 }
 
 BasicSharedPtr<EbmlElement> EbmlElement::get_first_child()
@@ -155,15 +173,17 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     m_offset(stream.tellg()),
     m_id(stream),
     m_length(stream),
-    m_parent()
+    m_parent(),
+    m_self()
 {}
 
 EbmlElement::EbmlElement(BasicSharedPtr<EbmlElement> parent) :
     m_stream(parent->m_stream),
-    m_offset(parent->m_stream.tellg()),
+    m_offset(parent->m_stream.get().tellg()),
     m_id(parent->m_stream),
     m_length(parent->m_stream),
-    m_parent(parent)
+    m_parent(parent),
+    m_self()
 {}
 
 /******************************************************************************************************/
@@ -197,11 +217,11 @@ inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
 
 inline void EbmlElement::_seek_to(uint64_t seek_pos) const
 {
-    m_stream.seekp(seek_pos);
+    m_stream.get().seekp(seek_pos);
 }
 
 void EbmlElement::_read_content(void* container) const
 {
     _seek_to(EbmlOffset::Data);
-    m_stream.read(reinterpret_cast<char*>(container), m_length.get_value());
+    m_stream.get().read(reinterpret_cast<char*>(container), m_length.get_value());
 }
