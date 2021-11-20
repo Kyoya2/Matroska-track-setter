@@ -33,6 +33,7 @@ public:
     /******************************************************************************************************/
     /*************************************** Functions for iteration **************************************/
     /******************************************************************************************************/
+    // This function MIGHT modify the current element
     BasicSharedPtr<EbmlElement> get_next_element();
     BasicSharedPtr<EbmlElement> get_first_child();
 
@@ -74,12 +75,11 @@ private:
     template <typename... Args>
     static BasicSharedPtr<EbmlElement> s_get(Args&&... args);
 
-
     // Reads the raw content of the elemnt into the given container
     void _read_content(void* container) const;
 
 private:
-    std::iostream& m_stream;
+    reference_wrapper<std::iostream> m_stream;
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;

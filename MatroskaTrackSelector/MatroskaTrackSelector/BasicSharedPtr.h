@@ -112,6 +112,9 @@ inline BasicSharedPtr<T>::BasicSharedPtr(const BasicSharedPtr & other) :
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(const BasicSharedPtr<T>& other)
 {
+    if (m_internal_ptr == other.m_internal_ptr)
+        return *this;
+
     // Destroy current
     this->~BasicSharedPtr();
 
@@ -138,6 +141,9 @@ inline BasicSharedPtr<T>::BasicSharedPtr(BasicSharedPtr&& other) noexcept :
 template<typename T>
 inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(BasicSharedPtr<T>&& other) noexcept
 {
+    if (m_internal_ptr == other.m_internal_ptr)
+        return *this;
+
     // Destroy current
     this->~BasicSharedPtr();
 

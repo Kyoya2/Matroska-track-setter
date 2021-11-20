@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <memory>
+#include <functional>
 
 using std::cout;
 using std::endl;
@@ -11,6 +12,7 @@ using std::vector;
 using std::string;
 using std::array;
 using std::shared_ptr;
+using std::reference_wrapper;
 
 using Buffer = vector<uint8_t>;
 
