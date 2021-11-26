@@ -14,24 +14,32 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
 void EbmlElement::_initialize_as_root()
 {
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+        {GET_ID(DocType), nullptr},
         {GET_ID(EBMLMaxIDLength), nullptr},
         {GET_ID(EBMLMaxSizeLength), nullptr}
     };
 
     get_unique_children(children);
 
+    // Check that we are deling with a mtroska document
+    if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
+        (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
+    {
+        throw UnsupportedDocument("This is not a matroska document");
+    }
+
     // Check that the maximum ID length of the current stream is supported
     if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
         (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
     {
-        throw UnsupportedMatroskaDocument("Max ID length is bigger then the supported size");
+        throw UnsupportedDocument("Max ID length is bigger then the supported size");
     }
     
     // Check that the maximum element size length of the current stream is supported
     if ((!children[GET_ID(EBMLMaxSizeLength)].is_null()) &&
         (GET_CHILD_VALUE(children, EBMLMaxSizeLength) > sizeof(EbmlElementLengthType)))
     {
-        throw UnsupportedMatroskaDocument("Max element size length is bigger then the supported size");
+        throw UnsupportedDocument("Max element size length is bigger then the supported size");
     }
 
     // Set the current element to be the 'Segment' element

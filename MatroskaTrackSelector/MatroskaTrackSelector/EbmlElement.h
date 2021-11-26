@@ -8,7 +8,7 @@
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
 
-DECL_EXCEPTION(UnsupportedMatroskaDocument);
+DECL_EXCEPTION(UnsupportedDocument);
 DECL_EXCEPTION(UnexpectedElementException);
 DECL_EXCEPTION(NoMoreElements);
 DECL_EXCEPTION(UnexpectedValueException);
