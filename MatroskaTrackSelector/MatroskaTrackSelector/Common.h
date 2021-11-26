@@ -18,6 +18,14 @@ using Buffer = vector<uint8_t>;
 
 #define WriteLine(something) cout << something << endl
 
+#define DECL_EXCEPTION(ex_name)                                      \
+class ex_name : public std::exception                                \
+{                                                                    \
+public:                                                              \
+    ex_name(const char* const message) : std::exception(message) {}  \
+    ex_name() : std::exception() {}                                  \
+}
+
 namespace Utility
 {
     inline uint64_t get_msb(uint64_t num);

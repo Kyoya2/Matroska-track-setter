@@ -8,6 +8,11 @@
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
 
+DECL_EXCEPTION(UnsupportedMatroskaDocument);
+DECL_EXCEPTION(UnexpectedElementException);
+DECL_EXCEPTION(NoMoreElements);
+DECL_EXCEPTION(UnexpectedValueException);
+
 using std::unordered_map;
 
 // Offsets relative to the current element

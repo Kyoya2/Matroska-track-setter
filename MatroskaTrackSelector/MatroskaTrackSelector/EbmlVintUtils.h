@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 
+DECL_EXCEPTION(VINTOverflowError);
+
 namespace EbmlVintUtils
 {
     static inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
@@ -43,10 +45,9 @@ T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_
     // Calculate the size of the VINT by calculating length of (VINT_WIDTH + VINT_DATA)
     size_t size_of_vint = 8 - Utility::get_msb_index(result);
 
-    // Throw if the size is at more than 8 bytes
     if (size_of_vint > sizeof(T))
     {
-        throw std::length_error("The given length is too big");
+        throw VINTOverflowError();
     }
 
     // Unset VINT_MARKER

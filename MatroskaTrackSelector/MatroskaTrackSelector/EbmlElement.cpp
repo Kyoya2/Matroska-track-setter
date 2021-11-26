@@ -24,14 +24,14 @@ void EbmlElement::_initialize_as_root()
     if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
         (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
     {
-        throw std::exception("Max ID length is bigger then the supported size");
+        throw UnsupportedMatroskaDocument("Max ID length is bigger then the supported size");
     }
     
     // Check that the maximum element size length of the current stream is supported
     if ((!children[GET_ID(EBMLMaxSizeLength)].is_null()) &&
         (GET_CHILD_VALUE(children, EBMLMaxSizeLength) > sizeof(EbmlElementLengthType)))
     {
-        throw std::exception("Max element size length is bigger then the supported size");
+        throw UnsupportedMatroskaDocument("Max element size length is bigger then the supported size");
     }
 
     // Set the current element to be the 'Segment' element
@@ -42,7 +42,7 @@ void EbmlElement::_initialize_as_root()
 
     // Make sure that it's indeed the 'Segment' element
     if (GET_ID(Segment) != m_id.get_value())
-        throw std::exception("Expected segment element");
+        throw UnexpectedElementException("Expected segment element");
 }
 
 /******************************************************************************************************/
@@ -51,7 +51,7 @@ void EbmlElement::_initialize_as_root()
 BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 {
     if (this->is_last())
-        throw std::out_of_range("No next element");
+        throw NoMoreElements();
     
     _seek_to(EbmlOffset::End);
 
@@ -202,7 +202,7 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
     case EbmlOffset::End:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value();
     }
-    throw std::runtime_error("Unrecognized value");
+    throw UnexpectedValueException();
 }
 
 inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
