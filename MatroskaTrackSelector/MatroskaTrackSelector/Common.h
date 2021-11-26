@@ -19,12 +19,13 @@ using Buffer = vector<uint8_t>;
 #define WriteLine(something) cout << something << endl
 
 #define DECL_EXCEPTION(ex_name)                                      \
-class ex_name : public std::exception                                \
+struct ex_name : public std::exception                               \
 {                                                                    \
-public:                                                              \
     ex_name(const char* const message) : std::exception(message) {}  \
     ex_name() : std::exception() {}                                  \
 }
+
+DECL_EXCEPTION(SizeTooBigError);
 
 namespace Utility
 {
@@ -78,6 +79,9 @@ inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_
 {
     if (0 == size)
         return 0;
+
+    if (size > sizeof(uint64_t))
+        throw SizeTooBigError();
 
     uint64_t result = stream.get();
     for (size_t i = 0; i < size - 1; ++i)
