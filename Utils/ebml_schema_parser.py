@@ -33,6 +33,7 @@ class EbmlSchemaElementType:
     Utf8String = 'utf-8'
     Date = 'date'
     Binary = 'binary'
+    Flag = 'flag'
 
     # This is not a valid type for an ebml element but it makes more sense
     # to use this as a separate type because enums in the ebml schema are
@@ -75,6 +76,8 @@ def parse_value_by_type(value, value_type: str):
         else:
             print(value)
             raise NotImplementedError('Too lazy to figure out how this format works')
+    elif value_type == EbmlSchemaElementType.Flag:
+        return int(value) != 0
     else:
         raise NotImplementedError('Too lazy to implement parsing for this type')
 
@@ -124,7 +127,10 @@ def get_elements(schema_file: str):
                 restriction_element = child
                 break
 
-        original_type = element.attrib['type']
+        if ('range' in element.attrib) and (element.attrib['range'] == '0-1'):
+            original_type = 'flag'
+        else:
+            original_type = element.attrib['type']
 
         default_value = None
         try:
@@ -169,7 +175,8 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
         EbmlSchemaElementType.Utf8String    : 'string',
         EbmlSchemaElementType.Date          : 'Date',       # unimplemented
         EbmlSchemaElementType.Binary        : 'binary',
-        EbmlSchemaElementType.Enum          : 'Enum'        # unimplemented
+        EbmlSchemaElementType.Enum          : 'Enum',        # unimplemented
+        EbmlSchemaElementType.Flag          : 'bool'
     }
 
     crnt_type = element.original_type
