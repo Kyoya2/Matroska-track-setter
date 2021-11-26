@@ -160,12 +160,13 @@ Buffer EbmlElement::binary_value() const
 
 uint64_t EbmlElement::uint_value() const
 {
-    return uint64_t();
+    _seek_to(EbmlOffset::Data);
+    return Utility::read_big_endian_from_stream(m_stream, m_length.get_value());
 }
 
 int64_t EbmlElement::int_value() const
 {
-    return int64_t();
+    return static_cast<int64_t>(uint_value());
 }
 
 string EbmlElement::string_value() const
