@@ -11,48 +11,6 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
     return element;
 }
 
-void EbmlElement::_initialize_as_root()
-{
-    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
-        {GET_ID(DocType), nullptr},
-        {GET_ID(EBMLMaxIDLength), nullptr},
-        {GET_ID(EBMLMaxSizeLength), nullptr}
-    };
-
-    get_unique_children(children);
-
-    // Check that we are deling with a mtroska document
-    if ((children[GET_ID(DocType)].is_null()) ||
-        (GET_CHILD_VALUE(children, DocType) != "matroska"))
-    {
-        throw UnsupportedDocument("This is not a matroska document");
-    }
-
-    // Check that the maximum ID length of the current stream is supported
-    if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
-        (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
-    {
-        throw UnsupportedDocument("Max ID length is bigger then the supported size");
-    }
-    
-    // Check that the maximum element size length of the current stream is supported
-    if ((!children[GET_ID(EBMLMaxSizeLength)].is_null()) &&
-        (GET_CHILD_VALUE(children, EBMLMaxSizeLength) > sizeof(EbmlElementLengthType)))
-    {
-        throw UnsupportedDocument("Max element size length is bigger then the supported size");
-    }
-
-    // Set the current element to be the 'Segment' element
-    _seek_to(EbmlOffset::End);
-    m_offset = m_stream.get().tellg();
-    m_id = EbmlElementID(m_stream.get());
-    m_length = EbmlElementLength(m_stream.get());
-
-    // Make sure that it's indeed the 'Segment' element
-    if (GET_ID(Segment) != m_id.get_value())
-        throw UnexpectedElementException("Expected segment element");
-}
-
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
@@ -193,8 +151,35 @@ void EbmlElement::change_bool_value(bool new_value)
     m_stream.get().put(static_cast<uint8_t>(new_value));
 }
 
-void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool flag_value)
+void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value)
 {
+    EbmlElementID new_id = new_element_id;
+    EbmlElementLength new_length = 1;
+
+    const size_t new_element_size = new_id.get_encoded_size() + new_length.get_encoded_size() + new_length.get_value();
+    const int32_t element_size_delta = (int32_t)(this->get_total_size() - new_element_size);
+
+    if (element_size_delta < 0)
+    {
+        throw ElementTooSmall("The current element is too small to be overwritten with the given element");
+    }
+
+    m_id = new_id;
+    m_length = new_length;
+
+    // Re-write the header of the element
+    _seek_to(EbmlOffset::Header);
+    m_stream << m_id;
+
+    // If there's only one byte left to fill, extend the encoded length of the m_length element by one
+    m_length.write(m_stream, (1 == element_size_delta) ? 2 : 1);
+    m_stream.get().put(static_cast<bool>(value));
+
+    // Fill the rest of the remaining space with a Void element
+    if (element_size_delta > 1)
+    {
+        _create_void_element(element_size_delta);
+    }
 }
 
 /******************************************************************************************************/
@@ -256,4 +241,76 @@ void EbmlElement::_read_content(void* container) const
 {
     _seek_to(EbmlOffset::Data);
     m_stream.get().read(reinterpret_cast<char*>(container), m_length.get_value());
+}
+
+void EbmlElement::_initialize_as_root()
+{
+    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+        {GET_ID(DocType), nullptr},
+        {GET_ID(EBMLMaxIDLength), nullptr},
+        {GET_ID(EBMLMaxSizeLength), nullptr}
+    };
+
+    get_unique_children(children);
+
+    // Check that we are deling with a mtroska document
+    if ((children[GET_ID(DocType)].is_null()) ||
+        (GET_CHILD_VALUE(children, DocType) != "matroska"))
+    {
+        throw UnsupportedDocument("This is not a matroska document");
+    }
+
+    // Check that the maximum ID length of the current stream is supported
+    if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
+        (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
+    {
+        throw UnsupportedDocument("Max ID length is bigger then the supported size");
+    }
+
+    // Check that the maximum element size length of the current stream is supported
+    if ((!children[GET_ID(EBMLMaxSizeLength)].is_null()) &&
+        (GET_CHILD_VALUE(children, EBMLMaxSizeLength) > sizeof(EbmlElementLengthType)))
+    {
+        throw UnsupportedDocument("Max element size length is bigger then the supported size");
+    }
+
+    // Set the current element to be the 'Segment' element
+    _seek_to(EbmlOffset::End);
+    m_offset = m_stream.get().tellg();
+    m_id = EbmlElementID(m_stream.get());
+    m_length = EbmlElementLength(m_stream.get());
+
+    // Make sure that it's indeed the 'Segment' element
+    if (GET_ID(Segment) != m_id.get_value())
+        throw UnexpectedElementException("Expected segment element");
+}
+
+void EbmlElement::_create_void_element(size_t size)
+{
+    if (size < 2)
+    {
+        throw SizeTooSmall("Can't create a Void element of less than 2 bytes");
+    }
+
+    EbmlElementID void_element_id = GET_ID(Void);
+
+    // The size of the data is AT MOST "size-2" because the minimum length of the size is 1 byte and the size of the ID is always 1
+    EbmlElementLength void_length = size - 2;
+
+    // If the total size of the element is bigger than the required size, keep decreasing the size until it's not bigger
+    while ((void_element_id.get_encoded_size() + void_length.get_minimal_encoded_size() + void_length.get_value()) > size)
+    {
+        void_length = void_length.get_value() - 1;
+    }
+
+    // There are rare cases when the total element size is one byte smaller than the required size
+    // this happens when the reqired size is one of the following values: [2**7+2, 2**14+3, 2**21+4, ...]
+    // In order to handle this case, we expand the ncoded length of the element size by one byte.
+    size_t encoded_length_size = void_length.get_minimal_encoded_size();
+    if ((void_element_id.get_encoded_size() + void_length.get_minimal_encoded_size() + void_length.get_value()) == size - 1)
+        ++encoded_length_size;
+
+    // Write the header of the void element
+    m_stream << void_element_id;
+    void_length.write(m_stream, encoded_length_size);
 }
