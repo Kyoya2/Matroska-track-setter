@@ -18,12 +18,17 @@ using Buffer = vector<uint8_t>;
 
 #define WriteLine(something) cout << something << endl
 
-#define DECL_EXCEPTION(ex_name)                                      \
-struct ex_name : public std::exception                               \
-{                                                                    \
-    ex_name(const char* const message) : std::exception(message) {}  \
-    ex_name() : std::exception() {}                                  \
+#define DECL_EXCEPTION(ex_name)                                                                    \
+struct ex_name : public BaseMatroskaTrackSelectorException                                         \
+{                                                                                                  \
+    ex_name(const char* const message = nullptr) : BaseMatroskaTrackSelectorException(message) {}  \
 }
+
+struct BaseMatroskaTrackSelectorException
+{
+    BaseMatroskaTrackSelectorException(const char* const msg = nullptr) : message(msg) {}
+    const char* const message;
+};
 
 DECL_EXCEPTION(SizeTooBigError);
 

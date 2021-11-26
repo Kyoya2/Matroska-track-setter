@@ -12,6 +12,8 @@ DECL_EXCEPTION(UnsupportedDocument);
 DECL_EXCEPTION(UnexpectedElementException);
 DECL_EXCEPTION(NoMoreElements);
 DECL_EXCEPTION(UnexpectedValueException);
+DECL_EXCEPTION(ElementTooSmall);
+DECL_EXCEPTION(SizeTooSmall);
 
 using std::unordered_map;
 
@@ -31,8 +33,9 @@ public:
     /******************************************************************************************************/
     /********************************************** Getters ***********************************************/
     /******************************************************************************************************/
-    EbmlElementID get_id() const { return m_id; }
-    EbmlElementLength get_length() const { return m_length; }
+    inline EbmlElementID get_id() const { return m_id; }
+    inline EbmlElementLength get_data_length() const { return m_length; }
+    inline size_t get_total_size() const { return m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value(); }
 
 public:
     /******************************************************************************************************/
@@ -61,13 +64,20 @@ public:
     uint64_t uint_value() const;
     int64_t int_value() const;
     string string_value() const;
+    bool bool_value() const;
+
+   /******************************************************************************************************/
+   /****************************************** Element modifiers *****************************************/
+   /******************************************************************************************************/
+    void change_bool_value(bool new_value);
+    void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
 private:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
     /******************************************************************************************************/
-    EbmlElement(BasicSharedPtr<EbmlElement> parent);
-    EbmlElement(std::iostream& stream);
+    explicit EbmlElement(BasicSharedPtr<EbmlElement> parent);
+    explicit EbmlElement(std::iostream& stream);
 
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
@@ -77,6 +87,7 @@ private:
     inline void _seek_to(EbmlOffset seek_pos) const;
     inline void _seek_to(uint64_t seek_pos) const;
     void _initialize_as_root();
+    void _create_void_element(size_t size); // Creates a void element of the given size at the current stream position
 
     template <typename... Args>
     static BasicSharedPtr<EbmlElement> s_get(Args&&... args);
