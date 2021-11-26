@@ -61,6 +61,13 @@ public:
     uint64_t uint_value() const;
     int64_t int_value() const;
     string string_value() const;
+    bool bool_value() const;
+
+   /******************************************************************************************************/
+   /****************************************** Element modifiers *****************************************/
+   /******************************************************************************************************/
+    void change_bool_value(bool new_value);
+    void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool flag_value);
 
 private:
     /******************************************************************************************************/

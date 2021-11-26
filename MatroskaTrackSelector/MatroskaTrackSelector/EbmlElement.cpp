@@ -178,6 +178,25 @@ string EbmlElement::string_value() const
     return result;
 }
 
+bool EbmlElement::bool_value() const
+{
+    _seek_to(EbmlOffset::Data);
+    return static_cast<bool>(m_stream.get().get());
+}
+
+/******************************************************************************************************/
+/****************************************** Element modifiers *****************************************/
+/******************************************************************************************************/
+void EbmlElement::change_bool_value(bool new_value)
+{
+    _seek_to(EbmlOffset::Data);
+    m_stream.get().put(static_cast<uint8_t>(new_value));
+}
+
+void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool flag_value)
+{
+}
+
 /******************************************************************************************************/
 /**************************************** Internal Constructors ***************************************/
 /******************************************************************************************************/
