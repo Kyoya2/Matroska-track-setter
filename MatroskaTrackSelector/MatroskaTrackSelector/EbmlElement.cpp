@@ -22,8 +22,8 @@ void EbmlElement::_initialize_as_root()
     get_unique_children(children);
 
     // Check that we are deling with a mtroska document
-    if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
-        (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
+    if ((children[GET_ID(DocType)].is_null()) ||
+        (GET_CHILD_VALUE(children, DocType) != "matroska"))
     {
         throw UnsupportedDocument("This is not a matroska document");
     }
@@ -166,6 +166,15 @@ uint64_t EbmlElement::uint_value() const
 int64_t EbmlElement::int_value() const
 {
     return int64_t();
+}
+
+string EbmlElement::string_value() const
+{
+    string result;
+    result.resize(m_length.get_value()); // Reserve one extra character for null-terminator
+    //result.data()[m_length.get_value()] = '\0';
+    _read_content(result.data());
+    return result;
 }
 
 /******************************************************************************************************/

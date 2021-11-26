@@ -60,6 +60,7 @@ public:
     Buffer binary_value() const;
     uint64_t uint_value() const;
     int64_t int_value() const;
+    string string_value() const;
 
 private:
     /******************************************************************************************************/
