@@ -20,11 +20,11 @@ void EbmlElementLength::write(std::ostream& stream, size_t encoded_length) const
     }
     else if (encoded_length < m_minimal_encoded_size)
     {
-        throw std::length_error("The given length is too small");
+        throw VINTEncodingError("The given length is too small");
     }
     else if (encoded_length > sizeof(EbmlElementLengthType))
     {
-        throw std::length_error("The given length is too big");
+        throw VINTEncodingError("The given length is too big");
     }
 
     // Add marker to value

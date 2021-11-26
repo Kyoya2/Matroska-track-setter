@@ -14,24 +14,32 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
 void EbmlElement::_initialize_as_root()
 {
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+        {GET_ID(DocType), nullptr},
         {GET_ID(EBMLMaxIDLength), nullptr},
         {GET_ID(EBMLMaxSizeLength), nullptr}
     };
 
     get_unique_children(children);
 
+    // Check that we are deling with a mtroska document
+    if ((children[GET_ID(DocType)].is_null()) ||
+        (GET_CHILD_VALUE(children, DocType) != "matroska"))
+    {
+        throw UnsupportedDocument("This is not a matroska document");
+    }
+
     // Check that the maximum ID length of the current stream is supported
     if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
         (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
     {
-        throw std::exception("Max ID length is bigger then the supported size");
+        throw UnsupportedDocument("Max ID length is bigger then the supported size");
     }
     
     // Check that the maximum element size length of the current stream is supported
     if ((!children[GET_ID(EBMLMaxSizeLength)].is_null()) &&
         (GET_CHILD_VALUE(children, EBMLMaxSizeLength) > sizeof(EbmlElementLengthType)))
     {
-        throw std::exception("Max element size length is bigger then the supported size");
+        throw UnsupportedDocument("Max element size length is bigger then the supported size");
     }
 
     // Set the current element to be the 'Segment' element
@@ -42,7 +50,7 @@ void EbmlElement::_initialize_as_root()
 
     // Make sure that it's indeed the 'Segment' element
     if (GET_ID(Segment) != m_id.get_value())
-        throw std::exception("Expected segment element");
+        throw UnexpectedElementException("Expected segment element");
 }
 
 /******************************************************************************************************/
@@ -51,7 +59,7 @@ void EbmlElement::_initialize_as_root()
 BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 {
     if (this->is_last())
-        throw std::out_of_range("No next element");
+        throw NoMoreElements();
     
     _seek_to(EbmlOffset::End);
 
@@ -152,12 +160,22 @@ Buffer EbmlElement::binary_value() const
 
 uint64_t EbmlElement::uint_value() const
 {
-    return uint64_t();
+    _seek_to(EbmlOffset::Data);
+    return Utility::read_big_endian_from_stream(m_stream, m_length.get_value());
 }
 
 int64_t EbmlElement::int_value() const
 {
-    return int64_t();
+    return static_cast<int64_t>(uint_value());
+}
+
+string EbmlElement::string_value() const
+{
+    string result;
+    result.resize(m_length.get_value()); // Reserve one extra character for null-terminator
+    //result.data()[m_length.get_value()] = '\0';
+    _read_content(result.data());
+    return result;
 }
 
 /******************************************************************************************************/
@@ -202,7 +220,7 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
     case EbmlOffset::End:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value();
     }
-    throw std::runtime_error("Unrecognized value");
+    throw UnexpectedValueException();
 }
 
 inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const

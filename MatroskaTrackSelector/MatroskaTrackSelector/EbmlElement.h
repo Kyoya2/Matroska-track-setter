@@ -8,6 +8,11 @@
 #include "MatroskaElementSpecification.h"
 #include "BasicSharedPtr.h"
 
+DECL_EXCEPTION(UnsupportedDocument);
+DECL_EXCEPTION(UnexpectedElementException);
+DECL_EXCEPTION(NoMoreElements);
+DECL_EXCEPTION(UnexpectedValueException);
+
 using std::unordered_map;
 
 // Offsets relative to the current element
@@ -55,6 +60,7 @@ public:
     Buffer binary_value() const;
     uint64_t uint_value() const;
     int64_t int_value() const;
+    string string_value() const;
 
 private:
     /******************************************************************************************************/
