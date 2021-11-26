@@ -31,8 +31,8 @@ public:
     /******************************************************************************************************/
     /********************************************** Getters ***********************************************/
     /******************************************************************************************************/
-    EbmlElementID get_id() const { return m_id; }
-    EbmlElementLength get_length() const { return m_length; }
+    inline EbmlElementID get_id() const { return m_id; }
+    inline EbmlElementLength get_data_length() const { return m_length; }
 
 public:
     /******************************************************************************************************/
@@ -75,6 +75,8 @@ private:
     /******************************************************************************************************/
     EbmlElement(BasicSharedPtr<EbmlElement> parent);
     EbmlElement(std::iostream& stream);
+    explicit EbmlElement(BasicSharedPtr<EbmlElement> parent);
+    explicit EbmlElement(std::iostream& stream);
 
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
