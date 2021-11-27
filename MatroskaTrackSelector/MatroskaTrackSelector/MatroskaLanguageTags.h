@@ -6,6 +6,8 @@
 
 #include "Common.h"
 
+DECL_EXCEPTION(LanguageNotFound);
+
 using std::string_view;
 
 struct LanguageDescriptor
@@ -499,6 +501,6 @@ namespace MatroskaLanguageTags
         {{"Dimili", "Kirmanjki", "Dimli", "Kirdki", "Kirmanjki (macrolanguage)", "Zaza", "Zazaki", "Dimli (macrolanguage)"}, {"zza"}}
     }};
     
-    inline bool does_tag_match_language(string language, string tag);
-    inline string get_tag_language(string tag);
+    bool does_tag_match_language(string language, string tag);
+    const string_view& get_tag_language(string tag);
 }

@@ -1,6 +1,7 @@
 #include "EbmlVintUT.h"
 #include "BasicSharedPtrUT.h"
 #include "EbmlParserUT.h"
+#include "MatroskaLanguageTagsUT.h"
 
 #ifdef _DEBUG
 namespace BasicSharedPtrStats
@@ -19,6 +20,7 @@ int wmain(int argc, wchar_t* argv[])
     //EbmlVintUT::run_tests();
     //BasicSharedPtrUT::run_tests();
     EbmlParserUT::run_tests();
+    MatroskaLanguageTagsUT::run_tests();
 
 #ifdef _DEBUG
     WriteLine(endl << "Creations: " << BasicSharedPtrStats::total_creations);
