@@ -42,7 +42,8 @@ public:
     /******************************************************************************************************/
     /*************************************** Functions for iteration **************************************/
     /******************************************************************************************************/
-    // This function MIGHT modify the current element
+    // This function WILL overwrite the current element if it's refcout is 1.
+    // Make sure to take ownership of the pointer if you don't want it to be overwritten.
     BasicSharedPtr<EbmlElement> get_next_element();
     BasicSharedPtr<EbmlElement> get_first_child();
 
