@@ -38,6 +38,8 @@ namespace EbmlParserUT
 
             CHECK(element->get_id().get_value() == 0x88);
             CHECK(element->bool_value());
+            CHECK(element->get_total_size() == ((original_element_size - 3 == 1) ? 4 : 3));
+
             if (j == 1)
             {
                 CHECK(element->get_data_length().get_encoded_size() == 2);
