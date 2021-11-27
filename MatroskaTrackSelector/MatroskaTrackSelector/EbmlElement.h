@@ -74,7 +74,7 @@ public:
     void change_bool_value(bool new_value);
     void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
-private:
+PRIVATE:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
     /******************************************************************************************************/
@@ -97,7 +97,7 @@ private:
     // Reads the raw content of the elemnt into the given container
     void _read_content(void* container) const;
 
-private:
+PRIVATE:
     reference_wrapper<std::iostream> m_stream;
     uint64_t m_offset;
     EbmlElementID m_id;

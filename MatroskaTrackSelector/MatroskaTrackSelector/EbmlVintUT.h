@@ -1,11 +1,10 @@
 #pragma once
 #include "UTCommon.h"
+#include "EbmlElementLength.h"
+#include "EbmlElementID.h"
 
 #include <ios>
 #include <fstream>
-
-#include "EbmlElementLength.h"
-#include "EbmlElementID.h"
 
 namespace EbmlVintUT
 {

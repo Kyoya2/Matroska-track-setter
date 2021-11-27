@@ -1,7 +1,5 @@
 #pragma once
 #include "Common.h"
-#define private public
-#define protected public
 
 #define CHECK(condition) do{ if (!(condition)) {WriteLine("Error in file " << __FILE__ << ":" << __LINE__); MatroskaTrackSelectorUT::tests_passed = false; /*__debugbreak();*/} } while(0, 0)
 
