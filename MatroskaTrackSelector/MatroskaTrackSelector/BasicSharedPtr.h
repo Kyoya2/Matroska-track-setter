@@ -26,7 +26,7 @@ DECL_EXCEPTION(ReleaseOwnershipExcetion);
 template <typename T>
 class BasicSharedPtr
 {
-private:
+PRIVATE:
     struct Internal
     {
         template <typename... Args>
@@ -42,7 +42,7 @@ private:
     /******************************************************************************************************/
     /***************************************** (Con|De)structors ******************************************/
     /******************************************************************************************************/
-private:
+PRIVATE:
     explicit BasicSharedPtr(Internal* internal_ptr);
 
 public:
@@ -81,7 +81,7 @@ public:
     // Decreases refcount but doesn't invalidate object
     void release_ownership();
 
-private:
+PRIVATE:
     Internal* m_internal_ptr;
     bool m_owned;
 };

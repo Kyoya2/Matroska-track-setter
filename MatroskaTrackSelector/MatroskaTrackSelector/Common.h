@@ -1,4 +1,10 @@
 #pragma once
+#ifdef _DEBUG
+#define PRIVATE public
+#else
+#define PRIVATE private
+#endif
+
 #include <cstdint>
 #include <iostream>
 #include <array>

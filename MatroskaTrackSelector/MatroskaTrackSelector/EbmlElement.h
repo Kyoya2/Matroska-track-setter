@@ -42,7 +42,8 @@ public:
     /******************************************************************************************************/
     /*************************************** Functions for iteration **************************************/
     /******************************************************************************************************/
-    // This function MIGHT modify the current element
+    // This function WILL overwrite the current element if it's refcout is 1.
+    // Make sure to take ownership of the pointer if you don't want it to be overwritten.
     BasicSharedPtr<EbmlElement> get_next_element();
     BasicSharedPtr<EbmlElement> get_first_child();
 
@@ -73,7 +74,7 @@ public:
     void change_bool_value(bool new_value);
     void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
-private:
+PRIVATE:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
     /******************************************************************************************************/
@@ -96,7 +97,7 @@ private:
     // Reads the raw content of the elemnt into the given container
     void _read_content(void* container) const;
 
-private:
+PRIVATE:
     reference_wrapper<std::iostream> m_stream;
     uint64_t m_offset;
     EbmlElementID m_id;

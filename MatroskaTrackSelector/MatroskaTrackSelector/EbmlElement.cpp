@@ -23,8 +23,9 @@ BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 
     if (1 == m_self.get_refcount())
     {
-        // This is an optimization: if the refcount of the current object is 1, this function will comstruct the next element INSTEAD
-        // of the current one to avoid unnecesarry memory allocations
+        // This is an optimization: if the refcount of the current object is 1, this function will OVERWRITE
+        // the current element with the next one instead of allocating new space for the next element
+        // and deallocating the space of the current element once it goes out of scope.
         m_offset = m_stream.get().tellg();
         m_id = EbmlElementID(m_stream.get());
         m_length = EbmlElementLength(m_stream.get());
@@ -317,9 +318,10 @@ void EbmlElement::_create_void_element(size_t size)
 
 std::ostream& operator<<(std::ostream& stream, const BasicSharedPtr<EbmlElement>& element)
 {
-    stream << "Offset: 0x"  << std::hex << element->get_offset() <<
-              "; ID: 0x"     << std::hex << element->get_id().get_value() <<
-              "; Length: 0x" << std::hex << element->get_total_size() << endl;
+    stream << std::hex << 
+              "Offset: 0x"  << element->get_offset() <<
+              "; ID: 0x"     << element->get_id().get_value() <<
+              "; Length: 0x" << element->get_total_size() << std::dec;
 
     return stream;
 }

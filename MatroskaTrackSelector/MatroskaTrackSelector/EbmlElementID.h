@@ -23,7 +23,7 @@ public:
     friend std::ostream& operator<<(std::ostream& stream, const EbmlElementID& element_id);
     friend std::istream& operator>>(std::istream& stream, EbmlElementID& element_id);
 
-private:
+PRIVATE:
     size_t m_encoded_size;
     EbmlElementIDType m_value;
 };
