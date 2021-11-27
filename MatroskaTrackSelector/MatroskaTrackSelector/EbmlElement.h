@@ -35,6 +35,7 @@ public:
     /******************************************************************************************************/
     inline EbmlElementID get_id() const { return m_id; }
     inline EbmlElementLength get_data_length() const { return m_length; }
+    inline uint64_t get_offset() const { return m_offset; }
     inline size_t get_total_size() const { return m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value(); }
 
 public:
@@ -105,6 +106,9 @@ private:
 
 public:
     friend class BasicSharedPtr<EbmlElement>;
+
+    // Debug print
+    friend std::ostream& operator<<(std::ostream& stream, const BasicSharedPtr<EbmlElement>& element);
 };
 
 template<typename ...Args>
