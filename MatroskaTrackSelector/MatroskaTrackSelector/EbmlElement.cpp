@@ -314,3 +314,12 @@ void EbmlElement::_create_void_element(size_t size)
     m_stream << void_element_id;
     void_length.write(m_stream, encoded_length_size);
 }
+
+std::ostream& operator<<(std::ostream& stream, const BasicSharedPtr<EbmlElement>& element)
+{
+    stream << "Offset: 0x"  << std::hex << element->get_offset() <<
+              "; ID: 0x"     << std::hex << element->get_id().get_value() <<
+              "; Length: 0x" << std::hex << element->get_total_size() << endl;
+
+    return stream;
+}
