@@ -179,6 +179,7 @@
     <ClInclude Include="MatroskaLanguageTagsUT.h" />
     <ClInclude Include="TrackElement.h" />
     <ClInclude Include="TrackParser.h" />
+    <ClInclude Include="TrackParserUT.h" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <ItemGroup>

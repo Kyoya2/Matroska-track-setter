@@ -2,31 +2,30 @@
 #include "Common.h"
 #include "EbmlElement.h"
 
-enum class TrackLanguage
-{
-    Uninitialized = 0,
-    English,
-    Japanese,
-    Other
-};
+#include <string_view>
 
-class TrackElement
-{
-    explicit TrackElement(BasicSharedPtr<EbmlElement>& track_element);
+using std::string_view;
 
-private:
+struct TrackEntry
+{
+    TrackEntry(BasicSharedPtr<EbmlElement>& track_element);
+
+    TrackEntry(TrackEntry&& other) = default;
+
+    void load_values();
+
     // Elements
-    BasicSharedPtr<EbmlElement> m_name_element;
-    BasicSharedPtr<EbmlElement> m_language_element;
-    BasicSharedPtr<EbmlElement> m_language_ietf_element;
-    BasicSharedPtr<EbmlElement> m_flag_forced_element;
-    BasicSharedPtr<EbmlElement> m_flag_default_element;
+    BasicSharedPtr<EbmlElement> track_element;
+    BasicSharedPtr<EbmlElement> name_element;
+    BasicSharedPtr<EbmlElement> language_element;
+    BasicSharedPtr<EbmlElement> language_ietf_element;
+    BasicSharedPtr<EbmlElement> flag_default_element;
+    BasicSharedPtr<EbmlElement> flag_forced_element;
 
     // Element values
-    TrackType m_track_type;
-    string m_track_name;
-    uint64_t m_track_number;
-    TrackLanguage m_language;
-    bool m_forced;
-    bool m_default;
+    TrackType track_type;
+    string track_name;
+    string language;
+    bool is_forced;
+    bool is_default;
 };

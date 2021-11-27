@@ -99,5 +99,8 @@
     <ClInclude Include="MatroskaLanguageTagsUT.h">
       <Filter>Tests</Filter>
     </ClInclude>
+    <ClInclude Include="TrackParserUT.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
