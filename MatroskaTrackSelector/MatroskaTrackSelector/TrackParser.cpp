@@ -19,17 +19,20 @@ TrackParser::TrackParser(std::iostream& stream)
         switch (current_top_level_element->get_id().get_value())
         {
         case SeekHead_ID:
+            DEBUG_PRINT_LINE("Encountered a SeekHead element");
             if (m_tracks_seek_position.is_null())
                 _load_tracks_seek_position_element(current_top_level_element);
             break;
 
         case Tracks_ID:
+            DEBUG_PRINT_LINE("Encountered a Tracks element");
             // The last seen Void element is the closest Void element that appears before the Tracks element
             m_void_before_tracks = last_void_element;
             _load_tracks(current_top_level_element);
             break;
 
         case Void_ID:
+            DEBUG_PRINT_LINE("Encountered a Void element");
             last_void_element = current_top_level_element;
             // If the tracks have already been loaded and the closes Void element that comes after the Tracks
             // element wasn't loaded. Set it to be the current Void element.
@@ -49,6 +52,7 @@ TrackParser::TrackParser(std::iostream& stream)
 
 void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element)
 {
+    DEBUG_PRINT_LINE("Searching for a 'Seek' element with a SeekID of 'Tracks' element");
     auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
 
     // Iterate over all Seek elements untill we find the Seek element that points to the Tracks element
@@ -64,6 +68,7 @@ void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>
        // If the current seek ID matches the ID of a "Tracks" element, save it's SeekPosition and return
        if (seek_children[SeekID_ID]->uint_value() == Tracks_ID)
        {
+           DEBUG_PRINT_LINE("Found Tracks SeekID");
            m_tracks_seek_position = seek_children[SeekPosition_ID];
            return;
        }
