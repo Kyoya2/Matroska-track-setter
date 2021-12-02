@@ -5,7 +5,7 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
     BasicSharedPtr<EbmlElement> element = s_get(stream);
 
     // If the current element is the root, verify some properties and then overwrite it with the underlying 'Segment' element
-    if (GET_ID(EBML) == element->get_id().get_value())
+    if (EBML_ID == element->get_id().get_value())
         element->_initialize_as_root();
 
     return element;
@@ -247,30 +247,30 @@ void EbmlElement::_read_content(void* container) const
 void EbmlElement::_initialize_as_root()
 {
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
-        {GET_ID(DocType), nullptr},
-        {GET_ID(EBMLMaxIDLength), nullptr},
-        {GET_ID(EBMLMaxSizeLength), nullptr}
+        {DocType_ID, nullptr},
+        {EBMLMaxIDLength_ID, nullptr},
+        {EBMLMaxSizeLength_ID, nullptr}
     };
 
     get_unique_children(children);
 
     // Check that we are deling with a mtroska document
-    if ((children[GET_ID(DocType)].is_null()) ||
-        (GET_CHILD_VALUE(children, DocType) != "matroska"))
+    if ((children[DocType_ID].is_null()) ||
+        (children[DocType_ID]->string_value() != "matroska"))
     {
         throw UnsupportedDocument("This is not a matroska document");
     }
 
     // Check that the maximum ID length of the current stream is supported
-    if ((!children[GET_ID(EBMLMaxIDLength)].is_null()) &&
-        (GET_CHILD_VALUE(children, EBMLMaxIDLength) > sizeof(EbmlElementIDType)))
+    if ((!children[EBMLMaxIDLength_ID].is_null()) &&
+        (children[EBMLMaxIDLength_ID]->uint_value() > sizeof(EbmlElementIDType)))
     {
         throw UnsupportedDocument("Max ID length is bigger then the supported size");
     }
 
     // Check that the maximum element size length of the current stream is supported
-    if ((!children[GET_ID(EBMLMaxSizeLength)].is_null()) &&
-        (GET_CHILD_VALUE(children, EBMLMaxSizeLength) > sizeof(EbmlElementLengthType)))
+    if ((!children[EBMLMaxSizeLength_ID].is_null()) &&
+        (children[EBMLMaxSizeLength_ID]->uint_value() > sizeof(EbmlElementLengthType)))
     {
         throw UnsupportedDocument("Max element size length is bigger then the supported size");
     }
@@ -282,7 +282,7 @@ void EbmlElement::_initialize_as_root()
     m_length = EbmlElementLength(m_stream.get());
 
     // Make sure that it's indeed the 'Segment' element
-    if (GET_ID(Segment) != m_id.get_value())
+    if (Segment_ID != m_id.get_value())
         throw UnexpectedElementException("Expected segment element");
 }
 
@@ -293,7 +293,7 @@ void EbmlElement::_create_void_element(size_t size)
         throw SizeTooSmall("Can't create a Void element of less than 2 bytes");
     }
 
-    EbmlElementID void_element_id = GET_ID(Void);
+    EbmlElementID void_element_id = Void_ID;
 
     // The size of the data is AT MOST "size-2" because the minimum length of the size is 1 byte and the size of the ID is always 1
     EbmlElementLength void_length = size - 2;
