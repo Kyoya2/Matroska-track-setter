@@ -8,11 +8,11 @@ class TrackParser
 public:
     explicit TrackParser(std::iostream& stream);
 
-private:
+PRIVATE:
     void _load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element);
     void _load_tracks(BasicSharedPtr<EbmlElement>& tracks_element);
 
-private:
+PRIVATE:
     BasicSharedPtr<EbmlElement> m_tracks_seek_position;
     vector<TrackEntry> m_subtitle_tracks;
     vector<TrackEntry> m_audio_tracks;
