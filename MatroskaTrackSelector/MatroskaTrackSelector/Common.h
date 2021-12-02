@@ -22,6 +22,12 @@ using std::reference_wrapper;
 
 using Buffer = vector<uint8_t>;
 
+#ifdef _DEBUG
+#define DEBUG_PRINT(message) cout << message << endl
+#else
+#define DEBUG_PRINT(message) 0
+#endif
+
 #define WriteLine(something) cout << something << endl
 
 #define DECL_EXCEPTION(ex_name)                                                                    \
