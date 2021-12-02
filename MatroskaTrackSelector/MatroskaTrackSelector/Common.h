@@ -23,8 +23,10 @@ using std::reference_wrapper;
 using Buffer = vector<uint8_t>;
 
 #ifdef _DEBUG
-#define DEBUG_PRINT(message) cout << message << endl
+#define DEBUG_PRINT(message) cout << message
+#define DEBUG_PRINT_LINE(message) DEBUG_PRINT(message << endl)
 #else
+#define DEBUG_PRINT_LINE(message) 0
 #define DEBUG_PRINT(message) 0
 #endif
 

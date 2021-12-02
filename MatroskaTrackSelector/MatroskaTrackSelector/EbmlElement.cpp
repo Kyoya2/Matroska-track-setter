@@ -7,7 +7,7 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
     // If the current element is the root, verify some properties and then overwrite it with the underlying 'Segment' element
     if (EBML_ID == element->get_id().get_value())
     {
-        DEBUG_PRINT("Encountered an 'EBML' element, verifying...");
+        DEBUG_PRINT_LINE("Encountered an 'EBML' element, verifying...");
         element->_initialize_as_root();
     }
         
@@ -289,7 +289,7 @@ void EbmlElement::_initialize_as_root()
     if (Segment_ID != m_id.get_value())
         throw UnexpectedElementException("Expected segment element");
 
-    DEBUG_PRINT("The 'EBML' element has been verified and now points to the corresponding 'Segment' element");
+    DEBUG_PRINT_LINE("The 'EBML' element has been verified and now points to the corresponding 'Segment' element");
 }
 
 void EbmlElement::_create_void_element(size_t size)
