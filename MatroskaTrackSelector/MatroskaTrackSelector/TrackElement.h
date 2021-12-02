@@ -8,6 +8,7 @@ using std::string_view;
 
 struct TrackEntry
 {
+    // Load elements and track type but do not parse values
     TrackEntry(BasicSharedPtr<EbmlElement>& track_element);
 
     TrackEntry(TrackEntry&& other) = default;
