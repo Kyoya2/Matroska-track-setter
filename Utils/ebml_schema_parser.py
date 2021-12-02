@@ -184,8 +184,7 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
         crnt_type = element.type
         
     element.name = element.name.replace('-', '_')
-    element_string = f'#define {element.name}_ID ({hex(element.id)})' + '\n'
-    element_string += f'#define {element.name}_TYPE ({types_dict[crnt_type]})'
+    element_string = f'static constexpr EbmlElementIDType {element.name}_ID = {hex(element.id)};'
 
     if element.type == EbmlSchemaElementType.Enum:
         # function to convert space seperated string to UpperCamelCase
