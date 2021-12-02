@@ -4,25 +4,25 @@ TrackEntry::TrackEntry(BasicSharedPtr<EbmlElement>& track_element) :
     track_element(track_element)
 {
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
-            {GET_ID(Name), nullptr},
-            {GET_ID(Language), nullptr},
-            {GET_ID(LanguageIETF), nullptr},
-            {GET_ID(FlagDefault), nullptr},
-            {GET_ID(FlagForced), nullptr},
-            {GET_ID(TrackType), nullptr},
+            {Name_ID, nullptr},
+            {Language_ID, nullptr},
+            {LanguageIETF_ID, nullptr},
+            {FlagDefault_ID, nullptr},
+            {FlagForced_ID, nullptr},
+            {TrackType_ID, nullptr},
     };
 
     track_element->get_unique_children(children);
 
     // Save element pointers
-    name_element = children[GET_ID(Name)];
-    language_element = children[GET_ID(Language)];
-    language_ietf_element = children[GET_ID(LanguageIETF)];
-    flag_default_element = children[GET_ID(FlagDefault)];
-    flag_forced_element = children[GET_ID(FlagForced)];
+    name_element = children[Name_ID];
+    language_element = children[Language_ID];
+    language_ietf_element = children[LanguageIETF_ID];
+    flag_default_element = children[FlagDefault_ID];
+    flag_forced_element = children[FlagForced_ID];
 
     // Load only the value of the track type
-    track_type = static_cast<TrackType>(children[GET_ID(TrackType)]->uint_value());
+    track_type = static_cast<TrackType>(children[TrackType_ID]->uint_value());
 }
 
 void TrackEntry::load_values()

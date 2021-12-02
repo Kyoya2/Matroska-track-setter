@@ -5,7 +5,7 @@ TrackParser::TrackParser(std::iostream& stream)
     stream.seekg(0);
     auto segment_element = EbmlElement::s_construct_from_stream(stream);
     
-    if (GET_ID(Segment) != segment_element->get_id().get_value())
+    if (Segment_ID != segment_element->get_id().get_value())
     {
         throw UnexpectedElementException("Expected segment element");
     }
@@ -18,18 +18,18 @@ TrackParser::TrackParser(std::iostream& stream)
     {
         switch (current_top_level_element->get_id().get_value())
         {
-        case GET_ID(SeekHead):
+        case SeekHead_ID:
             if (m_tracks_seek_position.is_null())
                 _load_tracks_seek_position_element(current_top_level_element);
             break;
 
-        case GET_ID(Tracks):
+        case Tracks_ID:
             // The last seen Void element is the closest Void element that appears before the Tracks element
             m_void_before_tracks = last_void_element;
             _load_tracks(current_top_level_element);
             break;
 
-        case GET_ID(Void):
+        case Void_ID:
             last_void_element = current_top_level_element;
             // If the tracks have already been loaded and the closes Void element that comes after the Tracks
             // element wasn't loaded. Set it to be the current Void element.
@@ -49,22 +49,22 @@ TrackParser::TrackParser(std::iostream& stream)
 
 void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element)
 {
-    auto seek_elements = seek_head_element->get_identical_children_by_id(GET_ID(Seek));
+    auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
 
     // Iterate over all Seek elements untill we find the Seek element that points to the Tracks element
     for (BasicSharedPtr<EbmlElement>& current_seek_element : seek_elements)
     {
        unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> seek_children{
-            {GET_ID(SeekID), nullptr},
-            {GET_ID(SeekPosition), nullptr}
+            {SeekID_ID, nullptr},
+            {SeekPosition_ID, nullptr}
        };
 
        current_seek_element->get_unique_children(seek_children);
 
        // If the current seek ID matches the ID of a "Tracks" element, save it's SeekPosition and return
-       if (seek_children[GET_ID(SeekID)]->uint_value() == GET_ID(Tracks))
+       if (seek_children[SeekID_ID]->uint_value() == Tracks_ID)
        {
-           m_tracks_seek_position = seek_children[GET_ID(SeekPosition)];
+           m_tracks_seek_position = seek_children[SeekPosition_ID];
            return;
        }
     }
@@ -72,7 +72,7 @@ void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>
 
 void TrackParser::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
 {
-    auto tracks = tracks_element->get_identical_children_by_id(GET_ID(TrackEntry));
+    auto tracks = tracks_element->get_identical_children_by_id(TrackEntry_ID);
 
     for (BasicSharedPtr<EbmlElement>& track : tracks)
     {
