@@ -4,7 +4,7 @@
 
 #include "Common.h"
 #include "EbmlElement.h"
-#include "TrackElement.h"
+#include "TrackEntry.h"
 
 // See TrackManager::_s_set_default_track for signature documentation
 // Return value is true if the conditions for the case have been satisfied and the track has been set as the default

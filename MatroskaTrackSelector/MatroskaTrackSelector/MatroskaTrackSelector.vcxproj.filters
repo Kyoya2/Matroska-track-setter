@@ -46,7 +46,7 @@
     <ClCompile Include="EbmlElement.cpp">
       <Filter>Ebml\EbmlParser</Filter>
     </ClCompile>
-    <ClCompile Include="TrackElement.cpp">
+    <ClCompile Include="TrackEntry.cpp">
       <Filter>Track management\TrackElement</Filter>
     </ClCompile>
     <ClCompile Include="MatroskaLanguageTags.cpp">
@@ -99,7 +99,7 @@
     <ClInclude Include="EbmlParserUT.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="TrackElement.h">
+    <ClInclude Include="TrackEntry.h">
       <Filter>Track management\TrackElement</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTags.h">

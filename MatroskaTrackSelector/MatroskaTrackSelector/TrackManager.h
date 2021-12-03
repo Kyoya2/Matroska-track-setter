@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "EbmlElement.h"
-#include "TrackElement.h"
+#include "TrackEntry.h"
 #include "DefaultTrackSetterHandlers.h"
 
 DECL_EXCEPTION(FittingHandlerNotFound);

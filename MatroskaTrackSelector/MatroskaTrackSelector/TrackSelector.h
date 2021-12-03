@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "Common.h"
+#include "TrackEntry.h"
 
 DECL_EXCEPTION(TrackRulesParsingError);
 
