@@ -119,14 +119,14 @@ void TrackManager::_s_set_default_track(
         if (i == default_track_index)
             continue;
 
-        if (tracks[i].has_flag_forced())
+        if (tracks[i].has_FlagForced())
         {
-            tracks[i].set_forced(false);
+            tracks[i].set_FlagForced(false);
         }
 
-        if (tracks[i].has_flag_default())
+        if (tracks[i].has_FlagDefault())
         {
-            tracks[i].set_default(false);
+            tracks[i].set_FlagDefault(false);
         }
     }
 
