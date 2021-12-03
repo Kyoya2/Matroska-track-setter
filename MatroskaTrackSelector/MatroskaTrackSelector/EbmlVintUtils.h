@@ -5,17 +5,17 @@ DECL_EXCEPTION(VINTOverflowError);
 
 namespace EbmlVintUtils
 {
-    static inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
+    inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
 
     template<typename T>
-    static inline T extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr);
+    inline T extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr);
 
-    static inline uint64_t remove_vint_marker(uint64_t value);
+    inline uint64_t remove_vint_marker(uint64_t value);
 
-    static inline void encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream);
+    inline void encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream);
 }
 
-size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker)
+inline size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker)
 {
     // The number of bits required to represent the number
     size_t bit_count = Utility::get_msb_index(value) + 1;
@@ -38,7 +38,7 @@ size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value_with_v
 }
 
 template<typename T>
-T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size)
+inline T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size)
 {
     T result = stream.get();
 
@@ -64,12 +64,12 @@ T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_
     return result;
 }
 
-uint64_t EbmlVintUtils::remove_vint_marker(uint64_t value)
+inline uint64_t EbmlVintUtils::remove_vint_marker(uint64_t value)
 {
     return value ^ Utility::get_msb(value);
 }
 
-void EbmlVintUtils::encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream)
+inline void EbmlVintUtils::encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream)
 {
     // Convert to big-endian
     char* encoded_bytes_ptr = reinterpret_cast<char*>(&value);

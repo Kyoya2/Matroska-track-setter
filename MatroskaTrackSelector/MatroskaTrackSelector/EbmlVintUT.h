@@ -13,7 +13,7 @@ namespace EbmlVintUT
         WriteLine("EbmlVint tests");
 
         // 10 test numbers of all possible encodable sizes (1-8 bytes) including highest and lowest
-        constexpr array<array<uint64_t, 10>, 8> test_numers
+        constexpr std::array<std::array<uint64_t, 10>, 8> test_numers
         {{  // Lowest                Highest                       Random . . .
             {(uint64_t)1 << (7 * 0), ((uint64_t)1 << (7 * 1)) - 1, 0, 21, 23, 33, 40, 48, 63, 104},
             {(uint64_t)1 << (7 * 1), ((uint64_t)1 << (7 * 2)) - 1, 2145, 2611, 5116, 5713, 6920, 7183, 8527, 13726},
@@ -27,7 +27,7 @@ namespace EbmlVintUT
 
         // Init test file
         std::fstream test_file("..\\..\\Test files\\test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
-        array<uint32_t, 9> stream_position_indices;
+        std::array<uint32_t, 9> stream_position_indices;
 
         for (uint64_t i = 0; i < test_numers.size(); ++i)
         {

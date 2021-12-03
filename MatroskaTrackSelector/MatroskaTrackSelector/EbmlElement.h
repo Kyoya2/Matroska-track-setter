@@ -120,3 +120,13 @@ inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
     element->m_self.release_ownership();
     return element;
 }
+
+inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
+{
+    _seek_to(_get_offset(seek_pos));
+}
+
+inline void EbmlElement::_seek_to(uint64_t seek_pos) const
+{
+    m_stream.get().seekp(seek_pos);
+}

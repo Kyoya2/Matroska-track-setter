@@ -75,6 +75,12 @@ void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement
     }
 }
 
+void TrackManager::set_default_tracks(uint32_t subtitle_track_index, uint32_t audio_track_index)
+{
+    _s_set_default_track(m_subtitle_tracks, subtitle_track_index, m_audio_tracks, audio_track_index);
+    _s_set_default_track(m_audio_tracks, audio_track_index, m_subtitle_tracks, subtitle_track_index);
+}
+
 void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
 {
     DEBUG_PRINT_LINE("Loading tracks");
@@ -98,5 +104,45 @@ void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
             m_subtitle_tracks.emplace_back(std::move(current_track_entry));
             break;
         }
+    }
+}
+
+void TrackManager::_s_set_default_track(
+    vector<TrackEntry>& tracks,
+    uint32_t default_track_index,
+    vector<TrackEntry>& other_tracks,
+    uint32_t untouchable_track_index)
+{
+    // Set FlagForced and FlagDefault of all elements (except the default element) to false
+    for (uint32_t i = 0; i < tracks.size(); ++i)
+    {
+        if (i == default_track_index)
+            continue;
+
+        if (tracks[i].has_flag_forced())
+        {
+            tracks[i].set_forced(false);
+        }
+
+        if (tracks[i].has_flag_default())
+        {
+            tracks[i].set_default(false);
+        }
+    }
+
+    // Try all handlers until one succeeds
+    bool success = false;
+    for (auto handler : DEAFULT_TRACK_SETTER_HANDLERS)
+    {
+        if (handler(tracks, default_track_index, other_tracks, untouchable_track_index))
+        {
+            success = true;
+            break;
+        }
+    }
+
+    if (!success)
+    {
+        throw FittingHandlerNotFound();
     }
 }

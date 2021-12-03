@@ -232,16 +232,6 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
     throw UnexpectedValueException();
 }
 
-inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
-{
-    _seek_to(_get_offset(seek_pos));
-}
-
-inline void EbmlElement::_seek_to(uint64_t seek_pos) const
-{
-    m_stream.get().seekp(seek_pos);
-}
-
 void EbmlElement::_read_content(void* container) const
 {
     _seek_to(EbmlOffset::Data);

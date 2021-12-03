@@ -74,9 +74,9 @@ public:
     template <typename... Args>
     static BasicSharedPtr make_basic_shared(Args&&... args);
 
-    inline size_t get_refcount() { return m_internal_ptr->refcount; }
+    inline size_t get_refcount() const { return m_internal_ptr->refcount; }
 
-    inline bool is_null() { return nullptr == m_internal_ptr; }
+    inline bool is_null() const { return nullptr == m_internal_ptr; }
 
     // Decreases refcount but doesn't invalidate object
     void release_ownership();

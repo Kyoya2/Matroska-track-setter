@@ -16,6 +16,12 @@ struct TrackEntry
 
     void load_values();
 
+    inline bool has_flag_default() const { return flag_default_element.is_null(); }
+    void set_default(bool is_default);
+
+    inline bool has_flag_forced() const { return flag_forced_element.is_null(); }
+    void set_forced(bool is_forced);
+
     // Elements
     BasicSharedPtr<EbmlElement> track_element;
     BasicSharedPtr<EbmlElement> name_element;
@@ -31,3 +37,21 @@ struct TrackEntry
     bool is_default;
     bool is_forced;
 };
+
+inline void TrackEntry::set_default(bool new_value)
+{
+    if (is_default == new_value)
+        return;
+
+    flag_default_element->change_bool_value(new_value);
+    is_default = new_value;
+}
+
+inline void TrackEntry::set_forced(bool new_value)
+{
+    if (is_forced == new_value)
+        return;
+
+    flag_forced_element->change_bool_value(new_value);
+    is_forced = new_value;
+}
