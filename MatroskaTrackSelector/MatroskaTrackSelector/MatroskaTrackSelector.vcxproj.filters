@@ -40,7 +40,7 @@
     <ClCompile Include="EbmlElement.cpp">
       <Filter>Ebml\EbmlParser</Filter>
     </ClCompile>
-    <ClCompile Include="TrackParser.cpp">
+    <ClCompile Include="TrackManager.cpp">
       <Filter>TrackParser</Filter>
     </ClCompile>
     <ClCompile Include="TrackElement.cpp">
@@ -87,7 +87,7 @@
     <ClInclude Include="EbmlParserUT.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="TrackParser.h">
+    <ClInclude Include="TrackManager.h">
       <Filter>TrackParser</Filter>
     </ClInclude>
     <ClInclude Include="TrackElement.h">

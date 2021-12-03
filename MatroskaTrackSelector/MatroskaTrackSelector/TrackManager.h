@@ -3,10 +3,14 @@
 #include "EbmlElement.h"
 #include "TrackElement.h"
 
-class TrackParser
+class TrackManager
 {
 public:
-    explicit TrackParser(std::iostream& stream);
+    explicit TrackManager(std::iostream& stream);
+
+public:
+    const vector<TrackEntry>& get_subtitle_tracks() const { return m_subtitle_tracks;  }
+    const vector<TrackEntry>& get_audio_tracks() const { return m_audio_tracks;  }
 
 PRIVATE:
     void _load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element);

@@ -1,6 +1,6 @@
-#include "TrackParser.h"
+#include "TrackManager.h"
 
-TrackParser::TrackParser(std::iostream& stream)
+TrackManager::TrackManager(std::iostream& stream)
 {
     stream.seekg(0);
     auto segment_element = EbmlElement::s_construct_from_stream(stream);
@@ -50,7 +50,7 @@ TrackParser::TrackParser(std::iostream& stream)
     }
 }
 
-void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element)
+void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element)
 {
     DEBUG_PRINT_LINE("Searching for a 'Seek' element with a SeekID of 'Tracks' element");
     auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
@@ -75,8 +75,9 @@ void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>
     }
 }
 
-void TrackParser::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
+void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
 {
+    DEBUG_PRINT_LINE("Loading tracks");
     auto tracks = tracks_element->get_identical_children_by_id(TrackEntry_ID);
 
     for (BasicSharedPtr<EbmlElement>& track : tracks)
@@ -87,11 +88,13 @@ void TrackParser::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
         {
         case TrackType::Audio:
             current_track_entry.load_values();
+            DEBUG_PRINT_LINE("Audio track named '" << current_track_entry.track_name << "'");
             m_audio_tracks.emplace_back(std::move(current_track_entry));
             break;
 
         case TrackType::Subtitle:
             current_track_entry.load_values();
+            DEBUG_PRINT_LINE("Subtitle track named '" << current_track_entry.track_name << "'");
             m_subtitle_tracks.emplace_back(std::move(current_track_entry));
             break;
         }

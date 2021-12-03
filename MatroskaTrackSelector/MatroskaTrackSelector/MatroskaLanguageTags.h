@@ -6,8 +6,6 @@
 
 #include "Common.h"
 
-DECL_EXCEPTION(LanguageNotFound);
-
 using std::string_view;
 
 struct LanguageDescriptor
@@ -18,6 +16,7 @@ struct LanguageDescriptor
 
 namespace MatroskaLanguageTags
 {
+    static const string_view UNKNOWN_LANGUGAGE = "UNKNOWN";
     static const std::array<LanguageDescriptor, 480> language_tags{{
         {{"Afar"}, {"aar", "aa"}},
         {{"Abkhazian"}, {"abk", "ab"}},

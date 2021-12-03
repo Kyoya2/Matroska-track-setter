@@ -40,5 +40,5 @@ const string_view& MatroskaLanguageTags::get_tag_language(string tag)
         }
     }
 
-    throw LanguageNotFound();
+    return UNKNOWN_LANGUGAGE;
 }

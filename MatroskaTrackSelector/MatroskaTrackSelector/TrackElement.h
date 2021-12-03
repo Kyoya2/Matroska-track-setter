@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "EbmlElement.h"
+#include "MatroskaLanguageTags.h"
 
 #include <string_view>
 
@@ -26,7 +27,7 @@ struct TrackEntry
     // Element values
     TrackType track_type;
     string track_name;
-    string language;
+    string_view language;
     bool is_default;
     bool is_forced;
 };
