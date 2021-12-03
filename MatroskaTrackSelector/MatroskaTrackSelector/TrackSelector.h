@@ -13,9 +13,15 @@ class TrackSelector
 public:
     explicit TrackSelector(const string& rules_file_path);
 
+public:
+    uint32_t select_subtitle_track(const Tracks& tracks);
+    uint32_t select_audio_track(const Tracks& tracks);
+
 PRIVATE:
     struct TrackSelectionRules
     {
+        uint32_t select_track(const Tracks& tracks);
+
         string language;
         vector<string> include_keywords;
         vector<string> exclude_keywords;

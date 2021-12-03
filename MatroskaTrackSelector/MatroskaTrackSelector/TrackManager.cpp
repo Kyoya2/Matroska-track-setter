@@ -108,9 +108,9 @@ void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
 }
 
 void TrackManager::_s_set_default_track(
-    vector<TrackEntry>& tracks,
+    Tracks& tracks,
     uint32_t default_track_index,
-    vector<TrackEntry>& other_tracks,
+    Tracks& other_tracks,
     uint32_t untouchable_track_index)
 {
     // Set FlagForced and FlagDefault of all elements (except the default element) to false

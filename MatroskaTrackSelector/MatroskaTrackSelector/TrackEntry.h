@@ -41,6 +41,8 @@ struct TrackEntry
     bool is_forced;
 };
 
+using Tracks = vector<TrackEntry>;
+
 inline void TrackEntry::set_FlagDefault(bool new_value)
 {
     if (is_default == new_value)

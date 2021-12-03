@@ -1,6 +1,6 @@
 #include "DefaultTrackSetterHandlers.h"
 
-bool DefaultTrackSetterHandlers::case_1(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>&, uint32_t)
+bool DefaultTrackSetterHandlers::case_1(Tracks& tracks, uint32_t default_track_index, Tracks&, uint32_t)
 {
     TrackEntry& default_track = tracks[default_track_index];
     if (default_track.has_FlagForced())
@@ -13,7 +13,7 @@ bool DefaultTrackSetterHandlers::case_1(vector<TrackEntry>& tracks, uint32_t def
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_2(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>&, uint32_t)
+bool DefaultTrackSetterHandlers::case_2(Tracks& tracks, uint32_t default_track_index, Tracks&, uint32_t)
 {
     // If all tracks have FlagDefault
     if (std::all_of(tracks.cbegin(), tracks.cend(), [](const TrackEntry& track) { return track.has_FlagDefault(); }))
@@ -27,7 +27,7 @@ bool DefaultTrackSetterHandlers::case_2(vector<TrackEntry>& tracks, uint32_t def
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_3(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>&, uint32_t)
+bool DefaultTrackSetterHandlers::case_3(Tracks& tracks, uint32_t default_track_index, Tracks&, uint32_t)
 {
     // Make sure that all non-default tracks have FlagDefault
     for (uint32_t i = 0; i < tracks.size(); ++i)
@@ -40,7 +40,7 @@ bool DefaultTrackSetterHandlers::case_3(vector<TrackEntry>& tracks, uint32_t def
     return true;
 }
 
-bool DefaultTrackSetterHandlers::case_4(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>&, uint32_t)
+bool DefaultTrackSetterHandlers::case_4(Tracks& tracks, uint32_t default_track_index, Tracks&, uint32_t)
 {
     TrackEntry& default_track = tracks[default_track_index];
     if (default_track.has_Language() && default_track.has_LanguageIETF())
@@ -59,7 +59,7 @@ bool DefaultTrackSetterHandlers::case_4(vector<TrackEntry>& tracks, uint32_t def
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>&, uint32_t)
+bool DefaultTrackSetterHandlers::case_5(Tracks& tracks, uint32_t default_track_index, Tracks&, uint32_t)
 {
     TrackEntry& default_track = tracks[default_track_index];
     if ((default_track.language == "English") &&
@@ -85,22 +85,22 @@ bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry>& tracks, uint32_t def
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_6(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>& other_tracks, uint32_t untouchable_track_index)
+bool DefaultTrackSetterHandlers::case_6(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index)
 {
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_7(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>& other_tracks, uint32_t untouchable_track_index)
+bool DefaultTrackSetterHandlers::case_7(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index)
 {
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_8(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>& other_tracks, uint32_t untouchable_track_index)
+bool DefaultTrackSetterHandlers::case_8(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index)
 {
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_9(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>& other_tracks, uint32_t untouchable_track_index)
+bool DefaultTrackSetterHandlers::case_9(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index)
 {
     return false;
 }

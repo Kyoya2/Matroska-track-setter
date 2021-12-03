@@ -60,3 +60,26 @@ TrackSelector::TrackSelector(const string& rules_file_path)
         }
     }
 }
+
+uint32_t TrackSelector::select_subtitle_track(const Tracks& tracks)
+{
+    return m_subtitle_selection_rules.select_track(tracks);
+}
+
+uint32_t TrackSelector::select_audio_track(const Tracks& tracks)
+{
+    return m_audio_selection_rules.select_track(tracks);
+}
+
+uint32_t TrackSelector::TrackSelectionRules::select_track(const Tracks& tracks)
+{
+    vector<const TrackEntry*> selected_tracks;
+    vector<const TrackEntry*> tmp;
+
+    for (const TrackEntry& current_track : tracks)
+    {
+        selected_tracks.push_back(&current_track);
+    }
+
+    return 1;
+}

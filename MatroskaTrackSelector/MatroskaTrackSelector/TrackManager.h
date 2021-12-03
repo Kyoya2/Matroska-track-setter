@@ -12,8 +12,8 @@ public:
     explicit TrackManager(std::iostream& stream);
 
 public:
-    const vector<TrackEntry>& get_subtitle_tracks() const { return m_subtitle_tracks;  }
-    const vector<TrackEntry>& get_audio_tracks() const { return m_audio_tracks;  }
+    const Tracks& get_subtitle_tracks() const { return m_subtitle_tracks;  }
+    const Tracks& get_audio_tracks() const { return m_audio_tracks;  }
 
     void set_default_tracks(uint32_t subtitle_track_index, uint32_t audio_track_index);
 
@@ -22,15 +22,15 @@ PRIVATE:
     void _load_tracks(BasicSharedPtr<EbmlElement>& tracks_element);
 
     void _s_set_default_track(
-        vector<TrackEntry>& tracks,         // Either subtitle tracks or audio tracks
+        Tracks& tracks,         // Either subtitle tracks or audio tracks
         uint32_t default_track_index,       // The index of the track to set as the default amongst the tracks in 'tracks'
-        vector<TrackEntry>& other_tracks,   // The track set that's not specified by 'tracks'. e.g. if track is subtitles then this is audio
+        Tracks& other_tracks,   // The track set that's not specified by 'tracks'. e.g. if track is subtitles then this is audio
         uint32_t untouchable_track_index);  // The index of the track amongst 'other_tracks' that shouldn't be modified
 
 PRIVATE:
     BasicSharedPtr<EbmlElement> m_tracks_seek_position;
-    vector<TrackEntry> m_subtitle_tracks;
-    vector<TrackEntry> m_audio_tracks;
+    Tracks m_subtitle_tracks;
+    Tracks m_audio_tracks;
 
     // Theese refer to void elements that USUSALLY appear between top-level elements
     BasicSharedPtr<EbmlElement> m_void_before_tracks;
