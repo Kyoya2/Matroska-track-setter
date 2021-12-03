@@ -114,25 +114,25 @@ vector<BasicSharedPtr<EbmlElement>> EbmlElement::get_identical_children_by_id(co
 /******************************************************************************************************/
 /********************************************* Data getters *******************************************/
 /******************************************************************************************************/
-Buffer EbmlElement::binary_value() const
+Buffer EbmlElement::get_binary_value() const
 {
     Buffer result(m_length.get_value());
     _read_content(result.data());
     return result;
 }
 
-uint64_t EbmlElement::uint_value() const
+uint64_t EbmlElement::get_uint_value() const
 {
     _seek_to(EbmlOffset::Data);
     return Utility::read_big_endian_from_stream(m_stream, m_length.get_value());
 }
 
-int64_t EbmlElement::int_value() const
+int64_t EbmlElement::get_int_value() const
 {
-    return static_cast<int64_t>(uint_value());
+    return static_cast<int64_t>(get_uint_value());
 }
 
-string EbmlElement::string_value() const
+string EbmlElement::get_string_value() const
 {
     string result;
     result.resize(m_length.get_value()); // Reserve one extra character for null-terminator
@@ -141,7 +141,7 @@ string EbmlElement::string_value() const
     return result;
 }
 
-bool EbmlElement::bool_value() const
+bool EbmlElement::get_bool_value() const
 {
     _seek_to(EbmlOffset::Data);
     return static_cast<bool>(m_stream.get().get());
@@ -260,21 +260,21 @@ void EbmlElement::_initialize_as_root()
 
     // Check that we are deling with a mtroska document
     if ((children[DocType_ID].is_null()) ||
-        (children[DocType_ID]->string_value() != "matroska"))
+        (children[DocType_ID]->get_string_value() != "matroska"))
     {
         throw UnsupportedDocument("This is not a matroska document");
     }
 
     // Check that the maximum ID length of the current stream is supported
     if ((!children[EBMLMaxIDLength_ID].is_null()) &&
-        (children[EBMLMaxIDLength_ID]->uint_value() > sizeof(EbmlElementIDType)))
+        (children[EBMLMaxIDLength_ID]->get_uint_value() > sizeof(EbmlElementIDType)))
     {
         throw UnsupportedDocument("Max ID length is bigger then the supported size");
     }
 
     // Check that the maximum element size length of the current stream is supported
     if ((!children[EBMLMaxSizeLength_ID].is_null()) &&
-        (children[EBMLMaxSizeLength_ID]->uint_value() > sizeof(EbmlElementLengthType)))
+        (children[EBMLMaxSizeLength_ID]->get_uint_value() > sizeof(EbmlElementLengthType)))
     {
         throw UnsupportedDocument("Max element size length is bigger then the supported size");
     }

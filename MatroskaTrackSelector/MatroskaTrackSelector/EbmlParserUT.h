@@ -37,7 +37,7 @@ namespace EbmlParserUT
             element->overwrite_with_bool_element(0x88, true);
 
             CHECK(element->get_id().get_value() == 0x88);
-            CHECK(element->bool_value());
+            CHECK(element->get_bool_value());
             CHECK(element->get_total_size() == ((original_element_size - 3 == 1) ? 4 : 3));
 
             if (j == 1)

@@ -27,6 +27,6 @@ struct TrackEntry
     TrackType track_type;
     string track_name;
     string language;
-    bool is_forced;
     bool is_default;
+    bool is_forced;
 };

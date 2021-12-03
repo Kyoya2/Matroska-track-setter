@@ -66,7 +66,7 @@ void TrackParser::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>
        current_seek_element->get_unique_children(seek_children);
 
        // If the current seek ID matches the ID of a "Tracks" element, save it's SeekPosition and return
-       if (seek_children[SeekID_ID]->uint_value() == Tracks_ID)
+       if (seek_children[SeekID_ID]->get_uint_value() == Tracks_ID)
        {
            DEBUG_PRINT_LINE("Found Tracks SeekID");
            m_tracks_seek_position = seek_children[SeekPosition_ID];
