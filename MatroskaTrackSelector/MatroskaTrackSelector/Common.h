@@ -5,17 +5,20 @@
 #define PRIVATE private
 #endif
 
+#include <string>
 #include <cstdint>
 #include <iostream>
 #include <array>
 #include <vector>
 #include <memory>
 #include <functional>
+#include <string_view>
 
 using std::cout;
 using std::endl;
 using std::vector;
 using std::string;
+using std::string_view;
 using std::shared_ptr;
 using std::reference_wrapper;
 

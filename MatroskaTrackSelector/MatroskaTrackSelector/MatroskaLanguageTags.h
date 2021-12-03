@@ -1,12 +1,10 @@
 #pragma once
 
-#include <string_view>
 #include <array>
 #include <algorithm>
 
 #include "Common.h"
 
-using std::string_view;
 
 struct LanguageDescriptor
 {
