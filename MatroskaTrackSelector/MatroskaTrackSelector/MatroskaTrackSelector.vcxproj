@@ -98,6 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +133,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,6 +183,7 @@
     <ClInclude Include="TrackElement.h" />
     <ClInclude Include="TrackManager.h" />
     <ClInclude Include="TrackParserUT.h" />
+    <ClInclude Include="TrackSelector.h" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +195,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="TrackElement.cpp" />
     <ClCompile Include="TrackManager.cpp" />
+    <ClCompile Include="TrackSelector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

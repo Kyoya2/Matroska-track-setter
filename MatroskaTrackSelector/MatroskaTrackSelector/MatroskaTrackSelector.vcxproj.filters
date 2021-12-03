@@ -19,9 +19,6 @@
     <Filter Include="TrackSelector">
       <UniqueIdentifier>{b0366838-35cf-4828-94e1-c3e77ef5339c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TrackSelector\MatroskaLanguageTags">
-      <UniqueIdentifier>{53aa9e9b-49e8-4eba-ab7c-48605e4cfd6a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Track management">
       <UniqueIdentifier>{124665ef-d1d1-43d5-991b-cd8eee1dd5fd}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="Track management\DefaultTrackSetterHandlers">
       <UniqueIdentifier>{9a1d38a1-922a-491e-a313-5e4409425aed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Track management\MatroskaLanguageTags">
+      <UniqueIdentifier>{53aa9e9b-49e8-4eba-ab7c-48605e4cfd6a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -50,13 +50,16 @@
       <Filter>Track management\TrackElement</Filter>
     </ClCompile>
     <ClCompile Include="MatroskaLanguageTags.cpp">
-      <Filter>TrackSelector\MatroskaLanguageTags</Filter>
+      <Filter>Track management\MatroskaLanguageTags</Filter>
     </ClCompile>
     <ClCompile Include="TrackManager.cpp">
       <Filter>Track management\TrackManager</Filter>
     </ClCompile>
     <ClCompile Include="DefaultTrackSetterHandlers.cpp">
       <Filter>Track management\DefaultTrackSetterHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackSelector.cpp">
+      <Filter>TrackSelector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +103,7 @@
       <Filter>Track management\TrackElement</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTags.h">
-      <Filter>TrackSelector\MatroskaLanguageTags</Filter>
+      <Filter>Track management\MatroskaLanguageTags</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTagsUT.h">
       <Filter>Tests</Filter>
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="DefaultTrackSetterHandlers.h">
       <Filter>Track management\DefaultTrackSetterHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackSelector.h">
+      <Filter>TrackSelector</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
