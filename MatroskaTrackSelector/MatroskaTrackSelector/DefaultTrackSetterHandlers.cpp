@@ -59,8 +59,29 @@ bool DefaultTrackSetterHandlers::case_4(vector<TrackEntry>& tracks, uint32_t def
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>& other_tracks, uint32_t untouchable_track_index)
+bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry>& tracks, uint32_t default_track_index, vector<TrackEntry>&, uint32_t)
 {
+    TrackEntry& default_track = tracks[default_track_index];
+    if ((default_track.language == "English") &&
+        (default_track.has_Language() || default_track.has_LanguageIETF()))
+    {
+        DEBUG_PRINT_LINE("The current track set is eligible for case 5");
+
+        if (default_track.has_Language())
+        {
+            default_track.language_element->overwrite_with_bool_element(FlagForced_ID, true);
+            default_track.flag_forced_element = default_track.language_element;
+            default_track.language_element = nullptr;
+        }
+        else
+        {
+            default_track.language_ietf_element->overwrite_with_bool_element(FlagForced_ID, true);
+            default_track.flag_forced_element = default_track.language_ietf_element;
+            default_track.language_ietf_element = nullptr;
+        }
+
+        default_track.is_forced = true;
+    }
     return false;
 }
 
