@@ -18,6 +18,7 @@ public:
 
     TrackEntry(TrackEntry&& other) = default;
 
+public:
     void load_values();
 
     inline bool has_FlagDefault() const { return !flag_default_element.is_null(); }
@@ -29,6 +30,7 @@ public:
     inline bool has_Language() const { return !language_element.is_null(); }
     inline bool has_LanguageIETF() const { return !language_ietf_element.is_null(); }
 
+public:
     // Elements
     BasicSharedPtr<EbmlElement> track_element;
     BasicSharedPtr<EbmlElement> name_element;
