@@ -10,21 +10,21 @@
 // Return value is true if the conditions for the case have been satisfied and the track has been set as the default
 using DefaultTrackSetterHandler = bool(*)(
     Tracks& tracks,
-    uint32_t default_track_index,
+    TrackEntry* default_track,
     Tracks& other_tracks,
-    uint32_t untouchable_track_index);
+    const TrackEntry* untouchable_track);
 
 namespace DefaultTrackSetterHandlers
 {
-    bool case_1(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_2(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_3(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_4(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_5(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_6(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_7(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_8(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
-    bool case_9(Tracks& tracks, uint32_t default_track_index, Tracks& other_tracks, uint32_t untouchable_track_index);
+    bool case_1(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_2(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_3(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_4(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_5(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
 }
 
 constexpr std::array<DefaultTrackSetterHandler, 9> DEAFULT_TRACK_SETTER_HANDLERS{

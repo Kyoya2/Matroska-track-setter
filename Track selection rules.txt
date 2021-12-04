@@ -1,21 +1,24 @@
 ; This is a configuration file that tells the program how to select subtitle
-; and audio tracks. each line that begins with a semicolon (';') is ignored
+; and audio tracks. Empty lines and lines that begin with ';' are ignored
 ; by the program.
+
+; Make sure you know how regular expressions work before attempting to add
+; a phrase
 
 ======================== Subtitle track selection rules ========================
 ; The preferred language of the current section. In this case, it will tell
 ; the program to select subtitle tracks in the English language
 !LANGUAGE: English
 
-; If one or more of the phrases in the following lines appear in the name of
+; If one or more of the RegEx patterns in the following lines match the name of
 ; a subtitle track, they will have a higher selection priority.
 !INCLUDE KEYWORDS
 full
 dialog
 english
 
-; If one or more of the phrases in the following lines appear in the name of
-; a subtitle track, they will not be selected
+; If one or more of the RegEx patterns in the following lines match the name of
+; a subtitle track, they will not be selected.
 !EXCLUDE KEYWORDS
 signs
 sings
