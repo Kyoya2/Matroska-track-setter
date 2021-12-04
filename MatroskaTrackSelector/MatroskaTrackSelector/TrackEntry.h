@@ -9,8 +9,12 @@ using std::string_view;
 
 struct TrackEntry
 {
+public:
     // Load elements and track type but do not parse values
     TrackEntry(BasicSharedPtr<EbmlElement>& track_element);
+
+    TrackEntry(const TrackEntry&) = delete;
+    TrackEntry& operator=(const TrackEntry&) = delete;
 
     TrackEntry(TrackEntry&& other) = default;
 
