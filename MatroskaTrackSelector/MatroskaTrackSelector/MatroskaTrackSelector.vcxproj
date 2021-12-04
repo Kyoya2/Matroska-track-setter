@@ -183,7 +183,7 @@
     <ClInclude Include="TrackEntry.h" />
     <ClInclude Include="TrackManager.h" />
     <ClInclude Include="TrackParserUT.h" />
-    <ClInclude Include="TrackSelector.h" />
+    <ClInclude Include="TrackPrioritizer.h" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +195,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="TrackEntry.cpp" />
     <ClCompile Include="TrackManager.cpp" />
-    <ClCompile Include="TrackSelector.cpp" />
+    <ClCompile Include="TrackPrioritizer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,7 +1,7 @@
 #pragma once
 #include "UTCommon.h"
 #include "TrackManager.h"
-#include "TrackSelector.h"
+#include "TrackPrioritizer.h"
 
 #include <fstream>
 
@@ -14,7 +14,7 @@ namespace TrackParserUT
 
         const Tracks& subs = track_parser.get_subtitle_tracks();
 
-        TrackSelector ts("..\\..\\Track selection rules.txt");
+        TrackPrioritizer ts("..\\..\\Track selection rules.txt");
 
         ts.select_subtitle_track(subs);
     }

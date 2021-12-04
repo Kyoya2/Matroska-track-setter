@@ -8,10 +8,15 @@
 
 DECL_EXCEPTION(TrackRulesParsingError);
 
-class TrackSelector
+struct TrackPriorityDescriptor
+{
+    vector<const TrackEntry*> explicitly_excluded;
+};
+
+class TrackPrioritizer
 {
 public:
-    explicit TrackSelector(const string& rules_file_path);
+    explicit TrackPrioritizer(const string& rules_file_path);
 
 public:
     const TrackEntry* select_subtitle_track(const Tracks& tracks);

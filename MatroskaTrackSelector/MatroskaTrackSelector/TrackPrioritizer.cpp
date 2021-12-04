@@ -1,6 +1,6 @@
-#include "TrackSelector.h"
+#include "TrackPrioritizer.h"
 
-TrackSelector::TrackSelector(const string& rules_file_path)
+TrackPrioritizer::TrackPrioritizer(const string& rules_file_path)
 {
     static const string_view SUBTILE_RULES_HEADER = "======================== Subtitle track selection rules ========================";
     static const string_view AUDIO_RULES_HEADER = "========================= Audio track selection rules ==========================";
@@ -67,17 +67,17 @@ TrackSelector::TrackSelector(const string& rules_file_path)
     }
 }
 
-const TrackEntry* TrackSelector::select_subtitle_track(const Tracks& tracks)
+const TrackEntry* TrackPrioritizer::select_subtitle_track(const Tracks& tracks)
 {
     return m_subtitle_selection_rules.select_track(tracks);
 }
 
-const TrackEntry* TrackSelector::select_audio_track(const Tracks& tracks)
+const TrackEntry* TrackPrioritizer::select_audio_track(const Tracks& tracks)
 {
     return m_audio_selection_rules.select_track(tracks);
 }
 
-const TrackEntry* TrackSelector::TrackSelectionRules::select_track(const Tracks& tracks)
+const TrackEntry* TrackPrioritizer::TrackSelectionRules::select_track(const Tracks& tracks)
 {
     vector<const TrackEntry*> selected_tracks;
     vector<const TrackEntry*> tmp;
