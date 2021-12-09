@@ -120,7 +120,7 @@
     <ClInclude Include="TrackPrioritizer.h">
       <Filter>TrackPrioritizer</Filter>
     </ClInclude>
-    <ClInclude Include="ConsoleColor.h">
+    <ClInclude Include="ConsoleUtils.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

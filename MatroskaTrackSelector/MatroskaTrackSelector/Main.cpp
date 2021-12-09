@@ -1,3 +1,5 @@
+﻿#include <windows.h>
+
 #include "EbmlVintUT.h"
 #include "BasicSharedPtrUT.h"
 #include "EbmlParserUT.h"
@@ -17,6 +19,9 @@ int wmain(int argc, wchar_t* argv[])
     // Unreferenced
     argc;
     argv;
+
+    // This is required for ConsoleUtils::print_table
+    SetConsoleOutputCP(CP_UTF8);
 
     //EbmlVintUT::run_tests();
     //BasicSharedPtrUT::run_tests();
