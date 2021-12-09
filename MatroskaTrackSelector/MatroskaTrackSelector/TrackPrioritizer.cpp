@@ -83,7 +83,6 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::select_track(cons
     bool passed_current_test;
     vector<const TrackEntry*> container_1;
     vector<const TrackEntry*> container_2;
-
    
     // Select tracks whose name doesn't match any of the exclude-keywords
     for (const TrackEntry& current_track : tracks)
@@ -143,7 +142,7 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::select_track(cons
     {
         if (current_track->language == language)
         {
-            result.perfect.push_back(current_track);
+            result.top_priority.push_back(current_track);
         }
         else
         {
@@ -156,11 +155,11 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::select_track(cons
 
 const TrackEntry* TrackPriorityDescriptor::get_most_eligible_track() const
 {
-    if (!perfect.empty())
-        return perfect[0];
+    if (!top_priority.empty())
+        return top_priority[0];
 
     if (!unmatching_language.empty())
-        return perfect[0];
+        return top_priority[0];
 
     if (!not_included.empty())
         return not_included[0];

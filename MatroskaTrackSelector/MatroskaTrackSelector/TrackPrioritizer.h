@@ -26,7 +26,7 @@ public:
     vector<const TrackEntry*> explicitly_excluded;  // Failed test 1
     vector<const TrackEntry*> not_included;         // Passed test 1 and failed test 2
     vector<const TrackEntry*> unmatching_language;  // Passed tests 1, 2 and failed test 3
-    vector<const TrackEntry*> perfect;              // Passed all 3 tests
+    vector<const TrackEntry*> top_priority;         // Passed all 3 tests
 };
 
 class TrackPrioritizer
