@@ -169,6 +169,7 @@
     </ClInclude>
     <ClInclude Include="BasicSharedPtrUT.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="ConsoleColor.h" />
     <ClInclude Include="DefaultTrackSetterHandlers.h" />
     <ClInclude Include="EbmlElement.h" />
     <ClInclude Include="EbmlElementLength.h" />

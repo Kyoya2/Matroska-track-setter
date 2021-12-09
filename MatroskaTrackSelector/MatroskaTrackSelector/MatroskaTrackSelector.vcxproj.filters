@@ -120,5 +120,8 @@
     <ClInclude Include="TrackPrioritizer.h">
       <Filter>TrackPrioritizer</Filter>
     </ClInclude>
+    <ClInclude Include="ConsoleColor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
