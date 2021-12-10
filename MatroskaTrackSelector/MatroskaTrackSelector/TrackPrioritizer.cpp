@@ -67,17 +67,17 @@ TrackPrioritizer::TrackPrioritizer(const string& rules_file_path)
     }
 }
 
-TrackPriorityDescriptor TrackPrioritizer::select_subtitle_track(const Tracks& tracks)
+TrackPriorityDescriptor TrackPrioritizer::get_subtitle_priorities(const Tracks& tracks) const
 {
-    return m_subtitle_selection_rules.select_track(tracks);
+    return m_subtitle_selection_rules.get_track_priorities(tracks);
 }
 
-TrackPriorityDescriptor TrackPrioritizer::select_audio_track(const Tracks& tracks)
+TrackPriorityDescriptor TrackPrioritizer::get_audio_priorities(const Tracks& tracks) const
 {
-    return m_audio_selection_rules.select_track(tracks);
+    return m_audio_selection_rules.get_track_priorities(tracks);
 }
 
-TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::select_track(const Tracks& tracks)
+TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorities(const Tracks& tracks) const
 {
     TrackPriorityDescriptor result;
     bool passed_current_test;

@@ -16,6 +16,6 @@ namespace TrackParserUT
 
         TrackPrioritizer ts("..\\..\\Track selection rules.txt");
 
-        ts.select_subtitle_track(subs);
+        ts.get_subtitle_priorities(subs);
     }
 }

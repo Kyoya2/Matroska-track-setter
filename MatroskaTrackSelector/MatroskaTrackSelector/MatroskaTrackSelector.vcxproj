@@ -104,6 +104,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)..\Track selection rules.txt" /Y "$(OutputPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -124,6 +127,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)..\Track selection rules.txt" /Y "$(OutputPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -139,6 +145,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)..\Track selection rules.txt" /Y "$(OutputPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -159,6 +168,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)..\Track selection rules.txt" /Y "$(OutputPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Utils\MatroskaElementSpecification.template.h">
@@ -182,6 +194,7 @@
     <ClInclude Include="TrackManager.h" />
     <ClInclude Include="TrackParserUT.h" />
     <ClInclude Include="TrackPrioritizer.h" />
+    <ClInclude Include="InteractiveTrackSelector.h" />
     <ClInclude Include="UTCommon.h" />
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +207,7 @@
     <ClCompile Include="TrackEntry.cpp" />
     <ClCompile Include="TrackManager.cpp" />
     <ClCompile Include="TrackPrioritizer.cpp" />
+    <ClCompile Include="InteractiveTrackSelector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

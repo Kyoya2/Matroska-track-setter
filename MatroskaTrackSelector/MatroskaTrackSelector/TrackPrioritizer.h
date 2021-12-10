@@ -35,8 +35,8 @@ public:
     explicit TrackPrioritizer(const string& rules_file_path);
 
 public:
-    TrackPriorityDescriptor select_subtitle_track(const Tracks& tracks);
-    TrackPriorityDescriptor select_audio_track(const Tracks& tracks);
+    TrackPriorityDescriptor get_subtitle_priorities(const Tracks& tracks) const;
+    TrackPriorityDescriptor get_audio_priorities(const Tracks& tracks) const;
 
 PRIVATE:
     struct TrackSelectionRules
@@ -50,7 +50,7 @@ PRIVATE:
         TrackSelectionRules(TrackSelectionRules&&) = default;
 
     public:
-        TrackPriorityDescriptor select_track(const Tracks& tracks);
+        TrackPriorityDescriptor get_track_priorities(const Tracks& tracks) const;
 
         string language;
         vector<std::regex> include_keywords;

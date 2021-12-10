@@ -34,6 +34,9 @@
     <Filter Include="TrackPrioritizer">
       <UniqueIdentifier>{b0366838-35cf-4828-94e1-c3e77ef5339c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Track management\InteractiveTrackSelector">
+      <UniqueIdentifier>{c99096bc-a4fd-4622-b219-73550fd88a71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -60,6 +63,9 @@
     </ClCompile>
     <ClCompile Include="TrackPrioritizer.cpp">
       <Filter>TrackPrioritizer</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractiveTrackSelector.cpp">
+      <Filter>Track management\InteractiveTrackSelector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="ConsoleUtils.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractiveTrackSelector.h">
+      <Filter>Track management\InteractiveTrackSelector</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
