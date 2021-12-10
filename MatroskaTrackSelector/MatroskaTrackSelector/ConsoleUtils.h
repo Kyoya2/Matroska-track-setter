@@ -23,7 +23,7 @@
 
 DECL_EXCEPTION(InvalidTableContent);
 
-namespace ConsoleColor
+namespace ConsoleAttributes
 {
     static const string_view BlackFG         = "\x1b[30m";
     static const string_view BlackBG         = "\x1b[40m";
@@ -57,6 +57,8 @@ namespace ConsoleColor
     static const string_view LightCyanBG     = "\x1b[106m";
     static const string_view WhiteFG         = "\x1b[97m";
     static const string_view WhiteBG         = "\x1b[107m";
+    static const string_view Underline       = "\x1b[4m";
+    static const string_view NoUnderline     = "\x1b[24m";
 }
 
 namespace ConsoleUtils
