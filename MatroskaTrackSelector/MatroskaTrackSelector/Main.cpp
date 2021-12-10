@@ -14,7 +14,7 @@ namespace BasicSharedPtrStats
 }
 #endif
 
-int wmain(int argc, wchar_t* argv[])
+int main(int argc, char* argv[])
 {
     // Unreferenced
     argc;
