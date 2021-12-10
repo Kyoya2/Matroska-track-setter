@@ -82,25 +82,25 @@ TrackPrioritizer::TrackPrioritizer(const string& rules_file_path)
     }
 }
 
-TrackPriorityDescriptor TrackPrioritizer::get_subtitle_priorities(const Tracks& tracks) const
+TrackPriorityDescriptor TrackPrioritizer::get_subtitle_priorities(Tracks& tracks) const
 {
     return m_subtitle_selection_rules.get_track_priorities(tracks);
 }
 
-TrackPriorityDescriptor TrackPrioritizer::get_audio_priorities(const Tracks& tracks) const
+TrackPriorityDescriptor TrackPrioritizer::get_audio_priorities(Tracks& tracks) const
 {
     return m_audio_selection_rules.get_track_priorities(tracks);
 }
 
-TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorities(const Tracks& tracks) const
+TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorities(Tracks& tracks) const
 {
     TrackPriorityDescriptor result;
     bool passed_current_test;
-    vector<const TrackEntry*> container_1;
-    vector<const TrackEntry*> container_2;
+    vector<TrackEntry*> container_1;
+    vector<TrackEntry*> container_2;
    
     // Select tracks whose name doesn't match any of the exclude-keywords
-    for (const TrackEntry& current_track : tracks)
+    for (TrackEntry& current_track : tracks)
     {
         // In any case, fill 'container_2' with pointers to ALL tracks
         container_2.push_back(&current_track);
@@ -128,7 +128,7 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorit
     container_2.clear();
 
     // Select tracks whose name matches any of the include-keywords
-    for (const TrackEntry* current_track : container_1)
+    for (TrackEntry* current_track : container_1)
     {
         passed_current_test = false;
         for (const std::regex& include_keyword : include_keywords)
@@ -153,7 +153,7 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorit
     container_1.clear();
 
     // Select tracks whose language matches the language rule
-    for (const TrackEntry* current_track : container_2)
+    for (TrackEntry* current_track : container_2)
     {
         if (current_track->language == language)
         {
@@ -168,13 +168,13 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorit
     return result;
 }
 
-const TrackEntry* TrackPriorityDescriptor::get_most_eligible_track() const
+TrackEntry* TrackPriorityDescriptor::get_most_eligible_track() const
 {
     if (!top_priority.empty())
         return top_priority[0];
 
     if (!unmatching_language.empty())
-        return top_priority[0];
+        return unmatching_language[0];
 
     if (!not_included.empty())
         return not_included[0];

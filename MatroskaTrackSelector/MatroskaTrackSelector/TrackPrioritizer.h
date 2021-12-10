@@ -35,13 +35,13 @@ public:
 
 public:
     // Return the first track from the category that passed the most tests
-    const TrackEntry* get_most_eligible_track() const;
+    TrackEntry* get_most_eligible_track() const;
 
 public:
-    vector<const TrackEntry*> explicitly_excluded;  // Failed test 1
-    vector<const TrackEntry*> not_included;         // Passed test 1 and failed test 2
-    vector<const TrackEntry*> unmatching_language;  // Passed tests 1, 2 and failed test 3
-    vector<const TrackEntry*> top_priority;         // Passed all 3 tests
+    vector<TrackEntry*> explicitly_excluded;  // Failed test 1
+    vector<TrackEntry*> not_included;         // Passed test 1 and failed test 2
+    vector<TrackEntry*> unmatching_language;  // Passed tests 1, 2 and failed test 3
+    vector<TrackEntry*> top_priority;         // Passed all 3 tests
 };
 
 class TrackPrioritizer
@@ -50,8 +50,8 @@ public:
     explicit TrackPrioritizer(const string& rules_file_path);
 
 public:
-    TrackPriorityDescriptor get_subtitle_priorities(const Tracks& tracks) const;
-    TrackPriorityDescriptor get_audio_priorities(const Tracks& tracks) const;
+    TrackPriorityDescriptor get_subtitle_priorities(Tracks& tracks) const;
+    TrackPriorityDescriptor get_audio_priorities(Tracks& tracks) const;
 
 PRIVATE:
     struct TrackSelectionRules
@@ -65,7 +65,7 @@ PRIVATE:
         TrackSelectionRules(TrackSelectionRules&&) = default;
 
     public:
-        TrackPriorityDescriptor get_track_priorities(const Tracks& tracks) const;
+        TrackPriorityDescriptor get_track_priorities(Tracks& tracks) const;
 
         string language;
         vector<std::regex> include_keywords;

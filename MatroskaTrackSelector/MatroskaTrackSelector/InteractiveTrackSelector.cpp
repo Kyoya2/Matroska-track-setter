@@ -23,8 +23,8 @@ void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream&
 {
     TrackManager track_manager(file_stream);
 
-    const Tracks& subtitle_tracks = track_manager.get_subtitle_tracks();
-    const Tracks& audio_tracks = track_manager.get_audio_tracks();
+    Tracks& subtitle_tracks = track_manager.get_subtitle_tracks();
+    Tracks& audio_tracks = track_manager.get_audio_tracks();
 
     track_manager.set_default_tracks(
         _s_select_default_track_interactively(

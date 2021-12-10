@@ -27,8 +27,8 @@ public:
     explicit TrackManager(std::iostream& stream);
 
 public:
-    const Tracks& get_subtitle_tracks() const { return m_subtitle_tracks;  }
-    const Tracks& get_audio_tracks() const { return m_audio_tracks;  }
+    Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }
+    Tracks& get_audio_tracks() { return m_audio_tracks;  }
 
     void set_default_tracks(TrackEntry* subtitle_track, TrackEntry* audio_track);
 
