@@ -31,7 +31,8 @@ public:
     TrackEntry(const TrackEntry&) = delete;
     TrackEntry& operator=(const TrackEntry&) = delete;
 
-    TrackEntry(TrackEntry&& other) = default;
+    TrackEntry(TrackEntry&& other) noexcept = default;
+    TrackEntry& operator=(TrackEntry&& other) noexcept = default;
 
 public:
     void load_values();
