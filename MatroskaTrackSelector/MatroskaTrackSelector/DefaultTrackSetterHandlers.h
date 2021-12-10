@@ -21,25 +21,32 @@
 #include "EbmlElement.h"
 #include "TrackEntry.h"
 
-// See TrackManager::_s_set_default_track for signature documentation
 // Return value is true if the conditions for the case have been satisfied and the track has been set as the default
+// 
+// intermediate_storage_container is basically a container that's shared between all handlers and is intended for storing
+// stuff that multiple handlers cant use. In this case, this container will be empty until case 5. Then case 6 will insert
+// both track sets into this container and sort them by their distance from default_track. This will allow the rest of the
+// case handlers to use the sorted container instead of each handler sorting it each time
+//
+// See TrackManager::_s_set_default_track for the signature documentation
 using DefaultTrackSetterHandler = bool(*)(
     Tracks& tracks,
     TrackEntry* default_track,
     Tracks& other_tracks,
-    const TrackEntry* untouchable_track);
+    const TrackEntry* untouchable_track,
+    Tracks& intermediate_storage_container);
 
 namespace DefaultTrackSetterHandlers
 {
-    bool case_1(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_2(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_3(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_4(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_5(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
-    bool case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track);
+    bool case_1(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_2(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_3(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_4(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_5(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
+    bool case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container);
 }
 
 constexpr std::array<DefaultTrackSetterHandler, 9> DEAFULT_TRACK_SETTER_HANDLERS{

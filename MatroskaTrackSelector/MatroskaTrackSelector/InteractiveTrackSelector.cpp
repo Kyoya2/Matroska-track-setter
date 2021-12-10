@@ -15,8 +15,8 @@
  */
 #include "InteractiveTrackSelector.h"
 
-InteractiveTrackSelector::InteractiveTrackSelector(const string& track_selection_rules_file) :
-    m_track_prioritizer(track_selection_rules_file)
+InteractiveTrackSelector::InteractiveTrackSelector(const TrackPrioritizer& track_prioritizer) :
+    m_track_prioritizer(track_prioritizer)
 {}
 
 void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream& file_stream, const wstring& file_name)
@@ -28,6 +28,7 @@ void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream&
 
     track_manager.set_default_tracks(
         _s_select_default_track_interactively(
+            file_name,
             subtitle_tracks,
             "Subtitle",
             m_track_prioritizer.get_subtitle_priorities(subtitle_tracks),
@@ -35,6 +36,7 @@ void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream&
             m_single_subtitle_choices),
 
         _s_select_default_track_interactively(
+            file_name,
             audio_tracks,
             "Audio",
             m_track_prioritizer.get_audio_priorities(audio_tracks),
@@ -43,6 +45,7 @@ void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream&
 }
 
 TrackEntry* InteractiveTrackSelector::_s_select_default_track_interactively(
+    const wstring& file_name,
     const Tracks& tracks,
     const string& track_set_name,
     const TrackPriorityDescriptor& track_priorities,

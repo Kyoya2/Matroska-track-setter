@@ -29,7 +29,7 @@ namespace TrackParserUT
 
         Tracks& subs = track_parser.get_subtitle_tracks();
 
-        TrackPrioritizer ts("..\\..\\..\\..\\..\\Track selection rules.txt");
+        TrackPrioritizer ts("Track selection rules.txt");
 
         ts.get_subtitle_priorities(subs);
     }

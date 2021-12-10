@@ -92,7 +92,9 @@ void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement
 
 void TrackManager::set_default_tracks(TrackEntry* subtitle_track_index, TrackEntry* audio_track_index)
 {
+    DEBUG_PRINT_LINE(endl << "Setting default subtitle track");
     _s_set_default_track(m_subtitle_tracks, subtitle_track_index, m_audio_tracks, audio_track_index);
+    DEBUG_PRINT_LINE("Setting default audio track");
     _s_set_default_track(m_audio_tracks, audio_track_index, m_subtitle_tracks, subtitle_track_index);
 }
 
@@ -146,15 +148,17 @@ void TrackManager::_s_set_default_track(
     }
 
     // Try all handlers until one succeeds
+    Tracks intermediate_storage_container;
     bool success = false;
     for (auto handler : DEAFULT_TRACK_SETTER_HANDLERS)
     {
-        if (handler(tracks, default_track, other_tracks, untouchable_track))
+        if (handler(tracks, default_track, other_tracks, untouchable_track, intermediate_storage_container))
         {
             success = true;
             break;
         }
     }
+
 
     if (!success)
     {

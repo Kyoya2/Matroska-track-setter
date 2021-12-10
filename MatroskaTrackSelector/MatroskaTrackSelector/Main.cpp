@@ -17,6 +17,8 @@
 #include <conio.h>
 #include "ConsoleUtils.h"
 #include "InteractiveTrackSelector.h"
+#include "TrackManager.h"
+#include "TrackPrioritizer.h"
 
 #ifdef _DEBUG
 #include "EbmlVintUT.h"
@@ -32,7 +34,14 @@ namespace BasicSharedPtrStats
 }
 #endif
 
-std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
+static string get_current_exe_directory()
+{
+    char buffer[MAX_PATH] = { 0 };
+    GetModuleFileNameA(nullptr, buffer, MAX_PATH);
+    return string(buffer, string_view(buffer).find_last_of("\\/") + 1);
+}
+
+static std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
 {
     vector<wchar_t> file_names(0x4000); // Anime file names can get quite large so we put then on the heap
     file_names[0] = '\0';
@@ -72,14 +81,27 @@ std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     return std::make_pair(std::move(parent_directory), std::move(file_name_list));
 }
 
-void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files)
+static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizer& track_prioritizer)
 {
+    for (const wstring& file_name : files.second)
+    {
+        std::fstream current_file(
+            files.first + file_name,
+            std::ios_base::binary | std::ios_base::in | std::ios::out);
 
+        TrackManager track_manager(current_file);
+        track_manager.set_default_tracks(
+            track_prioritizer.get_subtitle_priorities(track_manager.get_subtitle_tracks()).get_most_eligible_track(),
+            track_prioritizer.get_subtitle_priorities(track_manager.get_subtitle_tracks()).get_most_eligible_track()
+        );
+    }
 }
 
-void do_manual_selection(const std::pair<wstring, vector<wstring>>& files)
+static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizer& track_prioritizer)
 {
-    InteractiveTrackSelector track_selector("Track selection rules.txt");
+    throw 1;
+
+    InteractiveTrackSelector track_selector(track_prioritizer);
     for (const wstring& file_name : files.second)
     {
         std::fstream current_file(
@@ -93,21 +115,20 @@ void do_manual_selection(const std::pair<wstring, vector<wstring>>& files)
 int main(int, char*)
 {
     using namespace ConsoleAttributes;
-
-    bool automatic_selection;
+    auto qweqwe = get_current_exe_directory();
+    bool automatic_selection = false;
     while (true)
     {
         // Credit
-        cout << LightGrayFG << " Matroska track setter by Kyoya2" << endl
+        cout << LightGrayFG << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
             << " GitHub: http://github.com/Kyoya2/Matroska-track-setter/" << endl << endl << WhiteFG;
 
         cout << " Please choose the selection mode:" << endl
             << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic" << endl
             << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual" << endl;
 
-        
         bool valid_input = true;
-        switch (static_cast<char>(_getch() | 32))
+        switch (static_cast<char>(_getch() | 32)) // make lowercase
         {
         case 'a':
             automatic_selection = true;
@@ -128,11 +149,13 @@ int main(int, char*)
             ConsoleUtils::cls();
     }
 
-    auto files_to_process = std::pair<wstring, vector<wstring>>();// prompt_mkv_file_selection_dialog();
+    auto files_to_process = prompt_mkv_file_selection_dialog();
+    TrackPrioritizer track_prioritizer(get_current_exe_directory() + "Track selection rules.txt");
+
     if (automatic_selection)
-        do_automatic_selection(files_to_process);
+        do_automatic_selection(files_to_process, track_prioritizer);
     else
-        do_manual_selection(files_to_process);
+        do_manual_selection(files_to_process, track_prioritizer);
 
     
 #ifndef _DEBUG
