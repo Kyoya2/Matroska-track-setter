@@ -1,4 +1,19 @@
-﻿#include <windows.h>
+﻿/*
+ * Copyright 2021 Kyoya2
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include <windows.h>
 #include "InteractiveTrackSelector.h"
 
 #ifdef _DEBUG
@@ -57,6 +72,8 @@ std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
 
 int main(int, char*)
 {
+    cout << "Matroska track setter by Kyoya2" << endl << "GitHub: http://github.com/Kyoya2/Matroska-track-setter/" << endl << endl;
+
     auto files_to_process = prompt_mkv_file_selection_dialog();
     InteractiveTrackSelector track_selector("Track selection rules.txt");
 
