@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include <windows.h>
+#include <conio.h>
+#include "ConsoleUtils.h"
 #include "InteractiveTrackSelector.h"
 
 #ifdef _DEBUG
@@ -70,31 +72,76 @@ std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     return std::make_pair(std::move(parent_directory), std::move(file_name_list));
 }
 
-int main(int, char*)
+void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files)
 {
-    cout << "Matroska track setter by Kyoya2" << endl << "GitHub: http://github.com/Kyoya2/Matroska-track-setter/" << endl << endl;
 
-    auto files_to_process = prompt_mkv_file_selection_dialog();
+}
+
+void do_manual_selection(const std::pair<wstring, vector<wstring>>& files)
+{
     InteractiveTrackSelector track_selector("Track selection rules.txt");
-
-    for (const wstring& file_name : files_to_process.second)
+    for (const wstring& file_name : files.second)
     {
         std::fstream current_file(
-            files_to_process.first + file_name,
+            files.first + file_name,
             std::ios_base::binary | std::ios_base::in | std::ios::out);
 
         track_selector.select_default_tracks_interactively(current_file, file_name);
     }
+}
 
+int main(int, char*)
+{
+    using namespace ConsoleAttributes;
+
+    bool automatic_selection;
+    while (true)
+    {
+        // Credit
+        cout << LightGrayFG << " Matroska track setter by Kyoya2" << endl
+            << " GitHub: http://github.com/Kyoya2/Matroska-track-setter/" << endl << endl << WhiteFG;
+
+        cout << " Please choose the selection mode:" << endl
+            << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic" << endl
+            << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual" << endl;
+
+        
+        bool valid_input = true;
+        switch (static_cast<char>(_getch() | 32))
+        {
+        case 'a':
+            automatic_selection = true;
+            break;
+
+        case 'm':
+            automatic_selection = false;
+            break;
+
+        default:
+            valid_input = false;
+            break;
+        }
+
+        if (valid_input)
+            break;
+        else
+            ConsoleUtils::cls();
+    }
+
+    auto files_to_process = std::pair<wstring, vector<wstring>>();// prompt_mkv_file_selection_dialog();
+    if (automatic_selection)
+        do_automatic_selection(files_to_process);
+    else
+        do_manual_selection(files_to_process);
+
+    
 #ifndef _DEBUG
-
 #else
     //EbmlVintUT::run_tests();
     //BasicSharedPtrUT::run_tests();
     //EbmlParserUT::run_tests();
     //MatroskaLanguageTagsUT::run_tests();
     //TrackParserUT::run_tests();
-
 
     WriteLine(endl << "Creations: " << BasicSharedPtrStats::total_creations);
     WriteLine("Deletions: " << BasicSharedPtrStats::total_deletions);
