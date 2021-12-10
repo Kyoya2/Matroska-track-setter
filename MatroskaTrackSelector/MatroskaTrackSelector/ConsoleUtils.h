@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <numeric>
 #include <iomanip>
+#include <cstdlib>
 
 #include "Common.h"
 
@@ -63,6 +64,7 @@ namespace ConsoleAttributes
 
 namespace ConsoleUtils
 {
+    inline void cls() { std::system("cls"); }
     static void print_table(string title, vector<string> headers, vector<vector<string>> rows)
     {
         size_t num_columns = headers.size();
