@@ -41,7 +41,7 @@ std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     open_file_name.lpstrFilter = L"MKV files\0*.mkv\0\0";
     open_file_name.nFilterIndex = 1;
     open_file_name.lpstrFile = file_names.data();
-    open_file_name.nMaxFile = file_names.size();
+    open_file_name.nMaxFile = static_cast<DWORD>(file_names.size());
     open_file_name.lpstrTitle = L"Select MKV files to process";
     open_file_name.Flags = OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
     open_file_name.lpstrDefExt = L"mkv";

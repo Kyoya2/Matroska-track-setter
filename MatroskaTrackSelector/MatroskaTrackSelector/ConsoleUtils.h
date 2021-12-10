@@ -78,11 +78,11 @@ namespace ConsoleUtils
             column_widths[col] = headers[col].size();
             for (size_t row = 0; row < rows.size(); ++row)
             {
-                column_widths[col] = std::max(column_widths[col], rows[row][col].size());
+                column_widths[col] = max(column_widths[col], rows[row][col].size());
             }
         }
 
-        size_t table_width = std::accumulate(column_widths.cbegin(), column_widths.cend(), 0) + (num_columns - 1) * 3;
+        size_t table_width = std::accumulate(column_widths.cbegin(), column_widths.cend(), size_t(0)) + (num_columns - 1) * 3;
 
         size_t frame_width;
         string internal_padding; // padding between end of row and frame
