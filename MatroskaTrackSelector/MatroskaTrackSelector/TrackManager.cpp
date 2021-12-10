@@ -159,7 +159,6 @@ void TrackManager::_s_set_default_track(
         }
     }
 
-
     if (!success)
     {
         throw FittingHandlerNotFound();

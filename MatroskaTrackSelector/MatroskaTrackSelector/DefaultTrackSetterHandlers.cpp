@@ -19,7 +19,7 @@
 // Usefull for debugging
 #define DONT_APPLY_TRACK_SELECTION
 
-bool DefaultTrackSetterHandlers::case_1(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, Tracks&)
+bool DefaultTrackSetterHandlers::case_1(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
 {
     if (default_track->has_FlagForced())
     {
@@ -33,7 +33,7 @@ bool DefaultTrackSetterHandlers::case_1(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_2(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, Tracks&)
+bool DefaultTrackSetterHandlers::case_2(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
 {
     // If all tracks have FlagDefault
     if (std::all_of(tracks.cbegin(), tracks.cend(), [](const TrackEntry& track) { return track.has_FlagDefault(); }))
@@ -49,7 +49,7 @@ bool DefaultTrackSetterHandlers::case_2(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_3(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, Tracks&)
+bool DefaultTrackSetterHandlers::case_3(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
 {
     // Make sure that all non-default tracks have FlagDefault
     for (const TrackEntry& track : tracks)
@@ -64,7 +64,7 @@ bool DefaultTrackSetterHandlers::case_3(Tracks& tracks, TrackEntry* default_trac
     return true;
 }
 
-bool DefaultTrackSetterHandlers::case_4(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, Tracks&)
+bool DefaultTrackSetterHandlers::case_4(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
 {
     if (default_track->has_Language() && default_track->has_LanguageIETF())
     {
@@ -83,7 +83,7 @@ bool DefaultTrackSetterHandlers::case_4(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_5(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, Tracks&)
+bool DefaultTrackSetterHandlers::case_5(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
 {
     if ((default_track->language == "English") &&
         (default_track->has_Language() || default_track->has_LanguageIETF()))
@@ -112,7 +112,40 @@ bool DefaultTrackSetterHandlers::case_5(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
+{
+    // place both track sets in intermediate_storage_container
+    for (TrackEntry& track : tracks)
+    {
+        intermediate_storage_container.push_back(&track);
+    }
+    for (TrackEntry& track : other_tracks)
+    {
+        intermediate_storage_container.push_back(&track);
+    }
+
+    // Sort the storage container by the distance of each track from the default track
+    int64_t default_track_offset = static_cast<int64_t>(default_track->track_element->get_offset());
+    int64_t default_track_end_offset = default_track_offset + default_track->track_element->get_total_size();
+    std::sort(
+        intermediate_storage_container.begin(),
+        intermediate_storage_container.end(),
+        [default_track_offset](TrackEntry* first, TrackEntry* second)
+        {
+            return std::abs(
+                       static_cast<int64_t>(
+                           first->track_element->get_offset() - default_track_offset)) <
+                   std::abs(
+                       static_cast<int64_t>(
+                           second->track_element->get_offset() - default_track_offset));
+        });
+#ifndef DONT_APPLY_TRACK_SELECTION
+
+#endif
+    return false;
+}
+
+bool DefaultTrackSetterHandlers::case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
 {
 
 #ifndef DONT_APPLY_TRACK_SELECTION
@@ -121,7 +154,7 @@ bool DefaultTrackSetterHandlers::case_6(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
 {
 
 #ifndef DONT_APPLY_TRACK_SELECTION
@@ -130,16 +163,7 @@ bool DefaultTrackSetterHandlers::case_7(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container)
-{
-
-#ifndef DONT_APPLY_TRACK_SELECTION
-
-#endif
-    return false;
-}
-
-bool DefaultTrackSetterHandlers::case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, Tracks& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
 {
 
 #ifndef DONT_APPLY_TRACK_SELECTION
