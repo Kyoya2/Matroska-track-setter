@@ -30,23 +30,19 @@
 //
 // See TrackManager::_s_set_default_track for the signature documentation
 using DefaultTrackSetterHandler = bool(*)(
-    Tracks& tracks,
-    TrackEntry* default_track,
-    Tracks& other_tracks,
-    const TrackEntry* untouchable_track,
-    vector<TrackEntry*>& intermediate_storage_container);
+    vector<TrackEntry*>& tracks,
+    TrackEntry* default_track);
 
 namespace DefaultTrackSetterHandlers
 {
-    bool case_1(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_2(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_3(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_4(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_5(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
-    bool case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container);
+    bool case_1(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_2(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_3(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_4(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_5(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_6(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_7(vector<TrackEntry*>& tracks, TrackEntry* default_track);
+    bool case_8(vector<TrackEntry*>& tracks, TrackEntry* default_track);
 }
 
 constexpr std::array<DefaultTrackSetterHandler, 9> DEAFULT_TRACK_SETTER_HANDLERS{
@@ -57,6 +53,5 @@ constexpr std::array<DefaultTrackSetterHandler, 9> DEAFULT_TRACK_SETTER_HANDLERS
     DefaultTrackSetterHandlers::case_5,
     DefaultTrackSetterHandlers::case_6,
     DefaultTrackSetterHandlers::case_7,
-    DefaultTrackSetterHandlers::case_8,
-    DefaultTrackSetterHandlers::case_9
+    DefaultTrackSetterHandlers::case_8
 };

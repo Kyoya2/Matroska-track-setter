@@ -23,16 +23,15 @@ Considerations for selecting one of the two methods:
 
 Preferred ways for making a desired track selected bu the player by default, sorted by priority:
 1) If the desired track already has FF, set it to 1.
-2) If all tracks have a FD element, update them such that FD=1 for the desired track and FD=0 for all other tracks.
-3) If all tracks except the desired track have a FD element, set them all to 0.
-4) If the desired track has both 'Language' and 'LanguageIETF' elements, convert 'Language' to FF. That should
+2) If all tracks except the desired track have a FD element, set them all to 0. If the desired track has an FD, set it to 1.
+3) If the desired track has both 'Language' and 'LanguageIETF' elements, convert 'Language' to FF. That should
     leave more than 2 extra bytes so that the rest can be converted to a Void element.
-5) If the desired track has either a 'Language' or 'LanguageIETF' set to english, overwrite it with FF
-6) If another track has 'FF' and the current track can contain an extra 4 bytes without expanding the encoding of the
+4) If the desired track has either a 'Language' or 'LanguageIETF' set to english, overwrite it with FF
+5) If another track has 'FF' and the current track can contain an extra 4 bytes without expanding the encoding of the
     size VINT, move it to the current track.
-7) Try step 4 on the closest track and then step 6.
-8) Try step 5 on the closest track and then step 6.
-9) Take some bytes from the closest top-level Void element and add a FF element to the desired track (set it to 1).
+6) Try step 4 on the closest track and then step 6.
+7) Try step 5 on the closest track and then step 6.
+8) Take some bytes from the closest top-level Void element and add a FF element to the desired track (set it to 1).
 
 When chosing any of the above options, remember to ALWAYS set FF of other tracks (if they exist) to 0.
 

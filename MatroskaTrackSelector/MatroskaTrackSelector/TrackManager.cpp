@@ -26,7 +26,9 @@ TrackManager::TrackManager(std::iostream& stream)
     }
 
     auto current_top_level_element = segment_element->get_first_child();
+
     BasicSharedPtr<EbmlElement> last_void_element = nullptr;
+    EbmlElementIDType previous_element_id = 0;
 
     // Iterate over all top-level elements
     while (true)
@@ -42,7 +44,8 @@ TrackManager::TrackManager(std::iostream& stream)
         case Tracks_ID:
             DEBUG_PRINT_LINE("Encountered a Tracks element");
             // The last seen Void element is the closest Void element that appears before the Tracks element
-            m_void_before_tracks = last_void_element;
+            if (previous_element_id == Void_ID)
+                m_void_before_tracks = last_void_element;
             _load_tracks(current_top_level_element);
             break;
 
@@ -51,12 +54,14 @@ TrackManager::TrackManager(std::iostream& stream)
             last_void_element = current_top_level_element;
             // If the tracks have already been loaded and the closes Void element that comes after the Tracks
             // element wasn't loaded. Set it to be the current Void element.
-            if ((!m_audio_tracks.empty() || !m_subtitle_tracks.empty()) && m_void_after_tracks.is_null())
+            if ((previous_element_id == Tracks_ID) && m_void_after_tracks.is_null())
             {
                 m_void_after_tracks = last_void_element;
             }
             break;
         }
+
+        previous_element_id = current_top_level_element->get_id().get_value();
 
         if (current_top_level_element->is_last())
             break;
@@ -147,12 +152,36 @@ void TrackManager::_s_set_default_track(
         }
     }
 
-    // Try all handlers until one succeeds
-    vector<TrackEntry*> intermediate_storage_container;
-    bool success = false;
-    for (auto handler : DEAFULT_TRACK_SETTER_HANDLERS)
+    vector<TrackEntry*> working_state;
+    for (TrackEntry& track : tracks)
     {
-        if (handler(tracks, default_track, other_tracks, untouchable_track, intermediate_storage_container))
+        if (&track != default_track)
+            working_state.push_back(&track);
+    }
+
+    bool success = false;
+    for (size_t i = 0; i < DEAFULT_TRACK_SETTER_HANDLERS.size(); ++i)
+    {
+        if (5 == i)
+        {
+            for (TrackEntry& track : other_tracks)
+            {
+                if (&track != untouchable_track)
+                    working_state.push_back(&track);
+            }
+
+            // Sort the tracks by their distance from the default track
+            std::sort(
+                working_state.begin(),
+                working_state.end(),
+                [default_track](TrackEntry* first, TrackEntry* second)
+                {
+                    return default_track->track_element->get_distance_from(first->track_element) <
+                        default_track->track_element->get_distance_from(second->track_element);
+                });
+        }
+
+        if (DEAFULT_TRACK_SETTER_HANDLERS[i](working_state, default_track))
         {
             success = true;
             break;

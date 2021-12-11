@@ -19,7 +19,18 @@
 // Usefull for debugging
 #define DONT_APPLY_TRACK_SELECTION
 
-bool DefaultTrackSetterHandlers::case_1(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
+// Returns true if a track element can be expanded by 4 bytes to contain a new FlagForced element
+// so that the elements' encoded size doesn't grow
+static bool can_expand_to_contain_ff(const TrackEntry* track)
+{
+    static constexpr uint32_t FF_SIZE = 4;
+    return EbmlElementLength(
+        track->track_element->get_data_length().get_value() + FF_SIZE
+    ).get_encoded_size() ==
+        track->track_element->get_data_length().get_encoded_size();
+}
+
+bool DefaultTrackSetterHandlers::case_1(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
     if (default_track->has_FlagForced())
     {
@@ -33,15 +44,16 @@ bool DefaultTrackSetterHandlers::case_1(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_2(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
+bool DefaultTrackSetterHandlers::case_2(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
     // If all tracks have FlagDefault
-    if (std::all_of(tracks.cbegin(), tracks.cend(), [](const TrackEntry& track) { return track.has_FlagDefault(); }))
+    if (std::all_of(tracks.cbegin(), tracks.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
     {
         DEBUG_PRINT_LINE("The current track set is eligible for case 2");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
-        default_track->set_FlagDefault(true);
+        if (default_track->has_FlagDefault())
+            default_track->set_FlagDefault(true);
 #endif
         return true;
     }
@@ -49,26 +61,11 @@ bool DefaultTrackSetterHandlers::case_2(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_3(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
-{
-    // Make sure that all non-default tracks have FlagDefault
-    for (const TrackEntry& track : tracks)
-    {
-        if ((&track != default_track) && !track.has_FlagDefault())
-        {
-            return false;
-        }
-    }
-
-    DEBUG_PRINT_LINE("The current track set is eligible for case 3");
-    return true;
-}
-
-bool DefaultTrackSetterHandlers::case_4(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
+bool DefaultTrackSetterHandlers::case_3(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
     if (default_track->has_Language() && default_track->has_LanguageIETF())
     {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 4");
+        DEBUG_PRINT_LINE("The current track set is eligible for case 3");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
         default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
@@ -83,15 +80,14 @@ bool DefaultTrackSetterHandlers::case_4(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_5(Tracks& tracks, TrackEntry* default_track, Tracks&, const TrackEntry*, vector<TrackEntry*>&)
+bool DefaultTrackSetterHandlers::case_4(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
     if ((default_track->language == "English") &&
         (default_track->has_Language() || default_track->has_LanguageIETF()))
     {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 5");
+        DEBUG_PRINT_LINE("The current track set is eligible for case 4");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
-#error
         if (default_track->has_Language())
         {
             default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
@@ -112,34 +108,26 @@ bool DefaultTrackSetterHandlers::case_5(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_6(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
-    // place both track sets in intermediate_storage_container
-    for (TrackEntry& track : tracks)
+    for (TrackEntry* track : tracks)
     {
-        intermediate_storage_container.push_back(&track);
-    }
-    for (TrackEntry& track : other_tracks)
-    {
-        intermediate_storage_container.push_back(&track);
-    }
-
-    // Sort the storage container by the distance of each track from the default track
-    std::sort(
-        intermediate_storage_container.begin(),
-        intermediate_storage_container.end(),
-        [default_track](TrackEntry* first, TrackEntry* second)
+        if (track->has_FlagForced())
         {
-            return default_track->track_element->get_distance_from(first->track_element) <
-                   default_track->track_element->get_distance_from(second->track_element);
-        });
+            DEBUG_PRINT_LINE("The current track set is eligible for case 5");
+
+            // do stuff
 #ifndef DONT_APPLY_TRACK_SELECTION
 
 #endif
+            return true;
+        }
+    }
+
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_7(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_6(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
 
 #ifndef DONT_APPLY_TRACK_SELECTION
@@ -148,7 +136,7 @@ bool DefaultTrackSetterHandlers::case_7(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_8(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_7(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
 
 #ifndef DONT_APPLY_TRACK_SELECTION
@@ -157,7 +145,7 @@ bool DefaultTrackSetterHandlers::case_8(Tracks& tracks, TrackEntry* default_trac
     return false;
 }
 
-bool DefaultTrackSetterHandlers::case_9(Tracks& tracks, TrackEntry* default_track, Tracks& other_tracks, const TrackEntry* untouchable_track, vector<TrackEntry*>& intermediate_storage_container)
+bool DefaultTrackSetterHandlers::case_8(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
 
 #ifndef DONT_APPLY_TRACK_SELECTION
