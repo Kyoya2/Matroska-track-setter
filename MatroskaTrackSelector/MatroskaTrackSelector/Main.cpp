@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define NOMINMAX
 #include <windows.h>
 #include <conio.h>
 #include "ConsoleUtils.h"
@@ -120,12 +121,12 @@ int main(int, char*)
     while (true)
     {
         // Credit
-        cout << LightGrayFG << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
-            << " GitHub: http://github.com/Kyoya2/Matroska-track-setter/" << endl << endl << WhiteFG;
+        cout << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
+            << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl << endl;
 
         cout << " Please choose the selection mode:" << endl
             << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic" << endl
-            << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual" << endl;
+            << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual" << endl << WhiteFG;
 
         bool valid_input = true;
         switch (static_cast<char>(_getch() | 32)) // make lowercase
