@@ -80,7 +80,7 @@ namespace ConsoleUtils
             column_widths[col] = headers[col].size();
             for (size_t row = 0; row < rows.size(); ++row)
             {
-                column_widths[col] = max(column_widths[col], rows[row][col].size());
+                column_widths[col] = std::max(column_widths[col], rows[row][col].size());
             }
         }
 

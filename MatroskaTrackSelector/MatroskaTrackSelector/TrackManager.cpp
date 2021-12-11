@@ -148,7 +148,7 @@ void TrackManager::_s_set_default_track(
     }
 
     // Try all handlers until one succeeds
-    Tracks intermediate_storage_container;
+    vector<TrackEntry*> intermediate_storage_container;
     bool success = false;
     for (auto handler : DEAFULT_TRACK_SETTER_HANDLERS)
     {

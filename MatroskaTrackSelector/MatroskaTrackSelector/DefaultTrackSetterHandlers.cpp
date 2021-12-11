@@ -125,19 +125,13 @@ bool DefaultTrackSetterHandlers::case_6(Tracks& tracks, TrackEntry* default_trac
     }
 
     // Sort the storage container by the distance of each track from the default track
-    int64_t default_track_offset = static_cast<int64_t>(default_track->track_element->get_offset());
-    int64_t default_track_end_offset = default_track_offset + default_track->track_element->get_total_size();
     std::sort(
         intermediate_storage_container.begin(),
         intermediate_storage_container.end(),
-        [default_track_offset](TrackEntry* first, TrackEntry* second)
+        [default_track](TrackEntry* first, TrackEntry* second)
         {
-            return std::abs(
-                       static_cast<int64_t>(
-                           first->track_element->get_offset() - default_track_offset)) <
-                   std::abs(
-                       static_cast<int64_t>(
-                           second->track_element->get_offset() - default_track_offset));
+            return default_track->track_element->get_distance_from(first->track_element) <
+                   default_track->track_element->get_distance_from(second->track_element);
         });
 #ifndef DONT_APPLY_TRACK_SELECTION
 
