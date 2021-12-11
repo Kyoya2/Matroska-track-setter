@@ -203,6 +203,21 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
 }
 
 /******************************************************************************************************/
+/******************************************** Miscellaneous *******************************************/
+/******************************************************************************************************/
+uint64_t EbmlElement::get_distance_from(BasicSharedPtr<EbmlElement> other)
+{
+    if (this->get_offset() < other->get_offset())
+    {
+        return other->get_offset() - this->_get_offset(EbmlOffset::End);
+    }
+    else
+    {
+        return this->get_offset() - other->_get_offset(EbmlOffset::End);
+    }
+}
+
+/******************************************************************************************************/
 /**************************************** Internal Constructors ***************************************/
 /******************************************************************************************************/
 EbmlElement::EbmlElement(std::iostream& stream) :

@@ -89,6 +89,13 @@ public:
     void change_bool_value(bool new_value);
     void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
+   /******************************************************************************************************/
+   /******************************************** Miscellaneous *******************************************/
+   /******************************************************************************************************/
+    // Calculate distance of current elementy from another element
+    // Both elements must be on the same level
+    uint64_t get_distance_from(BasicSharedPtr<EbmlElement> other);
+
 PRIVATE:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
