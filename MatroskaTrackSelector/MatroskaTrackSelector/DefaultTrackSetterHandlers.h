@@ -45,7 +45,7 @@ namespace DefaultTrackSetterHandlers
     bool case_8(vector<TrackEntry*>& tracks, TrackEntry* default_track);
 }
 
-constexpr std::array<DefaultTrackSetterHandler, 9> DEAFULT_TRACK_SETTER_HANDLERS{
+constexpr std::array<DefaultTrackSetterHandler, 8> DEAFULT_TRACK_SETTER_HANDLERS{
     DefaultTrackSetterHandlers::case_1,
     DefaultTrackSetterHandlers::case_2,
     DefaultTrackSetterHandlers::case_3,
