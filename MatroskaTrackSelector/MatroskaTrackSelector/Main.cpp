@@ -122,6 +122,7 @@ static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files
 int main(int, char*)
 {
     using namespace ConsoleAttributes;
+    SetConsoleOutputCP(CP_UTF8);
 
     TrackSelectionMode selection_mode = TrackSelectionMode::NotSelected;
     while (true)

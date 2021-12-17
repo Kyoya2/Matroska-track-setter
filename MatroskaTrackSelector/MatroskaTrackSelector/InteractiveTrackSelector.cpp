@@ -34,7 +34,8 @@ void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream&
             "Subtitle",
             m_track_prioritizer.get_subtitle_priorities(subtitle_tracks),
             m_subtitle_group_choices,
-            m_single_subtitle_choices),
+            m_single_subtitle_choices,
+            m_semi_automatic),
 
         _s_select_default_track_interactively(
             file_name,
@@ -42,7 +43,8 @@ void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream&
             "Audio",
             m_track_prioritizer.get_audio_priorities(audio_tracks),
             m_audio_group_choices,
-            m_single_audio_choices));
+            m_single_audio_choices,
+            m_semi_automatic));
 }
 
 TrackEntry* InteractiveTrackSelector::_s_select_default_track_interactively(
@@ -51,7 +53,8 @@ TrackEntry* InteractiveTrackSelector::_s_select_default_track_interactively(
     const string& track_set_name,
     const TrackPriorityDescriptor& track_priorities,
     const TrackGroupChoices& track_group_choices,
-    const TrackSingleChoices& track_single_choices)
+    const TrackSingleChoices& track_single_choices,
+    const bool semi_automatic)
 {
     return nullptr;
 }

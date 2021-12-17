@@ -47,7 +47,8 @@ private:
         const string& track_set_name,
         const TrackPriorityDescriptor& track_priorities,
         const TrackGroupChoices& track_group_choices,
-        const TrackSingleChoices& track_single_choices
+        const TrackSingleChoices& track_single_choices,
+        const bool semi_automatic
     );
 
 private:
