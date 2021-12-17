@@ -15,8 +15,9 @@
  */
 #include "InteractiveTrackSelector.h"
 
-InteractiveTrackSelector::InteractiveTrackSelector(const TrackPrioritizer& track_prioritizer) :
-    m_track_prioritizer(track_prioritizer)
+InteractiveTrackSelector::InteractiveTrackSelector(const TrackPrioritizer& track_prioritizer, bool semi_automatic) :
+    m_track_prioritizer(track_prioritizer),
+    m_semi_automatic(semi_automatic)
 {}
 
 void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream& file_stream, const wstring& file_name)

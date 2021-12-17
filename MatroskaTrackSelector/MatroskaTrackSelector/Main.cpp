@@ -35,6 +35,14 @@ namespace BasicSharedPtrStats
 }
 #endif
 
+enum class TrackSelectionMode
+{
+    NotSelected,
+    Automatic,
+    SemiAutomatic,
+    Manual
+};
+
 static string get_current_exe_directory()
 {
     char buffer[MAX_PATH] = { 0 };
@@ -98,11 +106,9 @@ static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& fi
     }
 }
 
-static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizer& track_prioritizer)
+static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizer& track_prioritizer, bool semi_automatic)
 {
-    throw 1;
-
-    InteractiveTrackSelector track_selector(track_prioritizer);
+    InteractiveTrackSelector track_selector(track_prioritizer, semi_automatic);
     for (const wstring& file_name : files.second)
     {
         std::fstream current_file(
@@ -116,8 +122,8 @@ static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files
 int main(int, char*)
 {
     using namespace ConsoleAttributes;
-    auto qweqwe = get_current_exe_directory();
-    bool automatic_selection = false;
+
+    TrackSelectionMode selection_mode = TrackSelectionMode::NotSelected;
     while (true)
     {
         // Credit
@@ -125,26 +131,26 @@ int main(int, char*)
             << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl << endl;
 
         cout << " Please choose the selection mode:" << endl
-            << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic" << endl
-            << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual" << endl << WhiteFG;
+            << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic: Choose the most fitting tracks without any user interaction." << endl
+            << " " << Underline << WhiteFG << "S" << LightGrayFG << NoUnderline << "emi-automatic: Requires minimal user interaction" << endl
+            << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual: Requires user interaction" << endl << WhiteFG;
 
-        bool valid_input = true;
-        switch (static_cast<char>(_getch() | 32)) // make lowercase
+        switch (static_cast<char>(_getch() | 0x20)) // make lowercase
         {
         case 'a':
-            automatic_selection = true;
+            selection_mode = TrackSelectionMode::Automatic;
+            break;
+
+        case 's':
+            selection_mode = TrackSelectionMode::SemiAutomatic;
             break;
 
         case 'm':
-            automatic_selection = false;
-            break;
-
-        default:
-            valid_input = false;
+            selection_mode = TrackSelectionMode::Manual;
             break;
         }
 
-        if (valid_input)
+        if (selection_mode != TrackSelectionMode::NotSelected)
             break;
         else
             ConsoleUtils::cls();
@@ -153,11 +159,18 @@ int main(int, char*)
     auto files_to_process = prompt_mkv_file_selection_dialog();
     TrackPrioritizer track_prioritizer(get_current_exe_directory() + "Track selection rules.txt");
 
-    if (automatic_selection)
+    switch (selection_mode) 
+    {
+    case TrackSelectionMode::Automatic:
         do_automatic_selection(files_to_process, track_prioritizer);
-    else
-        do_manual_selection(files_to_process, track_prioritizer);
+        break;
 
+    case TrackSelectionMode::SemiAutomatic:
+        __fallthrough;
+    case TrackSelectionMode::Manual:
+        do_manual_selection(files_to_process, track_prioritizer, (selection_mode == TrackSelectionMode::SemiAutomatic));
+        break;
+    }
     
 #ifndef _DEBUG
 #else
