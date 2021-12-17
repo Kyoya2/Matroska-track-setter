@@ -23,6 +23,7 @@
 #include "Common.h"
 #include "TrackPrioritizer.h"
 #include "TrackManager.h"
+#include "ConsoleUtils.h"
 
 DECL_EXCEPTION(FileSelectionError);
 
@@ -51,7 +52,8 @@ private:
         const bool semi_automatic
     );
 
-    static void _s_print_track_selection_table(const wstring& file_name, const TrackPriorityDescriptor& track_priorities);
+    // Prompts the user to select a
+    static std::pair<const TrackEntry*, size_t> _s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities);
 
 private:
     const TrackPrioritizers& m_track_prioritizers;

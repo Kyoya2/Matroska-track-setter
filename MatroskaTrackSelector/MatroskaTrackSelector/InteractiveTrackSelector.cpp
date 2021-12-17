@@ -55,11 +55,26 @@ TrackEntry* InteractiveTrackSelector::_s_select_default_track_interactively(
     const bool semi_automatic)
 {
     TrackPriorityDescriptor tracks_priority_descriptor = track_prioritizer.get_track_priorities(tracks);
-    _s_print_track_selection_table(file_name, tracks_priority_descriptor);
+    _s_prompt_track_selection(file_name, tracks_priority_descriptor);
     return nullptr;
 }
 
-void InteractiveTrackSelector::_s_print_track_selection_table(const wstring& file_name, const TrackPriorityDescriptor& track_priorities)
+std::pair<const TrackEntry*, size_t> InteractiveTrackSelector::_s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities)
 {
+    using namespace ConsoleAttributes;
+
     static const vector<string> TABLE_HEADERS{ "#", "Name", "Language" };
+
+    static const string_view& EXPLICITLY_EXCLUDED_TRACKS_COLOR = RedFG;
+    static const string_view& NOT_INCLUDED_TRACKS_COLOR = YellowFG;
+    static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = BlueFG;
+    static const string_view& TOP_PRIORITY_TRACKS_COLOR = GreenFG;
+
+    string table_title = (track_priorities.get_most_eligible_track()->track_type == TrackType::Subtitle) ? "Subtitle" : "Audio";
+    
+    table_title += " tracks in " + Utility::wstring_to_string(file_name);
+
+    vector<vector<string>> rows;
+
+    return std::pair<const TrackEntry*, size_t>();
 }
