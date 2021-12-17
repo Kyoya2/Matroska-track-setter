@@ -91,7 +91,7 @@ static std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     return std::make_pair(std::move(parent_directory), std::move(file_name_list));
 }
 
-static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizer& track_prioritizer)
+static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers)
 {
     for (const wstring& file_name : files.second)
     {
@@ -101,15 +101,15 @@ static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& fi
 
         TrackManager track_manager(current_file);
         track_manager.set_default_tracks(
-            track_prioritizer.get_subtitle_priorities(track_manager.get_subtitle_tracks()).get_most_eligible_track(),
-            track_prioritizer.get_subtitle_priorities(track_manager.get_subtitle_tracks()).get_most_eligible_track()
+            track_prioritizers.first.get_track_priorities(track_manager.get_subtitle_tracks()).get_most_eligible_track(),
+            track_prioritizers.second.get_track_priorities(track_manager.get_audio_tracks()).get_most_eligible_track()
         );
     }
 }
 
-static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizer& track_prioritizer, bool semi_automatic)
+static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers, bool semi_automatic)
 {
-    InteractiveTrackSelector track_selector(track_prioritizer, semi_automatic);
+    InteractiveTrackSelector track_selector(track_prioritizers, semi_automatic);
     for (const wstring& file_name : files.second)
     {
         std::fstream current_file(
@@ -159,18 +159,18 @@ int main(int, char*)
     }
 
     auto files_to_process = prompt_mkv_file_selection_dialog();
-    TrackPrioritizer track_prioritizer(get_current_exe_directory() + "Track selection rules.txt");
+    TrackPrioritizers track_prioritizers = TrackPrioritizer::s_from_file(get_current_exe_directory() + "Track selection rules.txt");
 
     switch (selection_mode) 
     {
     case TrackSelectionMode::Automatic:
-        do_automatic_selection(files_to_process, track_prioritizer);
+        do_automatic_selection(files_to_process, track_prioritizers);
         break;
 
     case TrackSelectionMode::SemiAutomatic:
         __fallthrough;
     case TrackSelectionMode::Manual:
-        do_manual_selection(files_to_process, track_prioritizer, (selection_mode == TrackSelectionMode::SemiAutomatic));
+        do_manual_selection(files_to_process, track_prioritizers, (selection_mode == TrackSelectionMode::SemiAutomatic));
         break;
     }
     

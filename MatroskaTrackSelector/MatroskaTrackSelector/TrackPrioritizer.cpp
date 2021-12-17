@@ -16,92 +16,32 @@
  */
 #include "TrackPrioritizer.h"
 
-TrackPrioritizer::TrackPrioritizer(const string& rules_file_path)
+const TrackEntry* TrackPriorityDescriptor::get_most_eligible_track() const
 {
-    static const string_view SUBTILE_RULES_HEADER = "======================== Subtitle track selection rules ========================";
-    static const string_view AUDIO_RULES_HEADER = "========================= Audio track selection rules ==========================";
-    static const string_view LANGUAGE_SPECIFIER = "!LANGUAGE: ";
-    static const string_view INCLUDE_KEYWORDS_SPECIFIER = "!INCLUDE KEYWORDS";
-    static const string_view EXCLUDE_KEYWORDS_SPECIFIER = "!EXCLUDE KEYWORDS";
+    if (!top_priority.empty())
+        return top_priority[0];
 
-    TrackSelectionRules* current_rule_set = nullptr;
-    vector<std::regex>* current_keyword_container = nullptr;
+    if (!unmatching_language.empty())
+        return unmatching_language[0];
 
-    char buffer[0x200];
-    buffer[sizeof(buffer) - 1] = '\0';
+    if (!not_included.empty())
+        return not_included[0];
 
-    std::ifstream rules_file(rules_file_path);
+    if (!explicitly_excluded.empty())
+        return explicitly_excluded[0];
 
-    while (!rules_file.eof())
-    {
-        rules_file.getline(&buffer[0], sizeof(buffer) - 1);
-        string_view current_line = &buffer[0];
-
-        // Skip empty lines and lines that begin with ';'
-        if (current_line.empty() || (current_line[0] == ';'))
-            continue;
-
-        if (SUBTILE_RULES_HEADER == current_line)
-        {
-            current_rule_set = &m_subtitle_selection_rules;
-        }
-        else if (AUDIO_RULES_HEADER == current_line)
-        {
-            current_rule_set = &m_audio_selection_rules;
-        }
-        // The rest of the cases require the current rule set to be set
-        else if (nullptr == current_rule_set)
-        {
-            throw TrackRulesParsingError();
-        }
-        // Check if the current line begins with LANGUAGE_SPECIFIER
-        else if (0 == current_line.rfind(LANGUAGE_SPECIFIER, 0))
-        {
-            current_rule_set->language = current_line.substr(LANGUAGE_SPECIFIER.size());
-        }
-        else if (INCLUDE_KEYWORDS_SPECIFIER == current_line)
-        {
-            current_keyword_container = &current_rule_set->include_keywords;
-        }
-        else if (EXCLUDE_KEYWORDS_SPECIFIER == current_line)
-        {
-            current_keyword_container = &current_rule_set->exclude_keywords;
-        }
-        // The last case requires the current word container to be set
-        else if (nullptr == current_keyword_container)
-        {
-            throw TrackRulesParsingError();
-        }
-        else
-        {
-            // Create a regex that will match any sentence that contains the current line
-            // as whole word. And the match will be case insensitive
-            current_keyword_container->emplace_back(
-                string("\\b") + string(std::move(current_line)) + "\\b",
-                std::regex_constants::icase);
-        }
-    }
+    return nullptr;
 }
 
-TrackPriorityDescriptor TrackPrioritizer::get_subtitle_priorities(Tracks& tracks) const
-{
-    return m_subtitle_selection_rules.get_track_priorities(tracks);
-}
-
-TrackPriorityDescriptor TrackPrioritizer::get_audio_priorities(Tracks& tracks) const
-{
-    return m_audio_selection_rules.get_track_priorities(tracks);
-}
-
-TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorities(Tracks& tracks) const
+TrackPriorityDescriptor TrackPrioritizer::get_track_priorities(const Tracks& tracks) const
 {
     TrackPriorityDescriptor result;
     bool passed_current_test;
-    vector<TrackEntry*> container_1;
-    vector<TrackEntry*> container_2;
-   
+    vector<const TrackEntry*> container_1;
+    vector<const TrackEntry*> container_2;
+
     // Select tracks whose name doesn't match any of the exclude-keywords
-    for (TrackEntry& current_track : tracks)
+    for (const TrackEntry& current_track : tracks)
     {
         // In any case, fill 'container_2' with pointers to ALL tracks
         container_2.push_back(&current_track);
@@ -129,7 +69,7 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorit
     container_2.clear();
 
     // Select tracks whose name matches any of the include-keywords
-    for (TrackEntry* current_track : container_1)
+    for (const TrackEntry* current_track : container_1)
     {
         passed_current_test = false;
         for (const std::regex& include_keyword : include_keywords)
@@ -154,7 +94,7 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorit
     container_1.clear();
 
     // Select tracks whose language matches the language rule
-    for (TrackEntry* current_track : container_2)
+    for (const TrackEntry* current_track : container_2)
     {
         if (current_track->language == language)
         {
@@ -169,19 +109,73 @@ TrackPriorityDescriptor TrackPrioritizer::TrackSelectionRules::get_track_priorit
     return result;
 }
 
-TrackEntry* TrackPriorityDescriptor::get_most_eligible_track() const
+TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)
 {
-    if (!top_priority.empty())
-        return top_priority[0];
+    static const string_view SUBTILE_RULES_HEADER = "======================== Subtitle track selection rules ========================";
+    static const string_view AUDIO_RULES_HEADER = "========================= Audio track selection rules ==========================";
+    static const string_view LANGUAGE_SPECIFIER = "!LANGUAGE: ";
+    static const string_view INCLUDE_KEYWORDS_SPECIFIER = "!INCLUDE KEYWORDS";
+    static const string_view EXCLUDE_KEYWORDS_SPECIFIER = "!EXCLUDE KEYWORDS";
 
-    if (!unmatching_language.empty())
-        return unmatching_language[0];
+    TrackPrioritizer subtitle_prioritizer;
+    TrackPrioritizer audio_prioritizer;
+    TrackPrioritizer* current_prioritizer = nullptr;
+    vector<std::regex>* current_keyword_container = nullptr;
 
-    if (!not_included.empty())
-        return not_included[0];
+    char buffer[0x200];
+    buffer[sizeof(buffer) - 1] = '\0';
 
-    if (!explicitly_excluded.empty())
-        return explicitly_excluded[0];
+    std::ifstream rules_file(rules_file_path);
 
-    return nullptr;
+    while (!rules_file.eof())
+    {
+        rules_file.getline(&buffer[0], sizeof(buffer) - 1);
+        string_view current_line = &buffer[0];
+
+        // Skip empty lines and lines that begin with ';'
+        if (current_line.empty() || (current_line[0] == ';'))
+            continue;
+
+        if (SUBTILE_RULES_HEADER == current_line)
+        {
+            current_prioritizer = &subtitle_prioritizer;
+        }
+        else if (AUDIO_RULES_HEADER == current_line)
+        {
+            current_prioritizer = &audio_prioritizer;
+        }
+        // The rest of the cases require the current rule set to be set
+        else if (nullptr == current_prioritizer)
+        {
+            throw TrackRulesParsingError();
+        }
+        // Check if the current line begins with LANGUAGE_SPECIFIER
+        else if (0 == current_line.rfind(LANGUAGE_SPECIFIER, 0))
+        {
+            current_prioritizer->language = current_line.substr(LANGUAGE_SPECIFIER.size());
+        }
+        else if (INCLUDE_KEYWORDS_SPECIFIER == current_line)
+        {
+            current_keyword_container = &current_prioritizer->include_keywords;
+        }
+        else if (EXCLUDE_KEYWORDS_SPECIFIER == current_line)
+        {
+            current_keyword_container = &current_prioritizer->exclude_keywords;
+        }
+        // The last case requires the current word container to be set
+        else if (nullptr == current_keyword_container)
+        {
+            throw TrackRulesParsingError();
+        }
+        else
+        {
+            // Create a regex that will match any sentence that contains the current line
+            // as whole word. And the match will be case insensitive
+            current_keyword_container->emplace_back(
+                string("\\b") + string(std::move(current_line)) + "\\b",
+                std::regex_constants::icase);
+        }
+    }
+
+    return std::make_pair(std::move(subtitle_prioritizer), std::move(audio_prioritizer));
 }

@@ -29,7 +29,7 @@ DECL_EXCEPTION(FileSelectionError);
 class InteractiveTrackSelector
 {
 public:
-    InteractiveTrackSelector(const TrackPrioritizer& track_prioritizer, bool semi_automatic = true);
+    InteractiveTrackSelector(const TrackPrioritizers& track_prioritizers, bool semi_automatic = true);
 
     InteractiveTrackSelector(const InteractiveTrackSelector&) = delete;
     InteractiveTrackSelector& operator=(const InteractiveTrackSelector&) = delete;
@@ -45,15 +45,16 @@ private:
     static TrackEntry* _s_select_default_track_interactively(
         const wstring& file_name,
         const Tracks& tracks,
-        const string& track_set_name,
-        const TrackPriorityDescriptor& track_priorities,
+        const TrackPrioritizer& track_prioritizer,
         const TrackGroupChoices& track_group_choices,
         const TrackSingleChoices& track_single_choices,
         const bool semi_automatic
     );
 
+    static void _s_print_track_selection_table(const wstring& file_name, const TrackPriorityDescriptor& track_priorities);
+
 private:
-    const TrackPrioritizer& m_track_prioritizer;
+    const TrackPrioritizers& m_track_prioritizers;
     const bool m_semi_automatic; // True if "m_single_*_choices" should be used
 
     // Maps between track groups and indices of the chosen track in those groups

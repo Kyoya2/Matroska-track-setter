@@ -36,44 +36,40 @@ public:
 
 public:
     // Return the first track from the category that passed the most tests
-    TrackEntry* get_most_eligible_track() const;
+    const TrackEntry* get_most_eligible_track() const;
 
 public:
-    vector<TrackEntry*> explicitly_excluded;  // Failed test 1
-    vector<TrackEntry*> not_included;         // Passed test 1 and failed test 2
-    vector<TrackEntry*> unmatching_language;  // Passed tests 1, 2 and failed test 3
-    vector<TrackEntry*> top_priority;         // Passed all 3 tests
+    vector<const TrackEntry*> explicitly_excluded;  // Failed test 1
+    vector<const TrackEntry*> not_included;         // Passed test 1 and failed test 2
+    vector<const TrackEntry*> unmatching_language;  // Passed tests 1, 2 and failed test 3
+    vector<const TrackEntry*> top_priority;         // Passed all 3 tests
 };
+
+class TrackPrioritizer;
+
+using TrackPrioritizers = std::pair<TrackPrioritizer, TrackPrioritizer>;
 
 class TrackPrioritizer
 {
 public:
-    explicit TrackPrioritizer(const string& rules_file_path);
+    TrackPrioritizer(const TrackPrioritizer&) = delete;
+    TrackPrioritizer& operator=(const TrackPrioritizer&) = delete;
+
+    TrackPrioritizer(TrackPrioritizer&&) = default;
 
 public:
-    TrackPriorityDescriptor get_subtitle_priorities(Tracks& tracks) const;
-    TrackPriorityDescriptor get_audio_priorities(Tracks& tracks) const;
+    // Returns a pair of (subtitle, audio) prioritizers
+    static TrackPrioritizers s_from_file(const string& rules_file_path);
+
+public:
+    TrackPriorityDescriptor get_track_priorities(const Tracks& tracks) const;
 
 PRIVATE:
-    struct TrackSelectionRules
-    {
-    public:
-        TrackSelectionRules() = default;
-
-        TrackSelectionRules(const TrackSelectionRules&) = delete;
-        TrackSelectionRules& operator=(const TrackSelectionRules&) = delete;
-
-        TrackSelectionRules(TrackSelectionRules&&) = default;
-
-    public:
-        TrackPriorityDescriptor get_track_priorities(Tracks& tracks) const;
-
-        string language;
-        vector<std::regex> include_keywords;
-        vector<std::regex> exclude_keywords;
-    };
+    TrackPrioritizer() = default;
 
 PRIVATE:
-    TrackSelectionRules m_subtitle_selection_rules;
-    TrackSelectionRules m_audio_selection_rules;
+    string language;
+    vector<std::regex> include_keywords;
+    vector<std::regex> exclude_keywords;
 };
+

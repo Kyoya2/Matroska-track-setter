@@ -28,10 +28,10 @@ namespace TrackParserUT
         std::fstream test_file("..\\..\\..\\..\\..\\Test files\\1.mkv", std::ios_base::binary | std::ios_base::in);
         TrackManager track_parser(test_file);
 
-        Tracks& subs = track_parser.get_subtitle_tracks();
+        const Tracks& subs = track_parser.get_subtitle_tracks();
 
-        TrackPrioritizer ts("Track selection rules.txt");
+        TrackPrioritizers ts = TrackPrioritizer::s_from_file("Track selection rules.txt");
 
-        ts.get_subtitle_priorities(subs);
+        ts.first.get_track_priorities(subs);
     }
 }

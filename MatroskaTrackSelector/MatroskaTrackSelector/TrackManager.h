@@ -28,10 +28,10 @@ public:
     explicit TrackManager(std::iostream& stream);
 
 public:
-    Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }
-    Tracks& get_audio_tracks() { return m_audio_tracks;  }
+    const Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }
+    const Tracks& get_audio_tracks() { return m_audio_tracks;  }
 
-    void set_default_tracks(TrackEntry* subtitle_track, TrackEntry* audio_track);
+    void set_default_tracks(const TrackEntry* subtitle_track, const TrackEntry* audio_track);
 
 PRIVATE:
     void _load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element);
@@ -39,9 +39,9 @@ PRIVATE:
 
     void _s_set_default_track(
         Tracks& tracks,                         // Either subtitle tracks or audio tracks
-        TrackEntry* default_track,        // A pointer to the track to set as the default amongst the tracks in 'tracks'
+        TrackEntry* default_track,              // A pointer to the track to set as the default amongst the tracks in 'tracks'
         Tracks& other_tracks,                   // The track set that's not specified by 'tracks'. e.g. if track is subtitles then this is audio
-        TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
+        const TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
 
 PRIVATE:
     BasicSharedPtr<EbmlElement> m_tracks_seek_position;

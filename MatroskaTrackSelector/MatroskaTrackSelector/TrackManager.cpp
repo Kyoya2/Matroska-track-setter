@@ -96,12 +96,21 @@ void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement
     }
 }
 
-void TrackManager::set_default_tracks(TrackEntry* subtitle_track_index, TrackEntry* audio_track_index)
+void TrackManager::set_default_tracks(const TrackEntry* subtitle_track, const TrackEntry* audio_track)
 {
     DEBUG_PRINT_LINE(endl << "Setting default subtitle track");
-    _s_set_default_track(m_subtitle_tracks, subtitle_track_index, m_audio_tracks, audio_track_index);
+    _s_set_default_track(
+        m_subtitle_tracks,
+        const_cast<TrackEntry*>(subtitle_track),
+        m_audio_tracks,
+        audio_track);
+
     DEBUG_PRINT_LINE("Setting default audio track");
-    _s_set_default_track(m_audio_tracks, audio_track_index, m_subtitle_tracks, subtitle_track_index);
+    _s_set_default_track(
+        m_audio_tracks,
+        const_cast<TrackEntry*>(audio_track),
+        m_subtitle_tracks,
+        subtitle_track);
 }
 
 void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
@@ -134,7 +143,7 @@ void TrackManager::_s_set_default_track(
     Tracks& tracks,
     TrackEntry* default_track,
     Tracks& other_tracks,
-    TrackEntry* untouchable_track)
+    const TrackEntry* untouchable_track)
 {
     // Set FlagForced and FlagDefault of all elements (except the default element) to false
     for (TrackEntry& track : tracks)
