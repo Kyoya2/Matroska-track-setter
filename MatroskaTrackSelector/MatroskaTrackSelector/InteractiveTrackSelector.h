@@ -39,8 +39,10 @@ public:
     void select_default_tracks_interactively(std::fstream& file_stream, const wstring& file_name);
 
 private:
-    // Maps between track 
-    using TrackGroupChoices = std::map<TrackEntryHash, size_t>;
+    // Maps between track group hashes and the index of the selected track in the group
+    using TrackGroupChoices = std::map<TrackGroupHash, size_t>;
+
+    // A set of hashes of selected tracks
     using TrackSingleChoices = std::set<TrackEntryHash>;
 
 private:
