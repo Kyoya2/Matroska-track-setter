@@ -52,7 +52,7 @@ private:
         const bool semi_automatic
     );
 
-    // Prompts the user to select a
+    // Prompts the user to select a track
     static std::pair<const TrackEntry*, size_t> _s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities);
 
 private:

@@ -15,11 +15,13 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #pragma once
+#include <string_view>
+#include <algorithm>
+#include <cctype>
+
 #include "Common.h"
 #include "EbmlElement.h"
 #include "MatroskaLanguageTags.h"
-
-#include <string_view>
 
 using std::string_view;
 
@@ -65,6 +67,19 @@ public:
 };
 
 using Tracks = vector<TrackEntry>;
+
+class TrackEntryHasher
+{
+public:
+    // Return a vector that contains hashes of the given tracks
+    static vector<size_t> s_get_track_hashes(const vector<const TrackEntry*>& tracks);
+
+    // Converts a vactor of track hashes into a single hash
+    static size_t s_hash_track_hashes(const vector<size_t>& track_hashes);
+
+private:
+    static size_t _s_hash_track_entry(const TrackEntry* track);
+};
 
 inline void TrackEntry::set_FlagDefault(bool new_value)
 {

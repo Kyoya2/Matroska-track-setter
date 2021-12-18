@@ -123,20 +123,21 @@ static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files
 int main(int, char*)
 {
     using namespace ConsoleAttributes;
-    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8); // This is needed for printing unicode characters
 
     TrackSelectionMode selection_mode = TrackSelectionMode::NotSelected;
+
+    // Credit
+    cout << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
+         << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl
+         << endl
+         << " Please choose the selection mode:" << endl
+         << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic: Choose the most fitting tracks without any user interaction." << endl
+         << " " << Underline << WhiteFG << "S" << LightGrayFG << NoUnderline << "emi-automatic: Requires minimal user interaction" << endl
+         << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual: Requires user interaction" << endl << WhiteFG;
+
     while (true)
     {
-        // Credit
-        cout << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
-            << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl << endl;
-
-        cout << " Please choose the selection mode:" << endl
-            << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic: Choose the most fitting tracks without any user interaction." << endl
-            << " " << Underline << WhiteFG << "S" << LightGrayFG << NoUnderline << "emi-automatic: Requires minimal user interaction" << endl
-            << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual: Requires user interaction" << endl << WhiteFG;
-
         switch (static_cast<char>(_getch() | 0x20)) // make lowercase
         {
         case 'a':
@@ -154,8 +155,6 @@ int main(int, char*)
 
         if (selection_mode != TrackSelectionMode::NotSelected)
             break;
-        else
-            ConsoleUtils::cls();
     }
 
     auto files_to_process = prompt_mkv_file_selection_dialog();
