@@ -54,6 +54,18 @@ TrackEntry* InteractiveTrackSelector::_s_select_default_track_interactively(
     const TrackSingleChoices& track_single_choices,
     const bool semi_automatic)
 {
+    const vector<TrackEntryHash> track_hashes = TrackEntryHasher::s_get_track_hashes(tracks);
+    /*
+    count how many of the track hashes are in "track_single_choices"
+        if there is 1, choose it
+        if there are more than 1, check if one of them can be selected by 
+            if it is, select the 
+
+    
+    
+    
+    */
+
     TrackPriorityDescriptor tracks_priority_descriptor = track_prioritizer.get_track_priorities(tracks);
     _s_prompt_track_selection(file_name, tracks_priority_descriptor);
     return nullptr;

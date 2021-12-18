@@ -64,7 +64,7 @@ void TrackEntry::load_values()
         is_forced = flag_forced_element->get_bool_value();
 }
 
-vector<TrackEntryHash> TrackEntryHasher::s_get_track_hashes(const vector<const TrackEntry*>& tracks)
+vector<TrackEntryHash> TrackEntryHasher::s_get_track_hashes(const Tracks& tracks)
 {
     vector<TrackEntryHash> result(tracks.size());
     for (size_t i = 0; i < tracks.size(); ++i)
@@ -86,17 +86,17 @@ TrackGroupHash TrackEntryHasher::s_hash_track_hashes(const vector<TrackEntryHash
     return result;
 }
 
-TrackEntryHash TrackEntryHasher::_s_hash_track_entry(const TrackEntry* track)
+TrackEntryHash TrackEntryHasher::_s_hash_track_entry(const TrackEntry& track)
 {
     static const std::hash<string> STRING_HASH;
     static const std::hash<string_view> STRING_VIEW_HASH;
 
-    string lowercase_track_name = track->track_name;
+    string lowercase_track_name = track.track_name;
     std::transform(
         lowercase_track_name.begin(),
         lowercase_track_name.end(),
         lowercase_track_name.begin(),
         [](char c) { return static_cast<char>(std::tolower(c)); });
 
-    return STRING_HASH(lowercase_track_name) ^ STRING_VIEW_HASH(track->language);
+    return STRING_HASH(lowercase_track_name) ^ STRING_VIEW_HASH(track.language);
 }

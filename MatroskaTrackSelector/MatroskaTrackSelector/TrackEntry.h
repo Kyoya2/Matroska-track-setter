@@ -76,13 +76,13 @@ class TrackEntryHasher
 {
 public:
     // Return a vector that contains hashes of the given tracks
-    static vector<TrackEntryHash> s_get_track_hashes(const vector<const TrackEntry*>& tracks);
+    static vector<TrackEntryHash> s_get_track_hashes(const Tracks& tracks);
 
     // Converts a vactor of track hashes into a single hash
     static TrackGroupHash s_hash_track_hashes(const vector<TrackEntryHash>& track_hashes);
 
 private:
-    static TrackEntryHash _s_hash_track_entry(const TrackEntry* track);
+    static TrackEntryHash _s_hash_track_entry(const TrackEntry& track);
 };
 
 

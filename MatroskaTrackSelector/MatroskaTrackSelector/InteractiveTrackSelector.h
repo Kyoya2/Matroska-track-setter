@@ -62,11 +62,9 @@ private:
     const TrackPrioritizers& m_track_prioritizers;
     const bool m_semi_automatic; // True if "m_single_*_choices" should be used
 
-    // Maps between track groups and indices of the chosen track in those groups
     TrackGroupChoices m_subtitle_group_choices;
     TrackGroupChoices m_audio_group_choices;
 
-    // Contains 
     TrackSingleChoices m_single_subtitle_choices;
     TrackSingleChoices m_single_audio_choices;
 };
