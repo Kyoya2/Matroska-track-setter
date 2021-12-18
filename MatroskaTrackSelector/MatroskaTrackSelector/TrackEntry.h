@@ -68,18 +68,23 @@ public:
 
 using Tracks = vector<TrackEntry>;
 
+
+using TrackEntryHash = size_t;
+using TrackGroupHash = size_t;
+
 class TrackEntryHasher
 {
 public:
     // Return a vector that contains hashes of the given tracks
-    static vector<size_t> s_get_track_hashes(const vector<const TrackEntry*>& tracks);
+    static vector<TrackEntryHash> s_get_track_hashes(const vector<const TrackEntry*>& tracks);
 
     // Converts a vactor of track hashes into a single hash
-    static size_t s_hash_track_hashes(const vector<size_t>& track_hashes);
+    static TrackGroupHash s_hash_track_hashes(const vector<TrackEntryHash>& track_hashes);
 
 private:
-    static size_t _s_hash_track_entry(const TrackEntry* track);
+    static TrackEntryHash _s_hash_track_entry(const TrackEntry* track);
 };
+
 
 inline void TrackEntry::set_FlagDefault(bool new_value)
 {
