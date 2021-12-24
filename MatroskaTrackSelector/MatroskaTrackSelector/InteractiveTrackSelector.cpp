@@ -16,59 +16,46 @@
  */
 #include "InteractiveTrackSelector.h"
 
-InteractiveTrackSelector::InteractiveTrackSelector(const TrackPrioritizers& track_prioritizers, bool semi_automatic) :
-    m_track_prioritizers(track_prioritizers),
-    m_semi_automatic(semi_automatic)
-{}
-
-void InteractiveTrackSelector::select_default_tracks_interactively(std::fstream& file_stream, const wstring& file_name)
-{
-    TrackManager track_manager(file_stream);
-
-    const Tracks& subtitle_tracks = track_manager.get_subtitle_tracks();
-    const Tracks& audio_tracks = track_manager.get_audio_tracks();
-
-    track_manager.set_default_tracks(
-        _s_select_default_track_interactively(
-            file_name,
-            subtitle_tracks,
-            m_track_prioritizers.first,
-            m_subtitle_group_choices,
-            m_single_subtitle_choices,
-            m_semi_automatic),
-
-        _s_select_default_track_interactively(
-            file_name,
-            audio_tracks,
-            m_track_prioritizers.second,
-            m_audio_group_choices,
-            m_single_audio_choices,
-            m_semi_automatic));
+static bool case_insensitive_strcmp(const string& a, const string& b) {
+    for (size_t i = 0; i < std::min(a.size(), b.size()); ++i)
+    {
+        if (std::tolower(a[i]) < std::tolower(b[i]))
+            return true;
+        else if (std::tolower(a[i]) > std::tolower(b[i]))
+            return false;
+    }
+    return false;
 }
 
-TrackEntry* InteractiveTrackSelector::_s_select_default_track_interactively(
-    const wstring& file_name,
-    const Tracks& tracks,
-    const TrackPrioritizer& track_prioritizer,
-    const TrackGroupChoices& track_group_choices,
-    const TrackSingleChoices& track_single_choices,
-    const bool semi_automatic)
+void InteractiveTrackSelector::select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
 {
-    const vector<TrackEntryHash> track_hashes = TrackEntryHasher::s_get_track_hashes(tracks);
-    /*
-    count how many of the track hashes are in "track_single_choices"
-        if there is 1, choose it
-        if there are more than 1, check if one of them can be selected by 
-            if it is, select the 
+    vector<std::fstream> file_streams;
+    vector<TrackManager> track_managers;
 
-    
-    
-    
-    */
+    // Maps between track names (case insensitively) to vectors of track managers that have tracks with those names
+    std::map<string, vector<const TrackManager*>, bool(*)(const string&, const string&)> subtitle_track_names(case_insensitive_strcmp);
+    std::map<string, vector<const TrackManager*>, bool(*)(const string&, const string&)> audio_track_names(case_insensitive_strcmp);
 
-    TrackPriorityDescriptor tracks_priority_descriptor = track_prioritizer.get_track_priorities(tracks);
-    _s_prompt_track_selection(file_name, tracks_priority_descriptor);
-    return nullptr;
+    // for each track, add it's track manager to the vector that matches the key with the name of the track
+    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_track_names) track_names_set, const Tracks& tracks, const TrackManager* track_manager)
+    {
+        for (size_t i = 0; i < tracks.size(); ++i)
+        {
+            if (tracks[i].track_name.empty())
+                track_names_set[string("Unnamed track ") + std::to_string(i)].push_back(track_manager);
+            else
+                track_names_set[tracks[i].track_name].push_back(track_manager);
+        }
+    };
+
+    for (size_t i = 0; i < file_names.size(); ++i)
+    {
+        file_streams.emplace_back(files_dir + file_names[i], std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+        track_managers.emplace_back(file_streams[i]);
+
+        ADD_TRACKS_TO_MAP(subtitle_track_names, track_managers[i].get_subtitle_tracks(), &track_managers[i]);
+        ADD_TRACKS_TO_MAP(audio_track_names, track_managers[i].get_audio_tracks(), &track_managers[i]);
+    }
 }
 
 std::pair<const TrackEntry*, size_t> InteractiveTrackSelector::_s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities)

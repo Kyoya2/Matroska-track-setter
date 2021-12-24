@@ -19,6 +19,8 @@
 #include <map>
 #include <set>
 #include <fstream>
+#include <map>
+#include <functional>
 
 #include "Common.h"
 #include "TrackPrioritizer.h"
@@ -37,6 +39,8 @@ public:
 
 public:
     void select_default_tracks_interactively(std::fstream& file_stream, const wstring& file_name);
+
+    static void select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
 private:
     // Maps between track group hashes and the index of the selected track in the group

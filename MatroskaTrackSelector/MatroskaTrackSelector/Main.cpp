@@ -16,7 +16,7 @@
  */
 #define NOMINMAX
 #include <windows.h>
-#include <conio.h>
+#include "Common.h"
 #include "ConsoleUtils.h"
 #include "InteractiveTrackSelector.h"
 #include "TrackManager.h"
@@ -91,87 +91,39 @@ static std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     return std::make_pair(std::move(parent_directory), std::move(file_name_list));
 }
 
-static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers)
-{
-    for (const wstring& file_name : files.second)
+static bool case_insensitive_strcmp(const string& a, const string& b) {
+    for (size_t i = 0; i < std::min(a.size(), b.size()); ++i)
     {
-        std::fstream current_file(
-            files.first + file_name,
-            std::ios_base::binary | std::ios_base::in | std::ios::out);
-
-        TrackManager track_manager(current_file);
-        track_manager.set_default_tracks(
-            track_prioritizers.first.get_track_priorities(track_manager.get_subtitle_tracks()).get_most_eligible_track(),
-            track_prioritizers.second.get_track_priorities(track_manager.get_audio_tracks()).get_most_eligible_track()
-        );
+        if (std::tolower(a[i]) < std::tolower(b[i]))
+            return true;
+        else if (std::tolower(a[i]) > std::tolower(b[i]))
+            return false;
     }
-}
-
-static void do_manual_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers, bool semi_automatic)
-{
-    InteractiveTrackSelector track_selector(track_prioritizers, semi_automatic);
-    for (const wstring& file_name : files.second)
-    {
-        std::fstream current_file(
-            files.first + file_name,
-            std::ios_base::binary | std::ios_base::in | std::ios::out);
-
-        track_selector.select_default_tracks_interactively(current_file, file_name);
-    }
+    return false;
 }
 
 int main(int, char*)
 {
+    std::multiset<string, bool(*)(const string&, const string&)> subtitle_track_names(case_insensitive_strcmp);
+    subtitle_track_names.emplace("AA");
+    subtitle_track_names.emplace("Aa");
+    subtitle_track_names.emplace("aa");
+    subtitle_track_names.erase("aA");
+    cout << subtitle_track_names.count("AA");
+    return 0;
+
     using namespace ConsoleAttributes;
     SetConsoleOutputCP(CP_UTF8); // This is needed for printing unicode characters
 
     TrackSelectionMode selection_mode = TrackSelectionMode::NotSelected;
 
     // Credit
-    cout << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
-         << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl
-         << endl
-         << " Please choose the selection mode:" << endl
-         << " " << Underline << WhiteFG << "A" << LightGrayFG << NoUnderline << "utomatic: Choose the most fitting tracks without any user interaction." << endl
-         << " " << Underline << WhiteFG << "S" << LightGrayFG << NoUnderline << "emi-automatic: Requires minimal user interaction" << endl
-         << " " << Underline << WhiteFG << "M" << LightGrayFG << NoUnderline << "anual: Requires user interaction" << endl << WhiteFG;
-
-    while (true)
-    {
-        switch (static_cast<char>(_getch() | 0x20)) // make lowercase
-        {
-        case 'a':
-            selection_mode = TrackSelectionMode::Automatic;
-            break;
-
-        case 's':
-            selection_mode = TrackSelectionMode::SemiAutomatic;
-            break;
-
-        case 'm':
-            selection_mode = TrackSelectionMode::Manual;
-            break;
-        }
-
-        if (selection_mode != TrackSelectionMode::NotSelected)
-            break;
-    }
+    PRINT_COPYRIGHT(cout);
 
     auto files_to_process = prompt_mkv_file_selection_dialog();
     TrackPrioritizers track_prioritizers = TrackPrioritizer::s_from_file(get_current_exe_directory() + "Track selection rules.txt");
 
-    switch (selection_mode) 
-    {
-    case TrackSelectionMode::Automatic:
-        do_automatic_selection(files_to_process, track_prioritizers);
-        break;
-
-    case TrackSelectionMode::SemiAutomatic:
-        __fallthrough;
-    case TrackSelectionMode::Manual:
-        do_manual_selection(files_to_process, track_prioritizers, (selection_mode == TrackSelectionMode::SemiAutomatic));
-        break;
-    }
+    InteractiveTrackSelector::select_trakcs_interactively(files_to_process.first, files_to_process.second, track_prioritizers);
     
 #ifndef _DEBUG
 #else

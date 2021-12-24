@@ -38,10 +38,14 @@ using std::vector;
 using std::string;
 using std::wstring;
 using std::string_view;
-using std::shared_ptr;
 using std::reference_wrapper;
 
 using Buffer = vector<uint8_t>;
+
+#define PRINT_COPYRIGHT(stream)                                                                                                                                        \
+    stream << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl                                                                                             \
+           << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl                                                                                        \
+           << endl                             \
 
 #ifdef _DEBUG
 #define DEBUG_PRINT(message) cout << message
