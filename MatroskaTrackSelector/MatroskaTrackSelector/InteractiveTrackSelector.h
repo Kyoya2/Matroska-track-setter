@@ -16,11 +16,9 @@
  */
 #pragma once
 
-#include <map>
-#include <set>
 #include <fstream>
 #include <map>
-#include <functional>
+#include <memory>
 
 #include "Common.h"
 #include "TrackPrioritizer.h"
@@ -29,47 +27,21 @@
 
 DECL_EXCEPTION(FileSelectionError);
 
+using std::shared_ptr;
+
 class InteractiveTrackSelector
 {
 public:
-    InteractiveTrackSelector(const TrackPrioritizers& track_prioritizers, bool semi_automatic = true);
+    InteractiveTrackSelector() = delete;
 
     InteractiveTrackSelector(const InteractiveTrackSelector&) = delete;
     InteractiveTrackSelector& operator=(const InteractiveTrackSelector&) = delete;
 
 public:
-    void select_default_tracks_interactively(std::fstream& file_stream, const wstring& file_name);
-
     static void select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
-private:
-    // Maps between track group hashes and the index of the selected track in the group
-    using TrackGroupChoices = std::map<TrackGroupHash, size_t>;
-
-    // A set of hashes of selected tracks
-    using TrackSingleChoices = std::set<TrackEntryHash>;
-
-private:
-    static TrackEntry* _s_select_default_track_interactively(
-        const wstring& file_name,
-        const Tracks& tracks,
-        const TrackPrioritizer& track_prioritizer,
-        const TrackGroupChoices& track_group_choices,
-        const TrackSingleChoices& track_single_choices,
-        const bool semi_automatic
-    );
 
     // Prompts the user to select a track
     static std::pair<const TrackEntry*, size_t> _s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities);
-
-private:
-    const TrackPrioritizers& m_track_prioritizers;
-    const bool m_semi_automatic; // True if "m_single_*_choices" should be used
-
-    TrackGroupChoices m_subtitle_group_choices;
-    TrackGroupChoices m_audio_group_choices;
-
-    TrackSingleChoices m_single_subtitle_choices;
-    TrackSingleChoices m_single_audio_choices;
 };
 

@@ -15,6 +15,8 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #pragma once
+#include <fstream>
+
 #include "Common.h"
 #include "EbmlElement.h"
 #include "TrackEntry.h"
@@ -25,7 +27,7 @@ DECL_EXCEPTION(FittingHandlerNotFound);
 class TrackManager
 {
 public:
-    explicit TrackManager(std::iostream& stream);
+    explicit TrackManager(const wstring& file);
 
 public:
     const Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }
@@ -44,6 +46,7 @@ PRIVATE:
         const TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
 
 PRIVATE:
+    std::fstream m_file_stream;
     BasicSharedPtr<EbmlElement> m_tracks_seek_position;
     Tracks m_subtitle_tracks;
     Tracks m_audio_tracks;

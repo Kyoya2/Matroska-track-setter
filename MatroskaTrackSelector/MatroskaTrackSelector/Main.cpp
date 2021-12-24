@@ -104,14 +104,6 @@ static bool case_insensitive_strcmp(const string& a, const string& b) {
 
 int main(int, char*)
 {
-    std::multiset<string, bool(*)(const string&, const string&)> subtitle_track_names(case_insensitive_strcmp);
-    subtitle_track_names.emplace("AA");
-    subtitle_track_names.emplace("Aa");
-    subtitle_track_names.emplace("aa");
-    subtitle_track_names.erase("aA");
-    cout << subtitle_track_names.count("AA");
-    return 0;
-
     using namespace ConsoleAttributes;
     SetConsoleOutputCP(CP_UTF8); // This is needed for printing unicode characters
 

@@ -16,10 +16,10 @@
  */
 #include "TrackManager.h"
 
-TrackManager::TrackManager(std::iostream& stream)
+TrackManager::TrackManager(const wstring& file) : m_file_stream(file, std::ios_base::binary | std::ios_base::out | std::ios_base::in)
 {
-    stream.seekg(0);
-    auto segment_element = EbmlElement::s_construct_from_stream(stream);
+    m_file_stream.seekg(0);
+    auto segment_element = EbmlElement::s_construct_from_stream(m_file_stream);
     
     if (Segment_ID != segment_element->get_id().get_value())
     {
@@ -54,7 +54,7 @@ TrackManager::TrackManager(std::iostream& stream)
             DEBUG_PRINT_LINE("Encountered a Void element");
             last_void_element = current_top_level_element;
             // If the tracks have already been loaded and the closes Void element that comes after the Tracks
-            // element wasn't loaded. Set it to be the current Void element.
+          // element wasn't loaded. Set it to be the current Void element.
             if ((previous_element_id == Tracks_ID) && m_void_after_tracks.is_null())
             {
                 m_void_after_tracks = last_void_element;

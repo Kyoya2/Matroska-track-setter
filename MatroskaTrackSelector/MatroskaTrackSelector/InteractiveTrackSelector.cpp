@@ -29,15 +29,12 @@ static bool case_insensitive_strcmp(const string& a, const string& b) {
 
 void InteractiveTrackSelector::select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
 {
-    vector<std::fstream> file_streams;
-    vector<TrackManager> track_managers;
-
     // Maps between track names (case insensitively) to vectors of track managers that have tracks with those names
-    std::map<string, vector<const TrackManager*>, bool(*)(const string&, const string&)> subtitle_track_names(case_insensitive_strcmp);
-    std::map<string, vector<const TrackManager*>, bool(*)(const string&, const string&)> audio_track_names(case_insensitive_strcmp);
+    std::map<string, vector<shared_ptr<TrackManager>>, bool(*)(const string&, const string&)> subtitle_track_names(case_insensitive_strcmp);
+    std::map<string, vector<shared_ptr<TrackManager>>, bool(*)(const string&, const string&)> audio_track_names(case_insensitive_strcmp);
 
     // for each track, add it's track manager to the vector that matches the key with the name of the track
-    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_track_names) track_names_set, const Tracks& tracks, const TrackManager* track_manager)
+    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_track_names) track_names_set, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
     {
         for (size_t i = 0; i < tracks.size(); ++i)
         {
@@ -50,11 +47,10 @@ void InteractiveTrackSelector::select_trakcs_interactively(const wstring& files_
 
     for (size_t i = 0; i < file_names.size(); ++i)
     {
-        file_streams.emplace_back(files_dir + file_names[i], std::ios_base::binary | std::ios_base::out | std::ios_base::in);
-        track_managers.emplace_back(file_streams[i]);
+        auto track_manager = std::make_shared<TrackManager>(files_dir + file_names[i]);
 
-        ADD_TRACKS_TO_MAP(subtitle_track_names, track_managers[i].get_subtitle_tracks(), &track_managers[i]);
-        ADD_TRACKS_TO_MAP(audio_track_names, track_managers[i].get_audio_tracks(), &track_managers[i]);
+        ADD_TRACKS_TO_MAP(subtitle_track_names, track_manager->get_subtitle_tracks(), track_manager);
+        ADD_TRACKS_TO_MAP(audio_track_names, track_manager->get_audio_tracks(), track_manager);
     }
 }
 
