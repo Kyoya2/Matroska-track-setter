@@ -19,6 +19,7 @@
 #include <fstream>
 #include <map>
 #include <memory>
+#include <cstring>
 
 #include "Common.h"
 #include "TrackPrioritizer.h"
@@ -37,11 +38,25 @@ public:
     InteractiveTrackSelector(const InteractiveTrackSelector&) = delete;
     InteractiveTrackSelector& operator=(const InteractiveTrackSelector&) = delete;
 
-public:
-    static void select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
+private:
+    struct MinTrackEntry
+    {
+        MinTrackEntry(const TrackEntry& track_entry, size_t index) :
+            name(track_entry.track_name.empty() ? ("Unnamed track " + std::to_string(index)) : track_entry.track_name),
+            language(track_entry.language)
+        {}
 
+        MinTrackEntry(MinTrackEntry&&) = default;
+
+        const string name;
+        const string_view& language;
+    };
+    using TracksMap = std::map<const MinTrackEntry&, vector<shared_ptr<TrackManager>>, bool(*)(const TrackEntry&, const TrackEntry&)>;
+
+public:
+    static void s_select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
     // Prompts the user to select a track
-    static std::pair<const TrackEntry*, size_t> _s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities);
+    static bool _s_select_tracks_interactively(TracksMap& tracks_map, TrackPrioritizer track_prioritizer);
 };
 

@@ -16,32 +16,29 @@
  */
 #include "InteractiveTrackSelector.h"
 
-static bool case_insensitive_strcmp(const string& a, const string& b) {
-    for (size_t i = 0; i < std::min(a.size(), b.size()); ++i)
+static bool track_entry_comparison(const TrackEntry& a, const TrackEntry& b) {
+    for (size_t i = 0; i < std::min(a.track_name.size(), b.track_name.size()); ++i)
     {
-        if (std::tolower(a[i]) < std::tolower(b[i]))
+        if (std::tolower(a.track_name[i]) < std::tolower(b.track_name[i]))
             return true;
-        else if (std::tolower(a[i]) > std::tolower(b[i]))
+        else if (std::tolower(a.track_name[i]) > std::tolower(b.track_name[i]))
             return false;
     }
-    return false;
+    return std::strcmp(a.language.data(), b.language.data()) < 0;
 }
 
-void InteractiveTrackSelector::select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
+void InteractiveTrackSelector::s_select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
 {
     // Maps between track names (case insensitively) to vectors of track managers that have tracks with those names
-    std::map<string, vector<shared_ptr<TrackManager>>, bool(*)(const string&, const string&)> subtitle_track_names(case_insensitive_strcmp);
-    std::map<string, vector<shared_ptr<TrackManager>>, bool(*)(const string&, const string&)> audio_track_names(case_insensitive_strcmp);
+    TracksMap subtitle_tracks_map(track_entry_comparison);
+    TracksMap audio_tracks_map(track_entry_comparison);
 
     // for each track, add it's track manager to the vector that matches the key with the name of the track
-    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_track_names) track_names_set, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
+    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_tracks_map) tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
     {
         for (size_t i = 0; i < tracks.size(); ++i)
         {
-            if (tracks[i].track_name.empty())
-                track_names_set[string("Unnamed track ") + std::to_string(i)].push_back(track_manager);
-            else
-                track_names_set[tracks[i].track_name].push_back(track_manager);
+            tracks_map[MinTrackEntry(tracks[i], i)].push_back(track_manager);
         }
     };
 
@@ -49,9 +46,11 @@ void InteractiveTrackSelector::select_trakcs_interactively(const wstring& files_
     {
         auto track_manager = std::make_shared<TrackManager>(files_dir + file_names[i]);
 
-        ADD_TRACKS_TO_MAP(subtitle_track_names, track_manager->get_subtitle_tracks(), track_manager);
-        ADD_TRACKS_TO_MAP(audio_track_names, track_manager->get_audio_tracks(), track_manager);
+        ADD_TRACKS_TO_MAP(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager);
+        ADD_TRACKS_TO_MAP(audio_tracks_map, track_manager->get_audio_tracks(), track_manager);
     }
+
+    //while ()
 }
 
 std::pair<const TrackEntry*, size_t> InteractiveTrackSelector::_s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities)
