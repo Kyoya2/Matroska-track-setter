@@ -37,9 +37,6 @@
     <Filter Include="Track management\InteractiveTrackSelector">
       <UniqueIdentifier>{c99096bc-a4fd-4622-b219-73550fd88a71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TotalOrderer">
-      <UniqueIdentifier>{787cbaa9-c320-47b9-9a88-32e4792b8856}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -134,9 +131,6 @@
     </ClInclude>
     <ClInclude Include="InteractiveTrackSelector.h">
       <Filter>Track management\InteractiveTrackSelector</Filter>
-    </ClInclude>
-    <ClInclude Include="TotalOrderer.h">
-      <Filter>TotalOrderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
