@@ -30,6 +30,19 @@ DECL_EXCEPTION(FileSelectionError);
 
 using std::shared_ptr;
 
+struct MinTrackEntry
+{
+    MinTrackEntry(const TrackEntry& track_entry, size_t index) :
+        name(track_entry.name.empty() ? ("Unnamed track " + std::to_string(index)) : track_entry.name),
+        language(track_entry.language)
+    {}
+
+    MinTrackEntry(MinTrackEntry&&) = default;
+
+    const string name;
+    const string_view& language;
+};
+
 class InteractiveTrackSelector
 {
 public:
@@ -38,25 +51,13 @@ public:
     InteractiveTrackSelector(const InteractiveTrackSelector&) = delete;
     InteractiveTrackSelector& operator=(const InteractiveTrackSelector&) = delete;
 
-private:
-    struct MinTrackEntry
-    {
-        MinTrackEntry(const TrackEntry& track_entry, size_t index) :
-            name(track_entry.name.empty() ? ("Unnamed track " + std::to_string(index)) : track_entry.name),
-            language(track_entry.language)
-        {}
-
-        MinTrackEntry(MinTrackEntry&&) = default;
-
-        const string name;
-        const string_view& language;
-    };
-    using TracksMap = std::map<const MinTrackEntry&, vector<shared_ptr<TrackManager>>, bool(*)(const TrackEntry&, const TrackEntry&)>;
-
 public:
-    static void s_select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
+    static void s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
-    // Prompts the user to select a track
-    static bool _s_select_tracks_interactively(TracksMap& tracks_map, TrackPrioritizer track_prioritizer);
+private:
+    using TracksMap = std::map<MinTrackEntry, vector<shared_ptr<TrackManager>>, bool(*)(const MinTrackEntry&, const MinTrackEntry&)>;
+
+private:
+    static void _s_select_tracks_interactively(TracksMap& tracks_map, TrackPrioritizer track_prioritizer);
 };
 

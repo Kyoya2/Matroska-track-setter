@@ -16,97 +16,34 @@
  */
 #include "TrackPrioritizer.h"
 
-const TrackEntry* TrackPriorityDescriptor::get_most_eligible_track() const
+TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const TrackEntry& track) const
 {
-    if (!top_priority.empty())
-        return top_priority[0];
-
-    if (!unmatching_language.empty())
-        return unmatching_language[0];
-
-    if (!not_included.empty())
-        return not_included[0];
-
-    if (!explicitly_excluded.empty())
-        return explicitly_excluded[0];
-
-    return nullptr;
-}
-
-TrackPriorityDescriptor TrackPrioritizer::get_track_priorities(const Tracks& tracks) const
-{
-    TrackPriorityDescriptor result;
-    bool passed_current_test;
-    vector<const TrackEntry*> container_1;
-    vector<const TrackEntry*> container_2;
-
-    // Select tracks whose name doesn't match any of the exclude-keywords
-    for (const TrackEntry& current_track : tracks)
+    for (const std::regex& exclude_keyword : exclude_keywords)
     {
-        // In any case, fill 'container_2' with pointers to ALL tracks
-        container_2.push_back(&current_track);
-
-        passed_current_test = true;
-        for (const std::regex& exclude_keyword : exclude_keywords)
+        if (std::regex_search(track.name, exclude_keyword))
         {
-            if (std::regex_search(current_track.name, exclude_keyword))
-            {
-                result.explicitly_excluded.push_back(&current_track);
-                passed_current_test = false;
-                break;
-            }
-        }
-
-        if (passed_current_test)
-        {
-            container_1.push_back(&current_track);
+            return TrackPriorityDescriptor::ExplicitlyExcluded;
         }
     }
 
-    // If ALL tracks failed the current test, ignore it and try the other tests
-    if (0 == container_1.size())
-        container_1 = container_2;
-    container_2.clear();
-
-    // Select tracks whose name matches any of the include-keywords
-    for (const TrackEntry* current_track : container_1)
+    bool has_include_keyword = false;
+    for (const std::regex& include_keyword : include_keywords)
     {
-        passed_current_test = false;
-        for (const std::regex& include_keyword : include_keywords)
+        if (std::regex_search(track.name, include_keyword))
         {
-            if (std::regex_search(current_track->name, include_keyword))
-            {
-                passed_current_test = true;
-                container_2.push_back(current_track);
-                break;
-            }
-        }
-
-        if (!passed_current_test)
-        {
-            result.not_included.push_back(current_track);
+            has_include_keyword = true;
+            break;
         }
     }
-
-    // If ALL tracks failed the current test, ignore it and try the last test
-    if (0 == container_2.size())
-        container_2 = container_1;
-    container_1.clear();
-
-    // Select tracks whose language matches the language rule
-    for (const TrackEntry* current_track : container_2)
+    if (!has_include_keyword)
     {
-        if (current_track->language == language)
-        {
-            result.top_priority.push_back(current_track);
-        }
-        else
-        {
-            result.unmatching_language.push_back(current_track);
-        }
+        return TrackPriorityDescriptor::NotIncluded;
     }
 
-    return result;
+    if (track.language != language)
+        return TrackPriorityDescriptor::UnmatchingLanguage;
+    else
+        return TrackPriorityDescriptor::TopPriority;
 }
 
 TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)

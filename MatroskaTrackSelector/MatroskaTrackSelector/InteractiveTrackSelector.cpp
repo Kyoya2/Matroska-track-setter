@@ -16,7 +16,8 @@
  */
 #include "InteractiveTrackSelector.h"
 
-static bool track_entry_comparison(const TrackEntry& a, const TrackEntry& b) {
+static bool _s_track_entry_comparison(const MinTrackEntry& a, const MinTrackEntry& b)
+{
     for (size_t i = 0; i < std::min(a.name.size(), b.name.size()); ++i)
     {
         if (std::tolower(a.name[i]) < std::tolower(b.name[i]))
@@ -27,25 +28,25 @@ static bool track_entry_comparison(const TrackEntry& a, const TrackEntry& b) {
     return std::strcmp(a.language.data(), b.language.data()) < 0;
 }
 
-void InteractiveTrackSelector::s_select_trakcs_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
+void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
 {
     // Maps between track names (case insensitively) to vectors of track managers that have tracks with those names
-    TracksMap subtitle_tracks_map(track_entry_comparison);
-    TracksMap audio_tracks_map(track_entry_comparison);
-
+    TracksMap subtitle_tracks_map(_s_track_entry_comparison);
+    TracksMap audio_tracks_map(_s_track_entry_comparison);
+    
     // for each track, add it's track manager to the vector that matches the key with the name of the track
-    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_tracks_map) tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
+    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_tracks_map)& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
     {
         for (size_t i = 0; i < tracks.size(); ++i)
         {
             tracks_map[MinTrackEntry(tracks[i], i)].push_back(track_manager);
         }
     };
-
+    
     for (size_t i = 0; i < file_names.size(); ++i)
     {
         auto track_manager = std::make_shared<TrackManager>(files_dir + file_names[i]);
-
+    
         ADD_TRACKS_TO_MAP(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager);
         ADD_TRACKS_TO_MAP(audio_tracks_map, track_manager->get_audio_tracks(), track_manager);
     }
@@ -53,7 +54,7 @@ void InteractiveTrackSelector::s_select_trakcs_interactively(const wstring& file
     //while ()
 }
 
-std::pair<const TrackEntry*, size_t> InteractiveTrackSelector::_s_prompt_track_selection(const wstring& file_name, const TrackPriorityDescriptor& track_priorities)
+void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, TrackPrioritizer track_prioritizer)
 {
     using namespace ConsoleAttributes;
 
@@ -64,11 +65,4 @@ std::pair<const TrackEntry*, size_t> InteractiveTrackSelector::_s_prompt_track_s
     static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = BlueFG;
     static const string_view& TOP_PRIORITY_TRACKS_COLOR = GreenFG;
 
-    string table_title = (track_priorities.get_most_eligible_track()->type == TrackType::Subtitle) ? "Subtitle" : "Audio";
-    
-    table_title += " tracks in " + Utility::wstring_to_string(file_name);
-
-    vector<vector<string>> rows;
-
-    return std::pair<const TrackEntry*, size_t>();
 }

@@ -24,25 +24,12 @@
 
 DECL_EXCEPTION(TrackRulesParsingError);
 
-struct TrackPriorityDescriptor
+enum class TrackPriorityDescriptor
 {
-public:
-    TrackPriorityDescriptor() = default;
-
-    TrackPriorityDescriptor(const TrackPriorityDescriptor&) = delete;
-    TrackPriorityDescriptor& operator=(const TrackPriorityDescriptor&) = delete;
-
-    TrackPriorityDescriptor(TrackPriorityDescriptor&&) = default;
-
-public:
-    // Return the first track from the category that passed the most tests
-    const TrackEntry* get_most_eligible_track() const;
-
-public:
-    vector<const TrackEntry*> explicitly_excluded;  // Failed test 1
-    vector<const TrackEntry*> not_included;         // Passed test 1 and failed test 2
-    vector<const TrackEntry*> unmatching_language;  // Passed tests 1, 2 and failed test 3
-    vector<const TrackEntry*> top_priority;         // Passed all 3 tests
+    ExplicitlyExcluded,  // Failed test 1
+    NotIncluded,         // Passed test 1 and failed test 2
+    UnmatchingLanguage,  // Passed tests 1, 2 and failed test 3
+    TopPriority,         // Passed all 3 tests
 };
 
 class TrackPrioritizer;
@@ -62,7 +49,7 @@ public:
     static TrackPrioritizers s_from_file(const string& rules_file_path);
 
 public:
-    TrackPriorityDescriptor get_track_priorities(const Tracks& tracks) const;
+    TrackPriorityDescriptor get_track_priority(const TrackEntry& track) const;
 
 PRIVATE:
     TrackPrioritizer() = default;

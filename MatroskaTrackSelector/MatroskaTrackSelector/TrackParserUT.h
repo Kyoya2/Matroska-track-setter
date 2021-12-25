@@ -31,6 +31,6 @@ namespace TrackParserUT
 
         TrackPrioritizers ts = TrackPrioritizer::s_from_file("Track selection rules.txt");
 
-        ts.first.get_track_priorities(subs);
+        ts.first.get_track_priority(subs[0]);
     }
 }
