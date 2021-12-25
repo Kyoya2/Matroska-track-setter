@@ -46,6 +46,33 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const TrackEntry& t
         return TrackPriorityDescriptor::TopPriority;
 }
 
+const TrackEntry* TrackPrioritizer::get_track_with_highest_priority(const Tracks& tracks) const
+{
+    const TrackEntry* explicitly_excluded = nullptr;
+    const TrackEntry* not_included = nullptr;
+    const TrackEntry* unmatching_language = nullptr;
+
+    for (const auto& track : tracks)
+    {
+        TrackPriorityDescriptor priority = get_track_priority(track);
+        if (TrackPriorityDescriptor::TopPriority == priority)
+            return &track;
+        else if ((TrackPriorityDescriptor::UnmatchingLanguage == priority) && (nullptr == unmatching_language))
+            unmatching_language = &track;
+        else if ((TrackPriorityDescriptor::NotIncluded == priority) && (nullptr == not_included))
+            not_included = &track;
+        else if ((TrackPriorityDescriptor::ExplicitlyExcluded == priority) && (nullptr == explicitly_excluded))
+            explicitly_excluded = &track;
+    }
+
+    if (nullptr != unmatching_language)
+        return unmatching_language;
+    else if (nullptr != not_included)
+        return not_included;
+    else
+        return explicitly_excluded;
+}
+
 TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)
 {
     static const string_view SUBTILE_RULES_HEADER = "======================== Subtitle track selection rules ========================";

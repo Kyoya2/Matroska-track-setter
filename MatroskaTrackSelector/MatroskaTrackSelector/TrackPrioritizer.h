@@ -50,6 +50,7 @@ public:
 
 public:
     TrackPriorityDescriptor get_track_priority(const TrackEntry& track) const;
+    const TrackEntry* get_track_with_highest_priority(const Tracks& tracks) const;
 
 PRIVATE:
     TrackPrioritizer() = default;
