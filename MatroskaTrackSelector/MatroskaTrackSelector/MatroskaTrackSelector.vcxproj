@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate\</IntDir>
   </PropertyGroup>
@@ -81,7 +81,7 @@
     <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Out\$(ProjectName)\$(PlatformTarget)\$(Configuration)\$(ProjectName)_Intermediate\</IntDir>
   </PropertyGroup>
