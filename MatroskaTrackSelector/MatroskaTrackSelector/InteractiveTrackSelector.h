@@ -39,7 +39,7 @@ struct MinTrackEntry
 
     MinTrackEntry(MinTrackEntry&&) = default;
 
-    const string name;
+    string name;
     const string_view& language;
 };
 
@@ -58,6 +58,7 @@ private:
     using TracksMap = std::map<MinTrackEntry, vector<shared_ptr<TrackManager>>, bool(*)(const MinTrackEntry&, const MinTrackEntry&)>;
 
 private:
-    static void _s_select_tracks_interactively(TracksMap& tracks_map, TrackPrioritizer track_prioritizer);
+    static void _s_add_tracks_to_map()
+    static void _s_select_tracks_interactively(TracksMap& tracks_map);
 };
 

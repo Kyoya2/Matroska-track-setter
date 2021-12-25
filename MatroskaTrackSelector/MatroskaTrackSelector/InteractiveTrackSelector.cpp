@@ -34,35 +34,58 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
     TracksMap subtitle_tracks_map(_s_track_entry_comparison);
     TracksMap audio_tracks_map(_s_track_entry_comparison);
     
-    // for each track, add it's track manager to the vector that matches the key with the name of the track
-    static const auto ADD_TRACKS_TO_MAP = [](decltype(subtitle_tracks_map)& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
-    {
-        for (size_t i = 0; i < tracks.size(); ++i)
-        {
-            tracks_map[MinTrackEntry(tracks[i], i)].push_back(track_manager);
-        }
-    };
-    
     for (size_t i = 0; i < file_names.size(); ++i)
     {
         auto track_manager = std::make_shared<TrackManager>(files_dir + file_names[i]);
     
-        ADD_TRACKS_TO_MAP(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager);
-        ADD_TRACKS_TO_MAP(audio_tracks_map, track_manager->get_audio_tracks(), track_manager);
+        _s_add_tracks_to_map(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager, track_prioritizers.first);
+        _s_add_tracks_to_map(audio_tracks_map, track_manager->get_audio_tracks(), track_manager, track_prioritizers.second);
     }
-
-    //while ()
 }
 
-void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, TrackPrioritizer track_prioritizer)
+void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager, const TrackPrioritizer& track_prioritizer)
 {
     using namespace ConsoleAttributes;
-
-    static const vector<string> TABLE_HEADERS{ "#", "Name", "Language" };
-
     static const string_view& EXPLICITLY_EXCLUDED_TRACKS_COLOR = RedFG;
     static const string_view& NOT_INCLUDED_TRACKS_COLOR = YellowFG;
     static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = BlueFG;
     static const string_view& TOP_PRIORITY_TRACKS_COLOR = GreenFG;
+
+    for (size_t i = 0; i < tracks.size(); ++i)
+    {
+        MinTrackEntry min_track_entry(tracks[i], i);
+        const string_view* name_color = nullptr;
+
+        switch (track_prioritizer.get_track_priority(tracks[i]))
+        {
+        case TrackPriorityDescriptor::ExplicitlyExcluded:
+            name_color = &EXPLICITLY_EXCLUDED_TRACKS_COLOR;
+            break;
+
+        case TrackPriorityDescriptor::NotIncluded:
+            name_color = &NOT_INCLUDED_TRACKS_COLOR;
+            break;
+
+        case TrackPriorityDescriptor::UnmatchingLanguage:
+            name_color = &UNMATCHING_LUANGUAGE_TRACKS_COLOR;
+            break;
+
+        case TrackPriorityDescriptor::TopPriority:
+            name_color = &TOP_PRIORITY_TRACKS_COLOR;
+            break;
+        }
+
+        min_track_entry.name = string(*name_color) + min_track_entry.name + string(WhiteFG);
+
+        tracks_map[std::move(min_track_entry)].push_back(track_manager);
+    }
+}
+
+void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map)
+{
+    
+
+    static const vector<string> TABLE_HEADERS{ "#", "Name", "Language" };
+
 
 }
