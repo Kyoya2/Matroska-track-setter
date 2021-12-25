@@ -58,7 +58,11 @@ private:
     using TracksMap = std::map<MinTrackEntry, vector<shared_ptr<TrackManager>>, bool(*)(const MinTrackEntry&, const MinTrackEntry&)>;
 
 private:
-    static void _s_add_tracks_to_map()
-    static void _s_select_tracks_interactively(TracksMap& tracks_map);
+    static void _s_add_tracks_to_map(
+        TracksMap& tracks_map,
+        const Tracks& tracks,
+        shared_ptr<TrackManager> track_manager,
+        const TrackPrioritizer& track_prioritizer);
+    static void _s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name);
 };
 

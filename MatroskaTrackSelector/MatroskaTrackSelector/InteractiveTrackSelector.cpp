@@ -41,6 +41,9 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
         _s_add_tracks_to_map(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager, track_prioritizers.first);
         _s_add_tracks_to_map(audio_tracks_map, track_manager->get_audio_tracks(), track_manager, track_prioritizers.second);
     }
+
+    _s_select_tracks_interactively(subtitle_tracks_map, "subtitle");
+    _s_select_tracks_interactively(audio_tracks_map, "audio");
 }
 
 void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager, const TrackPrioritizer& track_prioritizer)
@@ -53,9 +56,7 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
 
     for (size_t i = 0; i < tracks.size(); ++i)
     {
-        MinTrackEntry min_track_entry(tracks[i], i);
         const string_view* name_color = nullptr;
-
         switch (track_prioritizer.get_track_priority(tracks[i]))
         {
         case TrackPriorityDescriptor::ExplicitlyExcluded:
@@ -75,17 +76,31 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
             break;
         }
 
+        MinTrackEntry min_track_entry(tracks[i], i);
         min_track_entry.name = string(*name_color) + min_track_entry.name + string(WhiteFG);
 
         tracks_map[std::move(min_track_entry)].push_back(track_manager);
     }
 }
 
-void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map)
+void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name)
 {
+    static const vector<string> TABLE_HEADERS{ "#", "Common", "Name", "Language" };
+    vector<vector<string>> rows;
+
+    size_t i = 1;
+    for (auto const& [track_entry, track_managers] : tracks_map)
+    {
+        rows.emplace_back(vector{
+            std::to_string(i),
+            std::to_string(track_managers.size()) + "/" + std::to_string(tracks_map.size()),
+            track_entry.name,
+            string(track_entry.language)});
+        ++i;
+    }
+
+    size_t choice = 0;
+    ConsoleUtils::print_table(string("Remaining") + track_set_name + "tracks", TABLE_HEADERS, rows);
+    std::cin >> choice;
     
-
-    static const vector<string> TABLE_HEADERS{ "#", "Name", "Language" };
-
-
 }
