@@ -20,6 +20,7 @@
 #include <numeric>
 #include <iomanip>
 #include <cstdlib>
+#include <regex>
 
 #include "Common.h"
 
@@ -63,11 +64,14 @@ namespace ConsoleAttributes
     static const string_view NoUnderline     = "\x1b[24m";
 }
 
-namespace ConsoleUtils
+class ConsoleUtils
 {
+public:
     inline void cls() { std::system("cls"); }
     static void print_table(string title, vector<string> headers, vector<vector<string>> rows)
     {
+#define padded_text(text, padding) text << string(padding - _s_get_console_text_size(text), ' ')
+
         size_t num_columns = headers.size();
         if (!rows.empty() && (rows[0].size() != num_columns))
         {
@@ -78,10 +82,10 @@ namespace ConsoleUtils
         vector<size_t> column_widths(num_columns);
         for (size_t col = 0; col < num_columns; ++col)
         {
-            column_widths[col] = headers[col].size();
+            column_widths[col] = _s_get_console_text_size(headers[col]);
             for (size_t row = 0; row < rows.size(); ++row)
             {
-                column_widths[col] = std::max(column_widths[col], rows[row][col].size());
+                column_widths[col] = std::max(column_widths[col], _s_get_console_text_size(rows[row][col]));
             }
         }
 
@@ -109,7 +113,7 @@ namespace ConsoleUtils
         cout << u8"╗" << endl;
 
         // title
-        cout << u8"║ " << std::setw(frame_width - 2) << title << u8" ║" << endl;
+        cout << u8"║ " << padded_text(title, frame_width - 2) << u8" ║" << endl;
 
         // title separator
         cout << u8"╟";
@@ -124,7 +128,7 @@ namespace ConsoleUtils
             if (col != 0)
                 cout << u8" │ ";
 
-            cout << std::setw(column_widths[col]) << headers[col];
+            cout << padded_text(headers[col], column_widths[col]);
         }
         cout << internal_padding << u8" ║" << endl;
 
@@ -149,10 +153,11 @@ namespace ConsoleUtils
                 if (col != 0)
                     cout << u8" │ ";
 
-                cout << std::setw(column_widths[col]) << rows[row][col];
+                cout << padded_text(rows[row][col], column_widths[col]);
             }
             cout << internal_padding << u8" ║" << endl;
         }
+#undef padded_text
 
         // frame bottom
         cout << u8"╚";
@@ -160,4 +165,17 @@ namespace ConsoleUtils
             cout << u8"═";
         cout << u8"╝" << endl;
     }
-}
+
+private:
+    static size_t _s_get_console_text_size(const string& text)
+    {   //
+        //\x1b[100mBLA\x1b[4m
+        static const std::regex COLORED_TEXT("^\x1b\\[\\d{1,3}m.*\x1b\\[\\d{1,3}m$");
+
+        if (std::regex_search(text, COLORED_TEXT))
+        {
+            return text.rfind('\x1b') - text.find('m') - 1;
+        }
+        return text.size();
+    }
+};
