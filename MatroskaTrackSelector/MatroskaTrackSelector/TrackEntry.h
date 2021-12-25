@@ -59,8 +59,8 @@ public:
     BasicSharedPtr<EbmlElement> flag_forced_element;
 
     // Element values
-    TrackType track_type;
-    string track_name;
+    TrackType type;
+    string name;
     string_view language;
     bool is_default;
     bool is_forced;

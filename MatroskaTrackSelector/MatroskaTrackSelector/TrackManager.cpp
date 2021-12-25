@@ -122,17 +122,17 @@ void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
     {
         TrackEntry current_track_entry = track;
         
-        switch (current_track_entry.track_type)
+        switch (current_track_entry.type)
         {
         case TrackType::Audio:
             current_track_entry.load_values();
-            DEBUG_PRINT_LINE("Audio track named '" << current_track_entry.track_name << "'");
+            DEBUG_PRINT_LINE("Audio track named '" << current_track_entry.name << "'");
             m_audio_tracks.emplace_back(std::move(current_track_entry));
             break;
 
         case TrackType::Subtitle:
             current_track_entry.load_values();
-            DEBUG_PRINT_LINE("Subtitle track named '" << current_track_entry.track_name << "'");
+            DEBUG_PRINT_LINE("Subtitle track named '" << current_track_entry.name << "'");
             m_subtitle_tracks.emplace_back(std::move(current_track_entry));
             break;
         }

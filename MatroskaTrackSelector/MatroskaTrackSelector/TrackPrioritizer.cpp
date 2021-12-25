@@ -49,7 +49,7 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priorities(const Tracks& tra
         passed_current_test = true;
         for (const std::regex& exclude_keyword : exclude_keywords)
         {
-            if (std::regex_search(current_track.track_name, exclude_keyword))
+            if (std::regex_search(current_track.name, exclude_keyword))
             {
                 result.explicitly_excluded.push_back(&current_track);
                 passed_current_test = false;
@@ -74,7 +74,7 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priorities(const Tracks& tra
         passed_current_test = false;
         for (const std::regex& include_keyword : include_keywords)
         {
-            if (std::regex_search(current_track->track_name, include_keyword))
+            if (std::regex_search(current_track->name, include_keyword))
             {
                 passed_current_test = true;
                 container_2.push_back(current_track);

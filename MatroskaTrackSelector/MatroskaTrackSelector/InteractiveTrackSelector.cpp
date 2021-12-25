@@ -17,11 +17,11 @@
 #include "InteractiveTrackSelector.h"
 
 static bool track_entry_comparison(const TrackEntry& a, const TrackEntry& b) {
-    for (size_t i = 0; i < std::min(a.track_name.size(), b.track_name.size()); ++i)
+    for (size_t i = 0; i < std::min(a.name.size(), b.name.size()); ++i)
     {
-        if (std::tolower(a.track_name[i]) < std::tolower(b.track_name[i]))
+        if (std::tolower(a.name[i]) < std::tolower(b.name[i]))
             return true;
-        else if (std::tolower(a.track_name[i]) > std::tolower(b.track_name[i]))
+        else if (std::tolower(a.name[i]) > std::tolower(b.name[i]))
             return false;
     }
     return std::strcmp(a.language.data(), b.language.data()) < 0;
@@ -64,7 +64,7 @@ std::pair<const TrackEntry*, size_t> InteractiveTrackSelector::_s_prompt_track_s
     static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = BlueFG;
     static const string_view& TOP_PRIORITY_TRACKS_COLOR = GreenFG;
 
-    string table_title = (track_priorities.get_most_eligible_track()->track_type == TrackType::Subtitle) ? "Subtitle" : "Audio";
+    string table_title = (track_priorities.get_most_eligible_track()->type == TrackType::Subtitle) ? "Subtitle" : "Audio";
     
     table_title += " tracks in " + Utility::wstring_to_string(file_name);
 

@@ -41,13 +41,13 @@ TrackEntry::TrackEntry(BasicSharedPtr<EbmlElement>& track_element) :
     flag_forced_element = children[FlagForced_ID];
 
     // Load only the value of the track type
-    track_type = static_cast<TrackType>(children[TrackType_ID]->get_uint_value());
+    type = static_cast<TrackType>(children[TrackType_ID]->get_uint_value());
 }
 
 void TrackEntry::load_values()
 {
     if (!name_element.is_null())
-        track_name = name_element->get_string_value();
+        name = name_element->get_string_value();
 
     // Initilize the language tag with the default value
     string language_tag = "en";
@@ -91,7 +91,7 @@ TrackEntryHash TrackEntryHasher::_s_hash_track_entry(const TrackEntry& track)
     static const std::hash<string> STRING_HASH;
     static const std::hash<string_view> STRING_VIEW_HASH;
 
-    string lowercase_track_name = track.track_name;
+    string lowercase_track_name = track.name;
     std::transform(
         lowercase_track_name.begin(),
         lowercase_track_name.end(),

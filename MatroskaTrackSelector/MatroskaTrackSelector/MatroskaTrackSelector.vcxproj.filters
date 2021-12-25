@@ -19,9 +19,6 @@
     <Filter Include="Track management">
       <UniqueIdentifier>{124665ef-d1d1-43d5-991b-cd8eee1dd5fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Track management\TrackElement">
-      <UniqueIdentifier>{b944767a-b2ba-450d-bf37-33cbf6a47e5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Track management\TrackManager">
       <UniqueIdentifier>{4966b6b2-72cf-462d-abc8-7ad664c2d134}</UniqueIdentifier>
     </Filter>
@@ -37,6 +34,9 @@
     <Filter Include="Track management\InteractiveTrackSelector">
       <UniqueIdentifier>{c99096bc-a4fd-4622-b219-73550fd88a71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Track management\TrackEntry">
+      <UniqueIdentifier>{b944767a-b2ba-450d-bf37-33cbf6a47e5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -50,7 +50,7 @@
       <Filter>Ebml\EbmlParser</Filter>
     </ClCompile>
     <ClCompile Include="TrackEntry.cpp">
-      <Filter>Track management\TrackElement</Filter>
+      <Filter>Track management\TrackEntry</Filter>
     </ClCompile>
     <ClCompile Include="MatroskaLanguageTags.cpp">
       <Filter>Track management\MatroskaLanguageTags</Filter>
@@ -106,7 +106,7 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="TrackEntry.h">
-      <Filter>Track management\TrackElement</Filter>
+      <Filter>Track management\TrackEntry</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTags.h">
       <Filter>Track management\MatroskaLanguageTags</Filter>
