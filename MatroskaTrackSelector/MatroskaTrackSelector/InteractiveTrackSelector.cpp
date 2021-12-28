@@ -101,6 +101,8 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
 
     while (tracks_map.size() > 0)
     {
+        ConsoleUtils::cls();
+
         vector<vector<string>> rows;
         string num_files_str = std::to_string(num_files);
         size_t i = 1;
@@ -116,8 +118,16 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
 
         size_t choice = 0;
         ConsoleUtils::print_table(string("Choose a ") + track_set_name + " track", TABLE_HEADERS, rows);
-        std::cin >> choice;
 
-        ConsoleUtils::cls();
+        cout << "Enter the number of the track you want to choose: ";
+        
+        if (!(std::cin >> choice))
+        {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
+        else if (choice > tracks_map.size() || choice == 0)
+            continue;
     }
 }

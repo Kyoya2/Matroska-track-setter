@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <cstring>
+#include <limits>
 
 #include "Common.h"
 #include "TrackPrioritizer.h"
