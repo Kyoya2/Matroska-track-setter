@@ -114,9 +114,6 @@
     <ClInclude Include="MatroskaLanguageTagsUT.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="TrackParserUT.h">
-      <Filter>Tests</Filter>
-    </ClInclude>
     <ClInclude Include="TrackManager.h">
       <Filter>Track management\TrackManager</Filter>
     </ClInclude>

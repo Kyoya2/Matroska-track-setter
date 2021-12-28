@@ -21,6 +21,7 @@
 #include <memory>
 #include <cstring>
 #include <limits>
+#include <sstream>
 
 #include "Common.h"
 #include "TrackPrioritizer.h"
@@ -33,15 +34,19 @@ using std::shared_ptr;
 
 struct MinTrackEntry
 {
-    MinTrackEntry(const TrackEntry& track_entry, size_t unnamed_track_index) :
-        name(track_entry.name.empty() ? ("Unnamed track " + std::to_string(unnamed_track_index)) : track_entry.name),
-        language(track_entry.language)
+    MinTrackEntry(const TrackEntry& track_entry, size_t unnamed_track_number) :
+        name(track_entry.name),
+        language(track_entry.language),
+        unnamed_track_number(unnamed_track_number)
     {}
 
     MinTrackEntry(MinTrackEntry&&) = default;
 
-    string name;
+    string get_colored_name(const TrackPrioritizer& track_prioritizer) const;
+
+    const string& name;
     const string_view& language;
+    const size_t unnamed_track_number;
 };
 
 class InteractiveTrackSelector
@@ -62,8 +67,7 @@ private:
     static void _s_add_tracks_to_map(
         TracksMap& tracks_map,
         const Tracks& tracks,
-        shared_ptr<TrackManager> track_manager,
-        const TrackPrioritizer& track_prioritizer);
-    static void _s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name, size_t num_files);
+        shared_ptr<TrackManager> track_manager);
+    static void _s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name, const TrackPrioritizer& track_prioritizer, size_t num_files);
 };
 

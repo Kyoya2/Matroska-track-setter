@@ -49,7 +49,7 @@ public:
     static TrackPrioritizers s_from_file(const string& rules_file_path);
 
 public:
-    TrackPriorityDescriptor get_track_priority(const TrackEntry& track) const;
+    TrackPriorityDescriptor get_track_priority(const string& track_name, const string_view& track_language) const;
     const TrackEntry* get_track_with_highest_priority(const Tracks& tracks) const;
 
 PRIVATE:

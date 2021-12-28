@@ -16,11 +16,11 @@
  */
 #include "TrackPrioritizer.h"
 
-TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const TrackEntry& track) const
+TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track_name, const string_view& track_language) const
 {
     for (const std::regex& exclude_keyword : exclude_keywords)
     {
-        if (std::regex_search(track.name, exclude_keyword))
+        if (std::regex_search(track_name, exclude_keyword))
         {
             return TrackPriorityDescriptor::ExplicitlyExcluded;
         }
@@ -29,7 +29,7 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const TrackEntry& t
     bool has_include_keyword = false;
     for (const std::regex& include_keyword : include_keywords)
     {
-        if (std::regex_search(track.name, include_keyword))
+        if (std::regex_search(track_name, include_keyword))
         {
             has_include_keyword = true;
             break;
@@ -40,7 +40,7 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const TrackEntry& t
         return TrackPriorityDescriptor::NotIncluded;
     }
 
-    if (track.language != language)
+    if (track_language != language)
         return TrackPriorityDescriptor::UnmatchingLanguage;
     else
         return TrackPriorityDescriptor::TopPriority;
@@ -54,7 +54,7 @@ const TrackEntry* TrackPrioritizer::get_track_with_highest_priority(const Tracks
 
     for (const auto& track : tracks)
     {
-        TrackPriorityDescriptor priority = get_track_priority(track);
+        TrackPriorityDescriptor priority = get_track_priority(track.name, track.language);
         if (TrackPriorityDescriptor::TopPriority == priority)
             return &track;
         else if ((TrackPriorityDescriptor::UnmatchingLanguage == priority) && (nullptr == unmatching_language))
