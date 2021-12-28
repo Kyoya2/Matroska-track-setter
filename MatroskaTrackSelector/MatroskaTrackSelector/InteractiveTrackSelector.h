@@ -63,6 +63,6 @@ private:
         const Tracks& tracks,
         shared_ptr<TrackManager> track_manager,
         const TrackPrioritizer& track_prioritizer);
-    static void _s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name);
+    static void _s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name, size_t num_files);
 };
 

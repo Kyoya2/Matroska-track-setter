@@ -34,25 +34,37 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
     TracksMap subtitle_tracks_map(_s_track_entry_comparison);
     TracksMap audio_tracks_map(_s_track_entry_comparison);
     
+    size_t num_subtitle_files = 0;
+    size_t num_audio_files = 0;
+
     for (size_t i = 0; i < file_names.size(); ++i)
     {
         auto track_manager = std::make_shared<TrackManager>(files_dir + file_names[i]);
-    
-        _s_add_tracks_to_map(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager, track_prioritizers.first);
-        _s_add_tracks_to_map(audio_tracks_map, track_manager->get_audio_tracks(), track_manager, track_prioritizers.second);
+
+        if (track_manager->get_subtitle_tracks().size() > 0)
+        {
+            _s_add_tracks_to_map(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager, track_prioritizers.first);
+            ++num_subtitle_files;
+        }
+
+        if (track_manager->get_audio_tracks().size() > 0)
+        {
+            _s_add_tracks_to_map(audio_tracks_map, track_manager->get_audio_tracks(), track_manager, track_prioritizers.second);
+            ++num_audio_files;
+        }
     }
 
-    _s_select_tracks_interactively(subtitle_tracks_map, "subtitle");
-    _s_select_tracks_interactively(audio_tracks_map, "audio");
+    _s_select_tracks_interactively(subtitle_tracks_map, "subtitle", num_subtitle_files);
+    _s_select_tracks_interactively(audio_tracks_map, "audio", num_audio_files);
 }
 
 void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager, const TrackPrioritizer& track_prioritizer)
 {
     using namespace ConsoleAttributes;
-    static const string_view& EXPLICITLY_EXCLUDED_TRACKS_COLOR = RedFG;
-    static const string_view& NOT_INCLUDED_TRACKS_COLOR = YellowFG;
-    static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = BlueFG;
-    static const string_view& TOP_PRIORITY_TRACKS_COLOR = GreenFG;
+    static const string_view& EXPLICITLY_EXCLUDED_TRACKS_COLOR = LightRedFG;
+    static const string_view& NOT_INCLUDED_TRACKS_COLOR = LightYellowFG;
+    static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = LightCyanFG;
+    static const string_view& TOP_PRIORITY_TRACKS_COLOR = LightGreenFG;
 
     for (size_t i = 0; i < tracks.size(); ++i)
     {
@@ -83,24 +95,29 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
     }
 }
 
-void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name)
+void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name, size_t num_files)
 {
     static const vector<string> TABLE_HEADERS{ "#", "Common", "Name", "Language" };
-    vector<vector<string>> rows;
 
-    size_t i = 1;
-    for (auto const& [track_entry, track_managers] : tracks_map)
+    while (tracks_map.size() > 0)
     {
-        rows.emplace_back(vector{
-            std::to_string(i),
-            std::to_string(track_managers.size()) + "/" + std::to_string(tracks_map.size()),
-            track_entry.name,
-            string(track_entry.language)});
-        ++i;
-    }
+        vector<vector<string>> rows;
+        string num_files_str = std::to_string(num_files);
+        size_t i = 1;
+        for (auto const& [track_entry, track_managers] : tracks_map)
+        {
+            rows.emplace_back(vector{
+                std::to_string(i),
+                std::to_string(track_managers.size()) + "/" + num_files_str,
+                track_entry.name,
+                string(track_entry.language) });
+            ++i;
+        }
 
-    size_t choice = 0;
-    ConsoleUtils::print_table(string("Remaining") + track_set_name + "tracks", TABLE_HEADERS, rows);
-    std::cin >> choice;
-    
+        size_t choice = 0;
+        ConsoleUtils::print_table(string("Choose a ") + track_set_name + " track", TABLE_HEADERS, rows);
+        std::cin >> choice;
+
+        ConsoleUtils::cls();
+    }
 }

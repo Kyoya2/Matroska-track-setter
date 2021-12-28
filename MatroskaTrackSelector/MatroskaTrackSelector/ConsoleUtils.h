@@ -67,7 +67,7 @@ namespace ConsoleAttributes
 class ConsoleUtils
 {
 public:
-    inline void cls() { std::system("cls"); }
+    static inline void cls() { std::system("cls"); }
     static void print_table(string title, vector<string> headers, vector<vector<string>> rows)
     {
 #define padded_text(text, padding) text << string(padding - _s_get_console_text_size(text), ' ')
