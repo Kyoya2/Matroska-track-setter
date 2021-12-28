@@ -33,8 +33,8 @@ using std::shared_ptr;
 
 struct MinTrackEntry
 {
-    MinTrackEntry(const TrackEntry& track_entry, size_t index) :
-        name(track_entry.name.empty() ? ("Unnamed track " + std::to_string(index)) : track_entry.name),
+    MinTrackEntry(const TrackEntry& track_entry, size_t unnamed_track_index) :
+        name(track_entry.name.empty() ? ("Unnamed track " + std::to_string(unnamed_track_index)) : track_entry.name),
         language(track_entry.language)
     {}
 

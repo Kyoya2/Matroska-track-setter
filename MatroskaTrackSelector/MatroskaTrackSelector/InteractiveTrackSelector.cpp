@@ -66,6 +66,8 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
     static const string_view& UNMATCHING_LUANGUAGE_TRACKS_COLOR = LightCyanFG;
     static const string_view& TOP_PRIORITY_TRACKS_COLOR = LightGreenFG;
 
+    size_t unnamed_track_count = 1;
+
     for (size_t i = 0; i < tracks.size(); ++i)
     {
         const string_view* name_color = nullptr;
@@ -88,10 +90,13 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
             break;
         }
 
-        MinTrackEntry min_track_entry(tracks[i], i);
+        MinTrackEntry min_track_entry(tracks[i], unnamed_track_count);
         min_track_entry.name = string(*name_color) + min_track_entry.name + string(WhiteFG);
 
         tracks_map[std::move(min_track_entry)].push_back(track_manager);
+
+        if (tracks[i].name.empty())
+            ++unnamed_track_count;
     }
 }
 
