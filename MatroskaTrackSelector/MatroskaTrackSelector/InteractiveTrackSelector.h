@@ -32,6 +32,7 @@ DECL_EXCEPTION(FileSelectionError);
 
 using std::shared_ptr;
 
+
 struct MinTrackEntry
 {
     MinTrackEntry(const TrackEntry& track_entry, size_t unnamed_track_number) :
@@ -49,6 +50,7 @@ struct MinTrackEntry
     const size_t unnamed_track_number;
 };
 
+
 class InteractiveTrackSelector
 {
 public:
@@ -61,7 +63,7 @@ public:
     static void s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
 private:
-    using TracksMap = std::map<MinTrackEntry, vector<shared_ptr<TrackManager>>, bool(*)(const MinTrackEntry&, const MinTrackEntry&)>;
+    using TracksMap = std::map<MinTrackEntry, vector<pair<shared_ptr<TrackManager>, size_t>>, bool(*)(const MinTrackEntry&, const MinTrackEntry&)>;
 
 private:
     static void _s_add_tracks_to_map(

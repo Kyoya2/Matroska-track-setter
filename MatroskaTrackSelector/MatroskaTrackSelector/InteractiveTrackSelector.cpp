@@ -77,7 +77,7 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
 
     for (size_t i = 0; i < tracks.size(); ++i)
     {
-        tracks_map[MinTrackEntry(tracks[i], unnamed_track_count)].push_back(track_manager);
+        tracks_map[MinTrackEntry(tracks[i], unnamed_track_count)].emplace_back(track_manager, i);
 
         if (tracks[i].name.empty())
             ++unnamed_track_count;
@@ -125,10 +125,10 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         auto selected_element = tracks_map.begin();
         std::advance(selected_element, choice - 1);
 
-        //for (const shared_ptr<TrackManager>& track_manager : selected_element->second)
-        //{
-        //
-        //}
+        for (const auto& [track_manager, track_index] : selected_element->second)
+        {
+            //track_manager->se
+        }
     }
 }
 
