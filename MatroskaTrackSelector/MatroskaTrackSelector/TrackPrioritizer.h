@@ -34,7 +34,7 @@ enum class TrackPriorityDescriptor
 
 class TrackPrioritizer;
 
-using TrackPrioritizers = std::pair<TrackPrioritizer, TrackPrioritizer>;
+using TrackPrioritizers = pair<TrackPrioritizer, TrackPrioritizer>;
 
 class TrackPrioritizer
 {

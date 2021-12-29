@@ -39,6 +39,7 @@ using std::string;
 using std::wstring;
 using std::string_view;
 using std::reference_wrapper;
+using std::pair;
 
 using Buffer = vector<uint8_t>;
 

@@ -50,7 +50,7 @@ static string get_current_exe_directory()
     return string(buffer, string_view(buffer).find_last_of("\\/") + 1);
 }
 
-static std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
+static pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
 {
     vector<wchar_t> file_names(0x4000); // Anime file names can get quite large so we put then on the heap
     file_names[0] = '\0';
@@ -90,7 +90,7 @@ static std::pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     return std::make_pair(std::move(parent_directory), std::move(file_name_list));
 }
 
-static void do_automatic_selection(const std::pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers)
+static void do_automatic_selection(const pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers)
 {
     for (const wstring& file_name : files.second)
     {
