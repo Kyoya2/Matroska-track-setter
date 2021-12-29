@@ -23,8 +23,8 @@ public:
     // Mark a track for selection and if both tracks are marked for selection, actually perform the selection
     // and return true. Otherwise, only one track type has been marked for selection and no actual selection
     // has been made, return false.
-    bool mark_subtitle_track_for_selection(const size_t track_index);
-    bool mark_audio_track_for_selection(const size_t track_index);
+    void mark_subtitle_track_for_selection(const size_t track_index);
+    void mark_audio_track_for_selection(const size_t track_index);
 
 private:
     size_t m_selected_subtitle_track_index;
