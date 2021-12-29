@@ -16,36 +16,11 @@
  */
 #include "InteractiveTrackSelector.h"
 
-static bool _s_track_entry_comparison(const MinTrackEntry& a, const MinTrackEntry& b)
-{
-    if ((std::min(a.name.size(), b.name.size()) == 0) &&
-        (std::max(a.name.size(), b.name.size()) > 0))
-    {
-        return a.name.size() == 0;
-    }
-
-    for (size_t i = 0; i < std::min(a.name.size(), b.name.size()); ++i)
-    {
-        if (std::tolower(a.name[i]) < std::tolower(b.name[i]))
-            return true;
-        else if (std::tolower(a.name[i]) > std::tolower(b.name[i]))
-            return false;
-    }
-    int lang_strcmp = std::strcmp(a.language.data(), b.language.data());
-    if (0 != lang_strcmp)
-        return lang_strcmp < 0;
-
-    if (a.name.empty())
-        return a.unnamed_track_number < b.unnamed_track_number;
-    else
-        return false;
-}
-
 void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
 {
     // Maps between track names (case insensitively) to vectors of track managers that have tracks with those names
-    TracksMap subtitle_tracks_map(_s_track_entry_comparison);
-    TracksMap audio_tracks_map(_s_track_entry_comparison);
+    TracksMap subtitle_tracks_map;
+    TracksMap audio_tracks_map;
     
     size_t num_subtitle_files = 0;
     size_t num_audio_files = 0;

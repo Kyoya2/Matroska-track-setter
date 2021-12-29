@@ -16,6 +16,8 @@ struct MinTrackEntry
 
     string get_colored_name(const TrackPrioritizer& track_prioritizer) const;
 
+    bool operator<(const MinTrackEntry& other) const;
+
     const string& name;
     const string_view& language;
     const size_t unnamed_track_number;

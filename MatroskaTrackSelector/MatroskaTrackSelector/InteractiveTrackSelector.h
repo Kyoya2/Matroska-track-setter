@@ -45,7 +45,7 @@ public:
     static void s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
 private:
-    using TracksMap = std::map<MinTrackEntry, vector<pair<shared_ptr<TrackManager>, size_t>>, bool(*)(const MinTrackEntry&, const MinTrackEntry&)>;
+    using TracksMap = std::map<MinTrackEntry, vector<pair<shared_ptr<TrackManager>, size_t>>>;
 
 private:
     static void _s_add_tracks_to_map(
