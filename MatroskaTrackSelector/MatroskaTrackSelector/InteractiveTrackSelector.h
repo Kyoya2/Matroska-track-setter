@@ -28,6 +28,7 @@
 #include "TrackManager.h"
 #include "MinTrackEntry.h"
 #include "MatroskaElementSpecification.h"
+#include "AutomaticTrackSelector.h"
 
 DECL_EXCEPTION(FileSelectionError);
 
@@ -46,13 +47,13 @@ public:
     static void s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
 private:
-    using TracksMap = std::map<MinTrackEntry, vector<pair<shared_ptr<TrackManager>, size_t>>>;
+    using TracksMap = std::map<MinTrackEntry, vector<pair<shared_ptr<AutomaticTrackSelector>, size_t>>>;
 
 private:
     static void _s_add_tracks_to_map(
         TracksMap& tracks_map,
         const Tracks& tracks,
-        shared_ptr<TrackManager> track_manager);
+        shared_ptr<AutomaticTrackSelector> track_manager);
     static void _s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files);
 };
 

@@ -40,6 +40,9 @@
     <Filter Include="Track management\InteractiveTrackSelector\MinTrackEntry">
       <UniqueIdentifier>{b54f6c32-3fe2-424d-8214-e76294acec92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Track management\InteractiveTrackSelector\AutomaticTrackSelector">
+      <UniqueIdentifier>{d86b3454-3544-4b20-b34f-2db927142e2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -72,6 +75,9 @@
     </ClCompile>
     <ClCompile Include="MinTrackEntry.cpp">
       <Filter>Track management\InteractiveTrackSelector\MinTrackEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomaticTrackSelector.cpp">
+      <Filter>Track management\InteractiveTrackSelector\AutomaticTrackSelector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="MinTrackEntry.h">
       <Filter>Track management\InteractiveTrackSelector\MinTrackEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="AutomaticTrackSelector.h">
+      <Filter>Track management\InteractiveTrackSelector\AutomaticTrackSelector</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

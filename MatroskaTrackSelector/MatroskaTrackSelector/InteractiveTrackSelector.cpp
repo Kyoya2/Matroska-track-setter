@@ -27,7 +27,7 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
 
     for (size_t i = 0; i < file_names.size(); ++i)
     {
-        auto track_manager = std::make_shared<TrackManager>(files_dir + file_names[i]);
+        auto track_manager = std::make_shared<AutomaticTrackSelector>(files_dir + file_names[i]);
 
         if (track_manager->get_subtitle_tracks().size() > 0)
         {
@@ -46,13 +46,13 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
     _s_select_tracks_interactively(audio_tracks_map, TrackType::Audio, track_prioritizers.second, num_audio_files);
 }
 
-void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
+void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<AutomaticTrackSelector> track_selector)
 {
     size_t unnamed_track_count = 1;
 
     for (size_t i = 0; i < tracks.size(); ++i)
     {
-        tracks_map[MinTrackEntry(tracks[i], unnamed_track_count)].emplace_back(track_manager, i);
+        tracks_map[MinTrackEntry(tracks[i], unnamed_track_count)].emplace_back(track_selector, i);
 
         if (tracks[i].name.empty())
             ++unnamed_track_count;
@@ -102,7 +102,7 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
 
         for (const auto& [track_manager, track_index] : selected_element->second)
         {
-            //track_manager->se
+            //track_selector->se
         }
     }
 }
