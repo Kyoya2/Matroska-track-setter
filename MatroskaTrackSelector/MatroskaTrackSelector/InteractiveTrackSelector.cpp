@@ -18,7 +18,7 @@
 
 void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
 {
-    // Maps between track names (case insensitively) to vectors of track managers that have tracks with those names
+    // Maps between track names (case insensitively) to vectors of track selectors that have tracks with those names
     TracksMap subtitle_tracks_map;
     TracksMap audio_tracks_map;
     
@@ -27,17 +27,17 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
 
     for (size_t i = 0; i < file_names.size(); ++i)
     {
-        auto track_manager = std::make_shared<AutomaticTrackSelector>(files_dir + file_names[i]);
+        auto track_selector = std::make_shared<AutomaticTrackSelector>(files_dir + file_names[i]);
 
-        if (track_manager->get_subtitle_tracks().size() > 0)
+        if (track_selector->get_subtitle_tracks().size() > 0)
         {
-            _s_add_tracks_to_map(subtitle_tracks_map, track_manager->get_subtitle_tracks(), track_manager);
+            _s_add_tracks_to_map(subtitle_tracks_map, track_selector->get_subtitle_tracks(), track_selector);
             ++num_subtitle_files;
         }
 
-        if (track_manager->get_audio_tracks().size() > 0)
+        if (track_selector->get_audio_tracks().size() > 0)
         {
-            _s_add_tracks_to_map(audio_tracks_map, track_manager->get_audio_tracks(), track_manager);
+            _s_add_tracks_to_map(audio_tracks_map, track_selector->get_audio_tracks(), track_selector);
             ++num_audio_files;
         }
     }
@@ -67,15 +67,16 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
     {
         ConsoleUtils::cls();
         
-        vector<vector<string>> rows;
+        // Building table to print
+        vector<vector<string>> table_rows;
         string num_files_str = std::to_string(num_files);
         size_t i = 1;
-        for (auto const& [track_entry, track_managers] : tracks_map)
+        for (const auto& [track_entry, track_selectors] : tracks_map)
         {
             std::stringstream strstr;
-            strstr << static_cast<float>(track_managers.size()) / num_files * 100 << '%';
+            strstr << static_cast<float>(track_selectors.size()) / num_files * 100 << '%';
 
-            rows.emplace_back(vector{
+            table_rows.emplace_back(vector{
                 std::to_string(i),
                 std::move(strstr.str()),
                 track_entry.get_colored_name(track_prioritizer),
@@ -84,10 +85,10 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         }
 
         size_t choice = 0;
-        ConsoleUtils::print_table(string("Choose a ") + ((track_type == TrackType::Subtitle) ? "subtitle" : "audio") + " track", TABLE_HEADERS, rows);
+        ConsoleUtils::print_table(string("Choose a ") + ((track_type == TrackType::Subtitle) ? "subtitle" : "audio") + " track", TABLE_HEADERS, table_rows);
 
+        // Prompt for input
         cout << "Enter the number of the track you want to choose: ";
-        
         if (!(std::cin >> choice))
         {
             std::cin.clear();
@@ -97,12 +98,46 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         else if (choice > tracks_map.size() || choice == 0)
             continue;
 
+
         auto selected_element = tracks_map.begin();
         std::advance(selected_element, choice - 1);
 
-        for (const auto& [track_manager, track_index] : selected_element->second)
+        // Iterate over all track selectors that contain the selected track
+        for (const auto& [track_selector, track_index] : selected_element->second)
         {
-            //track_selector->se
+            // Set the selected track as the default track
+            if (track_type == TrackType::Subtitle)
+                track_selector->mark_subtitle_track_for_selection(track_index);
+            else // if (track_type == TrackType::Audio)
+                track_selector->mark_audio_track_for_selection(track_index);
+
+            // Remove the current track selector from ALL key-value pairs in the tracks map
+            for (auto map_iterator = tracks_map.begin(); map_iterator != tracks_map.end();)
+            {
+                // Don't remove the selector from the current key-vale pair as to not invalidate the iterator
+                // Nonethelss, we will remove the whole key-value pair outside this loop
+                if (map_iterator->second.data() == selected_element->second.data())
+                    continue;
+                
+                // Find the iterator that matches the current tracks selector inside the current vector and
+                // remove it from that vector
+                auto it = map_iterator->second.begin();
+                while (it->first != track_selector)
+                {
+                    ++it;
+                }
+                map_iterator->second.erase(it);
+
+                // If the current track entry doesn't have any more track selectors, remove it from the map
+                if (0 == map_iterator->second.size())
+                {
+                    map_iterator = tracks_map.erase(map_iterator);
+                    continue;
+                }
+            }
+
+            // Remove the selected track entry from the map
+            tracks_map.erase(selected_element->first);
         }
     }
 }

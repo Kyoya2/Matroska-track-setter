@@ -22,6 +22,7 @@
 #include <cstring>
 #include <limits>
 #include <sstream>
+#include <algorithm>
 
 #include "Common.h"
 #include "TrackPrioritizer.h"
@@ -47,13 +48,14 @@ public:
     static void s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
 
 private:
-    using TracksMap = std::map<MinTrackEntry, vector<pair<shared_ptr<AutomaticTrackSelector>, size_t>>>;
+    using TracksMapValueContent = pair<shared_ptr<AutomaticTrackSelector>, size_t>;
+    using TracksMap = std::map<MinTrackEntry, vector<TracksMapValueContent>>;
 
 private:
     static void _s_add_tracks_to_map(
         TracksMap& tracks_map,
         const Tracks& tracks,
-        shared_ptr<AutomaticTrackSelector> track_manager);
+        shared_ptr<AutomaticTrackSelector> track_selector);
     static void _s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files);
 };
 
