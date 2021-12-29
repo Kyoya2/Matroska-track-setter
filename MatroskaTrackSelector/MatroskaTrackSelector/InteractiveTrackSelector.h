@@ -26,29 +26,11 @@
 #include "Common.h"
 #include "TrackPrioritizer.h"
 #include "TrackManager.h"
-#include "ConsoleUtils.h"
+#include "MinTrackEntry.h"
 
 DECL_EXCEPTION(FileSelectionError);
 
 using std::shared_ptr;
-
-
-struct MinTrackEntry
-{
-    MinTrackEntry(const TrackEntry& track_entry, size_t unnamed_track_number) :
-        name(track_entry.name),
-        language(track_entry.language),
-        unnamed_track_number(unnamed_track_number)
-    {}
-
-    MinTrackEntry(MinTrackEntry&&) = default;
-
-    string get_colored_name(const TrackPrioritizer& track_prioritizer) const;
-
-    const string& name;
-    const string_view& language;
-    const size_t unnamed_track_number;
-};
 
 
 class InteractiveTrackSelector

@@ -194,6 +194,7 @@
     <ClInclude Include="EbmlVintUtils.h" />
     <ClInclude Include="BasicSharedPtr.h" />
     <ClInclude Include="MatroskaLanguageTagsUT.h" />
+    <ClInclude Include="MinTrackEntry.h" />
     <ClInclude Include="TrackEntry.h" />
     <ClInclude Include="TrackManager.h" />
     <ClInclude Include="TrackPrioritizer.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="EbmlElement.cpp" />
     <ClCompile Include="MatroskaLanguageTags.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MinTrackEntry.cpp" />
     <ClCompile Include="TrackEntry.cpp" />
     <ClCompile Include="TrackManager.cpp" />
     <ClCompile Include="TrackPrioritizer.cpp" />
