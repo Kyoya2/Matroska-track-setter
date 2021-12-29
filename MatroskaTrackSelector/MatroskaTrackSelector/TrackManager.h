@@ -22,8 +22,6 @@
 #include "TrackEntry.h"
 #include "DefaultTrackSetterHandlers.h"
 
-DECL_EXCEPTION(FittingHandlerNotFound);
-
 class TrackManager
 {
 public:
@@ -34,6 +32,7 @@ public:
     const Tracks& get_audio_tracks() { return m_audio_tracks;  }
 
     void set_default_tracks(const TrackEntry* subtitle_track, const TrackEntry* audio_track);
+    void set_default_tracks(const size_t subtitle_track_index, const size_t audio_track_index);
 
 PRIVATE:
     void _load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element);
@@ -42,7 +41,7 @@ PRIVATE:
     void _s_set_default_track(
         Tracks& tracks,                         // Either subtitle tracks or audio tracks
         TrackEntry* default_track,              // A pointer to the track to set as the default amongst the tracks in 'tracks'
-        Tracks& other_tracks,                   // The track set that's not specified by 'tracks'. e.g. if track is subtitles then this is audio
+        Tracks& other_tracks,                   // The track set that's not specified by 'tracks'. e.g. if `tracks` is subtitles then this is audio
         const TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
 
 PRIVATE:

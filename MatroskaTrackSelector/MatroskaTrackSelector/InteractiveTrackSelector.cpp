@@ -42,8 +42,8 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
         }
     }
 
-    _s_select_tracks_interactively(subtitle_tracks_map, "subtitle", track_prioritizers.first, num_subtitle_files);
-    _s_select_tracks_interactively(audio_tracks_map, "audio", track_prioritizers.second, num_audio_files);
+    _s_select_tracks_interactively(subtitle_tracks_map, TrackType::Subtitle, track_prioritizers.first, num_subtitle_files);
+    _s_select_tracks_interactively(audio_tracks_map, TrackType::Audio, track_prioritizers.second, num_audio_files);
 }
 
 void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<TrackManager> track_manager)
@@ -59,7 +59,7 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
     }
 }
 
-void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name, const TrackPrioritizer& track_prioritizer, size_t num_files)
+void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files)
 {
     static const vector<string> TABLE_HEADERS{ "#", "%", "Name", "Language" };
 
@@ -84,7 +84,7 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         }
 
         size_t choice = 0;
-        ConsoleUtils::print_table(string("Choose a ") + track_set_name + " track", TABLE_HEADERS, rows);
+        ConsoleUtils::print_table(string("Choose a ") + ((track_type == TrackType::Subtitle) ? "subtitle" : "audio") + " track", TABLE_HEADERS, rows);
 
         cout << "Enter the number of the track you want to choose: ";
         

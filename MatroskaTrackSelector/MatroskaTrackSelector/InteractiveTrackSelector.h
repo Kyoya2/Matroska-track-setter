@@ -27,6 +27,7 @@
 #include "TrackPrioritizer.h"
 #include "TrackManager.h"
 #include "MinTrackEntry.h"
+#include "MatroskaElementSpecification.h"
 
 DECL_EXCEPTION(FileSelectionError);
 
@@ -52,6 +53,6 @@ private:
         TracksMap& tracks_map,
         const Tracks& tracks,
         shared_ptr<TrackManager> track_manager);
-    static void _s_select_tracks_interactively(TracksMap& tracks_map, const string& track_set_name, const TrackPrioritizer& track_prioritizer, size_t num_files);
+    static void _s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files);
 };
 

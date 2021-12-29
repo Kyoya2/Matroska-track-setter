@@ -113,6 +113,11 @@ void TrackManager::set_default_tracks(const TrackEntry* subtitle_track, const Tr
         subtitle_track);
 }
 
+void TrackManager::set_default_tracks(const size_t subtitle_track_index, const size_t audio_track_index)
+{
+    set_default_tracks(&m_subtitle_tracks[subtitle_track_index], &m_audio_tracks[audio_track_index]);
+}
+
 void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
 {
     DEBUG_PRINT_LINE("Loading tracks");
@@ -200,6 +205,6 @@ void TrackManager::_s_set_default_track(
 
     if (!success)
     {
-        throw FittingHandlerNotFound();
+        throw 123;
     }
 }

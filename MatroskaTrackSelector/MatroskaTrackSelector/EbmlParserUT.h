@@ -37,9 +37,7 @@ namespace EbmlParserUT
     void run_tests()
     {
         std::fstream test_file("..\\..\\..\\..\\..\\Test files\\test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
-        //std::fstream test_file("..\\..\\Test files\\1.mkv", std::ios_base::binary | std::ios_base::in);
-        //auto root = EbmlElement::s_construct_from_stream(test_file);
-        //cout << root;
+
         for (uint32_t j = 0; j < 250; ++j)
         {
             test_file.seekp(0);
