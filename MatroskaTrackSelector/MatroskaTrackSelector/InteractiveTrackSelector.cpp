@@ -31,7 +31,14 @@ static bool _s_track_entry_comparison(const MinTrackEntry& a, const MinTrackEntr
         else if (std::tolower(a.name[i]) > std::tolower(b.name[i]))
             return false;
     }
-    return std::strcmp(a.language.data(), b.language.data()) < 0;
+    int lang_strcmp = std::strcmp(a.language.data(), b.language.data());
+    if (0 != lang_strcmp)
+        return lang_strcmp < 0;
+
+    if (a.name.empty())
+        return a.unnamed_track_number < b.unnamed_track_number;
+    else
+        return false;
 }
 
 void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
