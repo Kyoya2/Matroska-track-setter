@@ -74,7 +74,8 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         for (const auto& [track_entry, track_selectors] : tracks_map)
         {
             std::stringstream strstr;
-            strstr << static_cast<float>(track_selectors.size()) / num_files * 100 << '%';
+            float percentage = static_cast<float>(track_selectors.size()) / num_files * 100;
+            strstr << std::setprecision(percentage >= 10 ? 4 : 3) << percentage << '%';
 
             table_rows.emplace_back(vector{
                 std::to_string(i),
@@ -112,32 +113,40 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
                 track_selector->mark_audio_track_for_selection(track_index);
 
             // Remove the current track selector from ALL key-value pairs in the tracks map
-            for (auto map_iterator = tracks_map.begin(); map_iterator != tracks_map.end();)
+            for (auto map_key_value_pair = tracks_map.begin(); map_key_value_pair != tracks_map.end();)
             {
                 // Don't remove the selector from the current key-vale pair as to not invalidate the iterator
                 // Nonethelss, we will remove the whole key-value pair outside this loop
-                if (map_iterator->second.data() == selected_element->second.data())
+                if (map_key_value_pair->second.data() == selected_element->second.data())
+                {
+                    ++map_key_value_pair;
                     continue;
+                }
                 
-                // Find the iterator that matches the current tracks selector inside the current vector and
-                // remove it from that vector
-                auto it = map_iterator->second.begin();
-                while (it->first != track_selector)
+                // If the current vector contains the current track selector, remove the selector from the vector
+                auto it = map_key_value_pair->second.begin();
+                while ((it != map_key_value_pair->second.end()) &&
+                       (it->first != track_selector))
                 {
                     ++it;
                 }
-                map_iterator->second.erase(it);
+                if (it != map_key_value_pair->second.end())
+                    map_key_value_pair->second.erase(it);
 
                 // If the current track entry doesn't have any more track selectors, remove it from the map
-                if (0 == map_iterator->second.size())
+                if (0 == map_key_value_pair->second.size())
                 {
-                    map_iterator = tracks_map.erase(map_iterator);
+                    map_key_value_pair = tracks_map.erase(map_key_value_pair);
                     continue;
                 }
+                else
+                    ++map_key_value_pair;
             }
-
-            // Remove the selected track entry from the map
-            tracks_map.erase(selected_element->first);
         }
+
+        num_files -= selected_element->second.size();
+
+        // Remove the selected track entry from the map
+        tracks_map.erase(selected_element->first);
     }
 }
