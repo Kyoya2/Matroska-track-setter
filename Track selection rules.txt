@@ -16,6 +16,7 @@
 full
 dialog
 english
+eng
 
 ; If one or more of the RegEx patterns in the following lines match the name of
 ; a subtitle track, they will not be selected.
@@ -26,6 +27,7 @@ songs
 s&s
 titles
 japanese
+jap
 
 
 ; Same as above but applied to audio tracks instead of subtitle tracks
@@ -34,7 +36,9 @@ japanese
 
 !INCLUDE KEYWORDS
 japanese
+jap
 
 !EXCLUDE KEYWORDS
-english
 commentary
+english
+eng
