@@ -1,5 +1,3 @@
-This project is unfinished because I decided to write it in C++ https://github.com/Kyoya2/Matroska-track-setter.
-
 Some research I did:
 
 There are currently 2 ways for making a video player select a track be default:
