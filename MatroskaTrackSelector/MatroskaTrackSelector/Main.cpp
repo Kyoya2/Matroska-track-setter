@@ -105,7 +105,17 @@ static void do_automatic_selection(const pair<wstring, vector<wstring>>& files, 
 int main(int, char*)
 {
     using namespace ConsoleAttributes;
-    SetConsoleOutputCP(CP_UTF8); // This is needed for printing unicode characters
+
+    // Enable printing unicode characters for building pretty tables
+    SetConsoleOutputCP(CP_UTF8);
+
+    // Enable color escape codes so we can have a colorful console
+    HANDLE std_out = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD current_console_mode = 0;
+    if (!GetConsoleMode(std_out, &current_console_mode))
+        throw std::exception("Can't get console mode");
+    if (!SetConsoleMode(std_out, current_console_mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING))
+        throw std::exception("Can't set console mode");
 
     TrackSelectionMode selection_mode = TrackSelectionMode::NotSelected;
 
