@@ -113,7 +113,9 @@ bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry*>& tracks, TrackEntry*
 {
     for (TrackEntry* track : tracks)
     {
-        if (track->has_FlagForced())
+        // The commented condition is unnecessary because the default track does not have a FF, otherwise,
+        // It would have been eligable for an earlier case
+        if (track->has_FlagForced() /* && track != default_track */ ) 
         {
             DEBUG_PRINT_LINE("The current track set is eligible for case 5");
 

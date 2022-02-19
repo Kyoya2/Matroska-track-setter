@@ -177,6 +177,8 @@ void TrackManager::_s_set_default_track(
     bool success = false;
     for (size_t i = 0; i < DEAFULT_TRACK_SETTER_HANDLERS.size(); ++i)
     {
+        // Untill case 5, the working state contains all of the tracks in the current file
+        // From case 5, we also add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their distance from the default track 
         if (5 == i)
         {
             for (TrackEntry& track : other_tracks)
@@ -185,7 +187,6 @@ void TrackManager::_s_set_default_track(
                     working_state.push_back(&track);
             }
 
-            // Sort the tracks by their distance from the default track
             std::sort(
                 working_state.begin(),
                 working_state.end(),
