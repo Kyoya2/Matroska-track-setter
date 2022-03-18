@@ -1,0 +1,17 @@
+Some ideas for the future:
+
+Currently, the track selection is done according to 2 attributes: track language and track name.
+Let's add a 3rd attribute for subtitles only and call it something like "Verbosity". The value of this attribute for a given track is "How frequently
+it appears on scrren relative to other tracks that weren't excluded yet" and will be divided to 3 actual values: Low, Medium and High. The benefit of
+this is that it allows us to select "High" verbosity level on our track selection rules file and the program will be able to correctly select the
+"dialoge" track among a number of *unnamed* tracks, since subtitle tracks that appear only for signs and songs are usually less verbose.
+
+Stuff to think about before implementing:
+- We need to parse all/few cluster and blocks (the external structure of the actual video/audio/subtitle data of the MKV) which might slow down
+down the program significantly. 
+- We need to deal with different subtitle codecs when we parse the block data. For example, blocks for subtitle tracks using the "S_TEXT/ASS" codec will
+be located under "Cluster > Block group > Block", but blocks for subtitles tracks using the "S_HDMV/PGS" will be, like all other block, located under
+"Cluster > Simple block", which requires us to parse more simple blocks for each cluster instead of looking for a "Block group > Block" with a matching
+tracks number. More info about codecs in mkv: https://datatracker.ietf.org/doc/html/draft-ietf-cellar-codec-01
+- Need to come up with a way to ditinguish between subtitle tracks that are subbing *commentary* audio instead of the original audio, which might have the
+same amount of verbosity.

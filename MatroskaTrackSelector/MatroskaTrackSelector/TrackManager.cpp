@@ -54,7 +54,7 @@ TrackManager::TrackManager(const wstring& file) : m_file_stream(file, std::ios_b
             DEBUG_PRINT_LINE("Encountered a Void element");
             last_void_element = current_top_level_element;
             // If the tracks have already been loaded and the closes Void element that comes after the Tracks
-          // element wasn't loaded. Set it to be the current Void element.
+            // element wasn't loaded. Set it to be the current Void element.
             if ((previous_element_id == Tracks_ID) && m_void_after_tracks.is_null())
             {
                 m_void_after_tracks = last_void_element;
