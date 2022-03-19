@@ -111,6 +111,9 @@ bool DefaultTrackSetterHandlers::case_4(vector<TrackEntry*>& tracks, TrackEntry*
 
 bool DefaultTrackSetterHandlers::case_5(vector<TrackEntry*>& tracks, TrackEntry* default_track)
 {
+    if (!can_expand_to_contain_ff(default_track))
+        return false;
+
     for (TrackEntry* track : tracks)
     {
         // The commented condition is unnecessary because the default track does not have a FF, otherwise,
