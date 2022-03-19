@@ -6,9 +6,11 @@ for more information, see: https://www.rfc-editor.org/rfc/rfc8794.html#name-ebml
 """
 import re
 import xml.etree.ElementTree as ElementTree
+import requests
 from collections import namedtuple
 
 EBML_SCHEMA_PATH_SEPARATOR = '\\'
+MATROSKA_EBML_SCHEMA_ADDRESS = r'https://raw.githubusercontent.com/ietf-wg-cellar/matroska-specification/master/ebml_matroska.xml'
 
 EbmlElement = namedtuple('EbmlElement', ['Name', 'Type', 'Children', 'PossibleValues'],)
 
@@ -82,12 +84,12 @@ def parse_value_by_type(value, value_type: str):
         raise NotImplementedError('Too lazy to implement parsing for this type')
 
 
-def get_elements(schema_file: str):
+def get_elements(schema_file_data: str):
     """
     This function generates a convinient dict that contains all specified elements
     """
-    tree = ElementTree.parse(schema_file)
-    root = tree.getroot()
+    root = ElementTree.fromstring(schema_file_data)
+    #root = tree.getroot()
 
     def remove_ebml_tag_prefix(tag_name: str) -> str:
         """
@@ -222,7 +224,8 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
     return (element_string, enum_string)
 
 def main():
-    elements = get_elements('ebml_matroska.xml')
+    matroska_ebml_schema = requests.get(MATROSKA_EBML_SCHEMA_ADDRESS).content.decode()
+    elements = get_elements(matroska_ebml_schema)
 
     # Generating 
     elements_string = ''
