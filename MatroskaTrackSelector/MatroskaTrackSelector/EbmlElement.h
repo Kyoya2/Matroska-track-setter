@@ -97,6 +97,11 @@ public:
     // Both elements must be on the same level
     uint64_t get_distance_from(BasicSharedPtr<EbmlElement> other);
 
+    // Moves the current element to a given parent.
+    // Note that after calling this function, all previous references to elements
+    // located between the current element and the new parent will become invalid
+    void move_to(BasicSharedPtr<EbmlElement> new_parent);
+
 PRIVATE:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
