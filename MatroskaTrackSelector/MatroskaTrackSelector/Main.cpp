@@ -145,7 +145,7 @@ int main(int, char*)
     }
 
     auto files_to_process = prompt_mkv_file_selection_dialog();
-    TrackPrioritizers track_prioritizers = TrackPrioritizer::s_from_file(get_current_exe_directory() + "Track selection rules.txt");
+    TrackPrioritizers track_prioritizers = TrackPrioritizer::s_from_file(get_current_exe_directory() + "track_selection_rules.txt");
 
     if (selection_mode == TrackSelectionMode::Automatic)
     {
