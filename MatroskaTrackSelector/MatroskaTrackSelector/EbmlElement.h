@@ -114,6 +114,7 @@ PRIVATE:
     void _initialize_as_root();
     void _create_void_element(size_t size); // Creates a void element of the given size at the current stream position
 
+    // This function creates a pointer of an ebml element using any available contructor
     template <typename... Args>
     static BasicSharedPtr<EbmlElement> s_get(Args&&... args);
 
