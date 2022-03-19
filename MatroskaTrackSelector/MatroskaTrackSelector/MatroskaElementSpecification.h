@@ -334,6 +334,10 @@ enum class StereoMode {
     BothEyesLacedInOneBlockLeftEyeIsFirst = 13,
     BothEyesLacedInOneBlockRightEyeIsFirst = 14
 };
+enum class AlphaMode {
+    None = 0,
+    Present = 1
+};
 enum class OldStereoMode {
     Mono = 0,
     RightEye = 1,
@@ -434,9 +438,9 @@ enum class TrackPlaneType {
     Background = 2
 };
 enum class ContentEncodingScope {
-    AllFrameContentsExcludingLacingData = 1,
-    TheTracksPrivateData = 2,
-    TheNextContentencodingNextContentencodingorder_EitherTheDataInsideContentcompressionAndOrOrContentencryption = 4
+    Block = 1,
+    Private = 2,
+    Next = 4
 };
 enum class ContentEncodingType {
     Compression = 0,
@@ -457,8 +461,8 @@ enum class ContentEncAlgo {
     Aes = 5
 };
 enum class AESSettingsCipherMode {
-    AesCtrOrCounterNistSp80038a = 1,
-    AesCbcOrCipherBlockChainingNistSp80038a = 2
+    AesCtr = 1,
+    AesCbc = 2
 };
 enum class ContentSigAlgo {
     NotSigned = 0,
