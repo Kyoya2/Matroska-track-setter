@@ -237,22 +237,20 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
         | . . . [new_parent [current_element]] [...bridge...] [parent [parent_first_part] [parent_second_part]] . . . |
         * ----------------------------------------------------------------------------------------------------------- *
         */
-        Buffer bridge(m_parent->m_offset - new_parent->_get_offset(EbmlOffset::End));
-        Buffer parent_first_part(this->m_offset - m_parent->m_offset);
+
+        Buffer bridge_and_parent_first_part(this->m_offset - new_parent->_get_offset(EbmlOffset::End));
         
         // Store buffers
         new_parent->_seek_to(EbmlOffset::End);
-        m_stream.get().read(reinterpret_cast<char*>(bridge.data()), bridge.size());
-        m_stream.get().read(reinterpret_cast<char*>(parent_first_part.data()), parent_first_part.size());
+        m_stream.get().read(reinterpret_cast<char*>(bridge_and_parent_first_part.data()), bridge_and_parent_first_part.size());
         m_stream.get().read(reinterpret_cast<char*>(current_element.data()), current_element.size());
 
-        // Rearrange buffers
+        // Write buffers in new order
         new_parent->_seek_to(EbmlOffset::End);
         m_stream.get().write(reinterpret_cast<char*>(current_element.data()), current_element.size());
-        m_stream.get().write(reinterpret_cast<char*>(bridge.data()), bridge.size());
-        m_stream.get().write(reinterpret_cast<char*>(parent_first_part.data()), parent_first_part.size());
+        m_stream.get().write(reinterpret_cast<char*>(bridge_and_parent_first_part.data()), bridge_and_parent_first_part.size());
 
-        // Update referencing objects
+    // Update referencing objects:
         // Current element offset
         this->m_offset = new_parent->_get_offset(EbmlOffset::End);
 
