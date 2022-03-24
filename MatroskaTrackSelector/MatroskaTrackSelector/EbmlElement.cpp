@@ -266,13 +266,53 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
         _seek_to(m_parent->m_offset + m_parent->m_id.get_encoded_size());
         m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
         m_stream.get() << m_parent->m_length;
-
-        // The parent of the current element
-        m_parent = new_parent;
     }
     else
     {
+        /*
+        Before:
+        * ------------------------------------------------------------------------------------------------------------------------------------------------- *
+        | . . . [parent [parent_first_part] [current_element] [parent_second_part]] [...bridge...] [new_parent [new_parent_header] [new_parent_data]] . . . |
+        * ------------------------------------------------------------------------------------------------------------------------------------------------- *
+
+        After:
+        * ------------------------------------------------------------------------------------------------------------------------------------------------- *
+        | . . . [parent [parent_first_part] [parent_second_part]] [...bridge...] [new_parent [new_parent_header] [current_element] [new_parent_data]] . . . |
+        * ------------------------------------------------------------------------------------------------------------------------------------------------- *
+        */
+
+        Buffer parent_second_part_and_bridge_and_new_parent_header(new_parent->_get_offset(EbmlOffset::Data) - this->_get_offset(EbmlOffset::End));
+
+        // Store buffers
+        this->_seek_to(EbmlOffset::Header);
+        m_stream.get().read(reinterpret_cast<char*>(current_element.data()), current_element.size());
+        m_stream.get().read(reinterpret_cast<char*>(parent_second_part_and_bridge_and_new_parent_header.data()), parent_second_part_and_bridge_and_new_parent_header.size());
+
+        // Write buffers in new order
+        this->_seek_to(EbmlOffset::Header);
+        m_stream.get().write(reinterpret_cast<char*>(parent_second_part_and_bridge_and_new_parent_header.data()), parent_second_part_and_bridge_and_new_parent_header.size());
+        m_stream.get().write(reinterpret_cast<char*>(current_element.data()), current_element.size());
+
+    // Update referencing objects:
+        // Old parent size
+        _seek_to(m_parent->m_offset + m_parent->m_id.get_encoded_size());
+        m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
+        m_stream.get() << m_parent->m_length;
+
+        // Current element offset
+        this->m_offset = new_parent->_get_offset(EbmlOffset::Data);
+
+        // New parent offset
+        new_parent->m_offset -= current_element.size();
+
+        // New parent size
+        _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
+        new_parent->m_length = new_parent->m_length.get_value() + current_element.size();
+        m_stream.get() << new_parent->m_length;
     }
+
+    // Update the parent of the current element
+    m_parent = new_parent;
 }
 
 /******************************************************************************************************/
