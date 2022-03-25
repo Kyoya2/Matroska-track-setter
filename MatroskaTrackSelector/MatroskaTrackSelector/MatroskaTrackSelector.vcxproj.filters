@@ -22,9 +22,6 @@
     <Filter Include="Track management\TrackManager">
       <UniqueIdentifier>{4966b6b2-72cf-462d-abc8-7ad664c2d134}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Track management\DefaultTrackSetterHandlers">
-      <UniqueIdentifier>{9a1d38a1-922a-491e-a313-5e4409425aed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Track management\MatroskaLanguageTags">
       <UniqueIdentifier>{53aa9e9b-49e8-4eba-ab7c-48605e4cfd6a}</UniqueIdentifier>
     </Filter>
@@ -63,9 +60,6 @@
     </ClCompile>
     <ClCompile Include="TrackManager.cpp">
       <Filter>Track management\TrackManager</Filter>
-    </ClCompile>
-    <ClCompile Include="DefaultTrackSetterHandlers.cpp">
-      <Filter>Track management\DefaultTrackSetterHandlers</Filter>
     </ClCompile>
     <ClCompile Include="TrackPrioritizer.cpp">
       <Filter>TrackPrioritizer</Filter>
@@ -128,9 +122,6 @@
     </ClInclude>
     <ClInclude Include="TrackManager.h">
       <Filter>Track management\TrackManager</Filter>
-    </ClInclude>
-    <ClInclude Include="DefaultTrackSetterHandlers.h">
-      <Filter>Track management\DefaultTrackSetterHandlers</Filter>
     </ClInclude>
     <ClInclude Include="TrackPrioritizer.h">
       <Filter>TrackPrioritizer</Filter>

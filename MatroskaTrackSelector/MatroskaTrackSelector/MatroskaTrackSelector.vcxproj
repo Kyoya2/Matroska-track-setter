@@ -186,7 +186,6 @@
     <ClInclude Include="BasicSharedPtrUT.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConsoleUtils.h" />
-    <ClInclude Include="DefaultTrackSetterHandlers.h" />
     <ClInclude Include="EbmlElement.h" />
     <ClInclude Include="EbmlElementLength.h" />
     <ClInclude Include="EbmlElementID.h" />
@@ -206,7 +205,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutomaticTrackSelector.cpp" />
-    <ClCompile Include="DefaultTrackSetterHandlers.cpp" />
     <ClCompile Include="EbmlElementID.cpp" />
     <ClCompile Include="EbmlElementLength.cpp" />
     <ClCompile Include="EbmlElement.cpp" />

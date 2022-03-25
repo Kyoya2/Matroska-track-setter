@@ -16,6 +16,17 @@
  */
 #include "TrackManager.h"
 
+// Returns true if a track element can be expanded by 4 bytes to contain a new FlagForced element
+// so that the elements' encoded size doesn't grow
+static bool can_expand_to_contain_ff(const TrackEntry* track)
+{
+    static constexpr uint32_t FF_SIZE = 4;
+    return EbmlElementLength(
+        track->track_element->get_data_length().get_value() + FF_SIZE
+    ).get_encoded_size() ==
+        track->track_element->get_data_length().get_encoded_size();
+}
+
 TrackManager::TrackManager(const wstring& file) : m_file_stream(file, std::ios_base::binary | std::ios_base::out | std::ios_base::in)
 {
     m_file_stream.seekg(0);
@@ -150,7 +161,7 @@ void TrackManager::_s_set_default_track(
     Tracks& other_tracks,
     const TrackEntry* untouchable_track)
 {
-    // Set FlagForced and FlagDefault of all elements (except the default element) to false
+    // Reset FlagForced and FlagDefault of all elements (except the default element)
     for (TrackEntry& track : tracks)
     {
         if (&track == default_track)
@@ -167,6 +178,7 @@ void TrackManager::_s_set_default_track(
         }
     }
 
+    // Fill the working state with all tracks of the default track's type except the default track
     vector<TrackEntry*> working_state;
     for (TrackEntry& track : tracks)
     {
@@ -174,39 +186,119 @@ void TrackManager::_s_set_default_track(
             working_state.push_back(&track);
     }
 
-    bool success = false;
-    for (size_t i = 0; i < DEAFULT_TRACK_SETTER_HANDLERS.size(); ++i)
-    {
-        // Untill case 5, the working state contains all of the tracks in the current file
-        // From case 5, we also add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their distance from the default track
-        // such that the closes tracks appear first
-        if (5 == i)
-        {
-            for (TrackEntry& track : other_tracks)
-            {
-                if (&track != untouchable_track)
-                    working_state.push_back(&track);
-            }
+    // From this point we try to find the best case for setting the default track
+    bool eligible_case_found = true;
 
-            std::sort(
-                working_state.begin(),
-                working_state.end(),
-                [default_track](TrackEntry* first, TrackEntry* second)
-                {
-                    return default_track->track_element->get_distance_from(first->track_element) <
-                        default_track->track_element->get_distance_from(second->track_element);
-                });
+    // Define this to prevent the program from modifying files.
+    // Usefull for debugging
+#define DONT_APPLY_TRACK_SELECTION
+
+    // Case 1
+    // If the current track has FlagForced
+    if (default_track->has_FlagForced())
+    {
+        DEBUG_PRINT_LINE("The current track set is eligible for case 1");
+#ifndef DONT_APPLY_TRACK_SELECTION
+        default_track->set_FlagForced(true);
+#endif
+    }
+    // Case 2
+    // If all other tracks of the same type have FlagDefault
+    else if (std::all_of(tracks.cbegin(), tracks.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
+    {
+        DEBUG_PRINT_LINE("The current track set is eligible for case 2");
+
+#ifndef DONT_APPLY_TRACK_SELECTION
+        if (default_track->has_FlagDefault())
+            default_track->set_FlagDefault(true);
+#endif
+    }
+    // Case 3
+    // If the default track has both Language and LanguageIETF
+    else if (default_track->has_Language() && default_track->has_LanguageIETF())
+    {
+        DEBUG_PRINT_LINE("The current track set is eligible for case 3");
+
+#ifndef DONT_APPLY_TRACK_SELECTION
+        default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
+
+        default_track->flag_forced_element = default_track->language_element;
+        default_track->language_element = nullptr;
+        default_track->is_forced = true;
+#endif
+    }
+    // Case 4
+    // If the track's language is explicitly set to English
+    else if ((default_track->language == "English") &&
+        (default_track->has_Language() || default_track->has_LanguageIETF()))
+    {
+        DEBUG_PRINT_LINE("The current track set is eligible for case 4");
+
+#ifndef DONT_APPLY_TRACK_SELECTION
+        if (default_track->has_Language())
+        {
+            default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
+            default_track->flag_forced_element = default_track->language_element;
+            default_track->language_element = nullptr;
+        }
+        else
+        {
+            default_track->language_ietf_element->overwrite_with_bool_element(FlagForced_ID, true);
+            default_track->flag_forced_element = default_track->language_ietf_element;
+            default_track->language_ietf_element = nullptr;
         }
 
-        if (DEAFULT_TRACK_SETTER_HANDLERS[i](working_state, default_track))
+        default_track->is_forced = true;
+#endif
+    }
+    // Cases 5-7
+    // If the default track can expand by sizeof(FlagForced) without changing the size of the encoded length of the track
+    else if (can_expand_to_contain_ff(default_track))
+    {
+        // Add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their 
+        // distance from the default track such that the closest tracks appear first
+        for (TrackEntry& track : other_tracks)
         {
-            success = true;
-            break;
+            if (&track != untouchable_track)
+                working_state.push_back(&track);
+        }
+
+        for (TrackEntry* track : working_state)
+        {
+            // Case 5
+            // If another track has FlagForced
+            if (track->has_FlagForced())
+            {
+                DEBUG_PRINT_LINE("The current track set is eligible for case 5");
+                // TODO
+            }
+            // Case 6
+            // If another track has both Language and LanguageIETF
+            else if (track->has_Language() && track->has_LanguageIETF())
+            {
+                DEBUG_PRINT_LINE("The current track set is eligible for case 6");
+                // TODO
+            }
+            // Case 7
+            // If another track's language is explicitly set to English 
+            else if ((track->language == "English") &&
+                (track->has_Language() || track->has_LanguageIETF()))
+            {
+                DEBUG_PRINT_LINE("The current track set is eligible for case 7");
+                // TODO
+            }
+            else
+                eligible_case_found = false;
         }
     }
+    else
+        eligible_case_found = false;
 
-    if (!success)
+    // Case 8
+    // If the track set wasn't eligible for any other case
+    if (!eligible_case_found)
     {
-        throw 123;
+        DEBUG_PRINT_LINE("The current track set is eligible for case 8");
+        // TODO
     }
 }
