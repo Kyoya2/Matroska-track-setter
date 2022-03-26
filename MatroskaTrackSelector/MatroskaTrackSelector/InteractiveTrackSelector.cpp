@@ -86,7 +86,7 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         }
 
         size_t choice = 0;
-        ConsoleUtils::print_table(string("Choose a ") + ((track_type == TrackType::Subtitle) ? "subtitle" : "audio") + " track", TABLE_HEADERS, table_rows);
+        ConsoleUtils::print_table(string("Choose ") + ((track_type == TrackType::Subtitle) ? "a subtitle" : "an audio") + " track", TABLE_HEADERS, table_rows);
 
         // Prompt for input
         cout << "Enter the number of the track you want to choose: ";
