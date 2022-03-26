@@ -27,8 +27,8 @@ Preferred ways for making a desired track selected bu the player by default, sor
 4) If the desired track has either a 'Language' or 'LanguageIETF' set to english, overwrite it with FF
 5) If another track has 'FF' and the current track can contain an extra 4 bytes without expanding the encoding of the
     size VINT, move it to the current track.
-6) Try step 4 on the closest track and then step 6.
-7) Try step 5 on the closest track and then step 6.
+6) Try step 3 on the closest track and then step 5.
+7) Try step 4 on the closest track and then step 5.
 8) Take some bytes from the closest top-level Void element and add a FF element to the desired track (set it to 1).
 
 When chosing any of the above options, remember to ALWAYS set FF of other tracks (if they exist) to 0.
