@@ -230,7 +230,7 @@ void TrackManager::_s_set_default_track(
     // Case 4
     // If the track's language is explicitly set to English
     else if ((default_track->language == "English") &&
-        (default_track->has_Language() || default_track->has_LanguageIETF()))
+            (default_track->has_Language() || default_track->has_LanguageIETF()))
     {
         DEBUG_PRINT_LINE("The current track set is eligible for case 4");
 
@@ -263,6 +263,7 @@ void TrackManager::_s_set_default_track(
                 working_state.push_back(&track);
         }
 
+        eligible_case_found = false;
         for (TrackEntry* track : working_state)
         {
             // Case 5
@@ -271,6 +272,8 @@ void TrackManager::_s_set_default_track(
             {
                 DEBUG_PRINT_LINE("The current track set is eligible for case 5");
                 // TODO
+                eligible_case_found = true;
+                break;
             }
             // Case 6
             // If another track has both Language and LanguageIETF
@@ -278,17 +281,19 @@ void TrackManager::_s_set_default_track(
             {
                 DEBUG_PRINT_LINE("The current track set is eligible for case 6");
                 // TODO
+                eligible_case_found = true;
+                break;
             }
             // Case 7
             // If another track's language is explicitly set to English 
             else if ((track->language == "English") &&
-                (track->has_Language() || track->has_LanguageIETF()))
+                    (track->has_Language() || track->has_LanguageIETF()))
             {
                 DEBUG_PRINT_LINE("The current track set is eligible for case 7");
                 // TODO
+                eligible_case_found = true;
+                break;
             }
-            else
-                eligible_case_found = false;
         }
     }
     else
