@@ -28,16 +28,18 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
     for (size_t i = 0; i < file_names.size(); ++i)
     {
         auto track_selector = std::make_shared<AutomaticTrackSelector>(files_dir + file_names[i]);
+        const Tracks& subtitle_tracks = track_selector->get_subtitle_tracks();
+        const Tracks& audio_tracks = track_selector->get_audio_tracks();
 
-        if (track_selector->get_subtitle_tracks().size() > 0)
+        if (subtitle_tracks.size() > 0)
         {
-            _s_add_tracks_to_map(subtitle_tracks_map, track_selector->get_subtitle_tracks(), track_selector);
+            _s_add_tracks_to_map(subtitle_tracks_map, subtitle_tracks, track_selector);
             ++num_subtitle_files;
         }
 
-        if (track_selector->get_audio_tracks().size() > 0)
+        if (audio_tracks.size() > 0)
         {
-            _s_add_tracks_to_map(audio_tracks_map, track_selector->get_audio_tracks(), track_selector);
+            _s_add_tracks_to_map(audio_tracks_map, audio_tracks, track_selector);
             ++num_audio_files;
         }
     }
