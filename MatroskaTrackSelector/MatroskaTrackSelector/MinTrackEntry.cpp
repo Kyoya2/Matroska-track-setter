@@ -47,6 +47,10 @@ bool MinTrackEntry::operator<(const MinTrackEntry& other) const
         else if (std::tolower(name[i]) > std::tolower(other.name[i]))
             return false;
     }
+
+    if (name.size() != other.name.size())
+        return name.size() < other.name.size();
+
     int lang_strcmp = std::strcmp(language.data(), other.language.data());
     if (0 != lang_strcmp)
         return lang_strcmp < 0;
