@@ -204,7 +204,7 @@ void TrackManager::_s_set_default_track(
     }
     // Case 2
     // If all other tracks of the same type have FlagDefault
-    else if (std::all_of(tracks.cbegin(), tracks.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
+    else if (std::all_of(working_state.cbegin(), working_state.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
     {
         DEBUG_PRINT_LINE("The current track set is eligible for case 2");
 
