@@ -21,6 +21,7 @@
 
 #include "Common.h"
 
+DECL_EXCEPTION(UnknownLanguageException);
 
 struct LanguageDescriptor
 {
@@ -516,4 +517,5 @@ namespace MatroskaLanguageTags
     
     bool does_tag_match_language(const string& language, const string& tag);
     const string_view& get_tag_language(const string& tag);
+    const vector<string_view>& get_language_tags(const string& language);
 }

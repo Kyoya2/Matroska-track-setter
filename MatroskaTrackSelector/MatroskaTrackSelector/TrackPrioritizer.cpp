@@ -27,6 +27,9 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
     }
 
     bool has_include_keyword = false;
+    bool has_requested_language_in_name = false;
+    bool is_matching_language = track_language != language;
+
     for (const std::regex& include_keyword : include_keywords)
     {
         if (std::regex_search(track_name, include_keyword))
@@ -35,42 +38,62 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
             break;
         }
     }
-    if (!has_include_keyword)
+
+    for (const std::regex& language_keyword : language_keywords)
     {
-        return TrackPriorityDescriptor::NotIncluded;
+        if (std::regex_search(track_name, language_keyword))
+        {
+            has_requested_language_in_name = true;
+            break;
+        }
     }
 
-    if (track_language != language)
-        return TrackPriorityDescriptor::UnmatchingLanguage;
+    // See the comment under the definition of TrackPriorityDescriptor
+    // for more detailed definitions of enum values
+    if (has_include_keyword)
+    {
+        if (is_matching_language)
+            return TrackPriorityDescriptor::TopPriority;
+        else
+            return TrackPriorityDescriptor::Priority_2;
+    }
+    else if (has_requested_language_in_name)
+    {
+        if (is_matching_language)
+            return TrackPriorityDescriptor::Priority_3;
+        else
+            return TrackPriorityDescriptor::Priority_4;
+    }
+    else if (is_matching_language)
+        return TrackPriorityDescriptor::Priority_5;
     else
-        return TrackPriorityDescriptor::TopPriority;
+        return TrackPriorityDescriptor::Priority_6;
 }
 
 const TrackEntry* TrackPrioritizer::get_track_with_highest_priority(const Tracks& tracks) const
 {
-    const TrackEntry* explicitly_excluded = nullptr;
-    const TrackEntry* not_included = nullptr;
-    const TrackEntry* unmatching_language = nullptr;
-
+    std::array<const TrackEntry*, static_cast<uint32_t>(TrackPriorityDescriptor::NumberOfPriorities)> tracks_by_priority;
     for (const auto& track : tracks)
     {
         TrackPriorityDescriptor priority = get_track_priority(track.name, track.language);
+
+        // No reason to inspect other track if a track with the highest priority was found
         if (TrackPriorityDescriptor::TopPriority == priority)
             return &track;
-        else if ((TrackPriorityDescriptor::UnmatchingLanguage == priority) && (nullptr == unmatching_language))
-            unmatching_language = &track;
-        else if ((TrackPriorityDescriptor::NotIncluded == priority) && (nullptr == not_included))
-            not_included = &track;
-        else if ((TrackPriorityDescriptor::ExplicitlyExcluded == priority) && (nullptr == explicitly_excluded))
-            explicitly_excluded = &track;
+
+        // If a track with the same priority doesn't exist, place it in the index of it's priority
+        if (tracks_by_priority[static_cast<uint32_t>(priority)] != nullptr)
+            tracks_by_priority[static_cast<uint32_t>(priority)] = &track;
     }
 
-    if (nullptr != unmatching_language)
-        return unmatching_language;
-    else if (nullptr != not_included)
-        return not_included;
-    else
-        return explicitly_excluded;
+    // Return the track with the highest priority
+    for (const TrackEntry* track : tracks_by_priority)
+    {
+        if (track != nullptr)
+            return track;
+    }
+
+    return nullptr;
 }
 
 TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)
@@ -117,6 +140,23 @@ TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)
         else if (0 == current_line.rfind(LANGUAGE_SPECIFIER, 0))
         {
             current_prioritizer->language = current_line.substr(LANGUAGE_SPECIFIER.size());
+
+            // Add the full language as a language keyword
+            current_prioritizer->language_keywords.emplace_back(
+                string("\\b") + current_prioritizer->language + "\\b",
+                std::regex_constants::icase);
+
+            // Add all language tags that are longer than 2 characters as a language keyword
+            const vector<string_view>& language_tags = MatroskaLanguageTags::get_language_tags(current_prioritizer->language);
+            for (const string_view& tag : language_tags)
+            {
+                if (tag.size() > 2)
+                {
+                    current_prioritizer->language_keywords.emplace_back(
+                        string("\\b") + string(tag) + "\\b",
+                        std::regex_constants::icase);
+                }
+            }
         }
         else if (INCLUDE_KEYWORDS_SPECIFIER == current_line)
         {

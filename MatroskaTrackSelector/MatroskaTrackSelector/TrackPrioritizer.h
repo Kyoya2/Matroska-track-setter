@@ -26,11 +26,31 @@ DECL_EXCEPTION(TrackRulesParsingError);
 
 enum class TrackPriorityDescriptor
 {
-    ExplicitlyExcluded,  // Failed test 1
-    NotIncluded,         // Passed test 1 and failed test 2
-    UnmatchingLanguage,  // Passed tests 1, 2 and failed test 3
-    TopPriority,         // Passed all 3 tests
+    TopPriority = 0,
+    Priority_2,
+    Priority_3,
+    Priority_4,
+    Priority_5,
+    Priority_6,
+    ExplicitlyExcluded,
+
+    // Must be last
+    NumberOfPriorities
 };
+/*
+  The above values represent the following:
+
+    # | Excl. word | Lang in name | Incl. word | Matching lang
+   ------------------------------------------------------------
+    1 | -          | ?            | +          | +
+    1 | -          | +            | +          | ?
+    2 | -          | -            | +          | -
+    3 | -          | +            | -          | +
+    4 | -          | +            | -          | -
+    5 | -          | -            | -          | +
+    6 | -          | -            | -          | -
+    7 | +          | ?            | ?          | ?
+*/
 
 class TrackPrioritizer;
 
@@ -58,6 +78,7 @@ PRIVATE:
 PRIVATE:
     string language;
     vector<std::regex> include_keywords;
+    vector<std::regex> language_keywords;
     vector<std::regex> exclude_keywords;
 };
 

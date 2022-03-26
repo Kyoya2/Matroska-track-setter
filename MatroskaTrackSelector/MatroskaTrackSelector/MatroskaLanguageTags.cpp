@@ -58,3 +58,21 @@ const string_view& MatroskaLanguageTags::get_tag_language(const string& tag)
 
     return UNKNOWN_LANGUGAGE;
 }
+
+const vector<string_view>& MatroskaLanguageTags::get_language_tags(const string& language)
+{
+    for (const LanguageDescriptor& langeage_descriptor : language_tags)
+    {
+        // If the given language matches one of the current language names
+        if (std::find(
+            langeage_descriptor.language_names.cbegin(),
+            langeage_descriptor.language_names.cend(),
+            language
+        ) != langeage_descriptor.language_names.cend())
+        {
+            return langeage_descriptor.tags;
+        }
+    }
+
+    throw UnknownLanguageException();
+}
