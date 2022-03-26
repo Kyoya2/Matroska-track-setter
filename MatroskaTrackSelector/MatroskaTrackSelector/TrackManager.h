@@ -20,7 +20,6 @@
 #include "Common.h"
 #include "EbmlElement.h"
 #include "TrackEntry.h"
-#include "DefaultTrackSetterHandlers.h"
 
 class TrackManager
 {
