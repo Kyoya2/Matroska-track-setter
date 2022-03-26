@@ -514,6 +514,6 @@ namespace MatroskaLanguageTags
         {{"Dimili", "Kirmanjki", "Dimli", "Kirdki", "Kirmanjki (macrolanguage)", "Zaza", "Zazaki", "Dimli (macrolanguage)"}, {"zza"}}
     }};
     
-    bool does_tag_match_language(string language, string tag);
-    const string_view& get_tag_language(string tag);
+    bool does_tag_match_language(const string& language, const string& tag);
+    const string_view& get_tag_language(const string& tag);
 }

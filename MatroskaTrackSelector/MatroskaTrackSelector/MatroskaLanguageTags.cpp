@@ -16,7 +16,7 @@
  */
 #include "MatroskaLanguageTags.h"
 
-bool MatroskaLanguageTags::does_tag_match_language(string language, string tag)
+bool MatroskaLanguageTags::does_tag_match_language(const string& language, const string& tag)
 {
     for (const LanguageDescriptor& langeage_descriptor : language_tags)
     {
@@ -41,7 +41,7 @@ bool MatroskaLanguageTags::does_tag_match_language(string language, string tag)
     return false;
 }
 
-const string_view& MatroskaLanguageTags::get_tag_language(string tag)
+const string_view& MatroskaLanguageTags::get_tag_language(const string& tag)
 {
     for (const LanguageDescriptor& langeage_descriptor : language_tags)
     {
