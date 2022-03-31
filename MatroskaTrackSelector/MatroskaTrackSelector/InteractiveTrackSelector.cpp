@@ -63,7 +63,14 @@ void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const
 
 void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files)
 {
+    using namespace ConsoleAttributes;
     static const vector<string> TABLE_HEADERS{ "#", "%", "Name", "Language" };
+    static const string PRIORITY_ORDER_DESCRIPTOR = ' ' +
+        LightGreenBG + "  " + BlackBG + " > " +
+        LightCyanBG + "  " + BlackBG + " > " +
+        LightYellowBG + "  " + BlackBG + " > " +
+        LightMagentaBG + "  " + BlackBG + " > " +
+        LightRedBG + "  " + BlackBG;
 
     while (tracks_map.size() > 0)
     {
@@ -89,9 +96,10 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
 
         size_t choice = 0;
         ConsoleUtils::print_table(string("Choose ") + ((track_type == TrackType::Subtitle) ? "a subtitle" : "an audio") + " track", TABLE_HEADERS, table_rows);
+        cout << PRIORITY_ORDER_DESCRIPTOR << endl << endl;
 
         // Prompt for input
-        cout << "Enter the number of the track you want to choose: ";
+        cout << " Enter the number of the track you want to choose: ";
         if (!(std::cin >> choice))
         {
             std::cin.clear();

@@ -4,17 +4,15 @@ string MinTrackEntry::get_colored_name(const TrackPrioritizer& track_prioritizer
 {
     using namespace ConsoleAttributes;
     static const std::array<string, static_cast<size_t>(TrackPriorityDescriptor::NumberOfPriorities)> priority_colors = {
-        /* 0 */ WhiteFG,
-        /* 1 */ WhiteFG,
-        /* 2 */ WhiteFG,
-        /* 3 */ WhiteFG,
-        /* 4 */ WhiteFG,
-        /* 5 */ LightRedFG + RedBG,
-        /* 6 */ RedFG,
+        /* 0 */ LightGreenFG,
+        /* 1 */ LightCyanFG,
+        /* 2 */ LightYellowFG,
+        /* 3 */ LightMagentaFG,
+        /* 4 */ LightRedFG
     };
 
     string full_name = name.empty() ? ("Unnamed track " + std::to_string(unnamed_track_number)) : name;
-    return priority_colors[static_cast<size_t>(track_prioritizer.get_track_priority(name, language))] + full_name + WhiteFG + BlackBG;
+    return priority_colors[static_cast<size_t>(track_prioritizer.get_track_priority(name, language))] + full_name + WhiteFG;
 }
 
 bool MinTrackEntry::operator<(const MinTrackEntry& other) const
