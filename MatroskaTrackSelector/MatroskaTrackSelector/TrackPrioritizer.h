@@ -27,11 +27,9 @@ DECL_EXCEPTION(TrackRulesParsingError);
 enum class TrackPriorityDescriptor
 {
     TopPriority = 0,
-    Priority_2,
-    Priority_3,
-    Priority_4,
-    Priority_5,
-    Priority_6,
+    NotIncluded,
+    WrongLanguage,
+    NotExcluded,
     ExplicitlyExcluded,
 
     // Must be last
@@ -40,16 +38,13 @@ enum class TrackPriorityDescriptor
 /*
   The above values represent the following:
 
-    # | Excl. word | Lang in name | Incl. word | Matching lang
-   ------------------------------------------------------------
-    1 | -          | ?            | +          | +
-    1 | -          | +            | +          | ?
-    2 | -          | -            | +          | -
-    3 | -          | +            | -          | +
-    4 | -          | +            | -          | -
-    5 | -          | -            | -          | +
-    6 | -          | -            | -          | -
-    7 | +          | ?            | ?          | ?
+    # | Excl. word | Incl. word | Matching lang
+   ---------------------------------------------
+    1 | -          | +          | +
+    2 | -          | -          | +
+    3 | -          | +          | -
+    4 | -          | -          | -
+    5 | +          | ?          | ?
 */
 
 class TrackPrioritizer;

@@ -27,23 +27,27 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
     }
 
     bool has_include_keyword = false;
-    bool has_requested_language_in_name = false;
     bool is_matching_language = track_language != language;
+
+    // If the language tag doesn't match, try to check if the name of the track contains the language
+    // for example, a track with the name "English subtitles"
+    if (!is_matching_language)
+    {
+        for (const std::regex& language_keyword : language_keywords)
+        {
+            if (std::regex_search(track_name, language_keyword))
+            {
+                is_matching_language = true;
+                break;
+            }
+        }
+    }
 
     for (const std::regex& include_keyword : include_keywords)
     {
         if (std::regex_search(track_name, include_keyword))
         {
             has_include_keyword = true;
-            break;
-        }
-    }
-
-    for (const std::regex& language_keyword : language_keywords)
-    {
-        if (std::regex_search(track_name, language_keyword))
-        {
-            has_requested_language_in_name = true;
             break;
         }
     }
@@ -55,19 +59,12 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
         if (is_matching_language)
             return TrackPriorityDescriptor::TopPriority;
         else
-            return TrackPriorityDescriptor::Priority_2;
-    }
-    else if (has_requested_language_in_name)
-    {
-        if (is_matching_language)
-            return TrackPriorityDescriptor::Priority_3;
-        else
-            return TrackPriorityDescriptor::Priority_4;
+            return TrackPriorityDescriptor::WrongLanguage;
     }
     else if (is_matching_language)
-        return TrackPriorityDescriptor::Priority_5;
+        return TrackPriorityDescriptor::NotIncluded;
     else
-        return TrackPriorityDescriptor::Priority_6;
+        return TrackPriorityDescriptor::NotExcluded;
 }
 
 const TrackEntry* TrackPrioritizer::get_track_with_highest_priority(const Tracks& tracks) const
