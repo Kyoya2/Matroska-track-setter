@@ -26,26 +26,19 @@ DECL_EXCEPTION(SelectionRulesParsingError);
 
 enum class TrackPriorityDescriptor
 {
-    TopPriority = 0,
-    NotIncluded,
-    WrongLanguage,
-    NotExcluded,
-    ExplicitlyExcluded,
-
+    // Must be sorted from the highest to lowest priority.
+    // Priority description:
+    //                       Excl. word | Incl. word | Matching lang
+                         //  ----------------------------------------
+    TopPriority = 0,     //  -          | +          | +
+    NotIncluded,         //  -          | -          | +
+    WrongLanguage,       //  -          | +          | -
+    NotExcluded,         //  -          | -          | -
+    ExplicitlyExcluded,  //  +          | ?          | ?
+                        
     // Must be last
     NumberOfPriorities
 };
-/*
-  The above values represent the following:
-
-    # | Excl. word | Incl. word | Matching lang
-   ---------------------------------------------
-    1 | -          | +          | +
-    2 | -          | -          | +
-    3 | -          | +          | -
-    4 | -          | -          | -
-    5 | +          | ?          | ?
-*/
 
 class TrackPrioritizer;
 
