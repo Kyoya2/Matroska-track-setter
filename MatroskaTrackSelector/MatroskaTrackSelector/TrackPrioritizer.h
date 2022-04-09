@@ -22,7 +22,7 @@
 #include "Common.h"
 #include "TrackEntry.h"
 
-DECL_EXCEPTION(TrackRulesParsingError);
+DECL_EXCEPTION(SelectionRulesParsingError);
 
 enum class TrackPriorityDescriptor
 {
