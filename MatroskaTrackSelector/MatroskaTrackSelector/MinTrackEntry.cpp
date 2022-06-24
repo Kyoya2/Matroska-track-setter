@@ -17,22 +17,16 @@ string MinTrackEntry::get_colored_name(const TrackPrioritizer& track_prioritizer
 
 bool MinTrackEntry::operator<(const MinTrackEntry& other) const
 {
-    if ((std::min(name.size(), other.name.size()) == 0) &&
-        (std::max(name.size(), other.name.size()) > 0))
-    {
-        return name.size() == 0;
-    }
+    if (name.size() != other.name.size())
+        return name.size() < other.name.size();
 
-    for (size_t i = 0; i < std::min(name.size(), other.name.size()); ++i)
+    for (size_t i = 0; i < name.size(); ++i)
     {
         if (std::tolower(name[i]) < std::tolower(other.name[i]))
             return true;
         else if (std::tolower(name[i]) > std::tolower(other.name[i]))
             return false;
     }
-
-    if (name.size() != other.name.size())
-        return name.size() < other.name.size();
 
     int lang_strcmp = std::strcmp(language.data(), other.language.data());
     if (0 != lang_strcmp)
@@ -41,5 +35,6 @@ bool MinTrackEntry::operator<(const MinTrackEntry& other) const
     if (name.empty())
         return unnamed_track_number < other.unnamed_track_number;
     else
+        // Entries are equal
         return false;
 }
