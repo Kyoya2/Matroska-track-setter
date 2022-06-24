@@ -20,9 +20,8 @@ public:
     AutomaticTrackSelector& operator=(const AutomaticTrackSelector&) = delete;
 
 public:
-    // Mark a track for selection and if both tracks are marked for selection, actually perform the selection
-    // and return true. Otherwise, only one track type has been marked for selection and no actual selection
-    // has been made, return false.
+    // Mark a track for selection. The actual modification to the file will be made after
+    // marking both a subtitle and an audio track.
     void mark_subtitle_track_for_selection(const size_t track_index);
     void mark_audio_track_for_selection(const size_t track_index);
 

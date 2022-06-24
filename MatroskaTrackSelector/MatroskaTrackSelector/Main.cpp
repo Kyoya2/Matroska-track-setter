@@ -17,6 +17,7 @@
 #define NOMINMAX
 #include <windows.h>
 #include <conio.h>
+#include <ctype.h>
 #include "Common.h"
 #include "ConsoleUtils.h"
 #include "InteractiveTrackSelector.h"
@@ -102,7 +103,7 @@ static void do_automatic_selection(const pair<wstring, vector<wstring>>& files, 
     }
 }
 
-int main(int, char*)
+int main()
 {
     using namespace ConsoleAttributes;
 
@@ -129,7 +130,7 @@ int main(int, char*)
 
     while (true)
     {
-        switch (static_cast<char>(_getch() | 0x20)) // make lowercase
+        switch (static_cast<char>(tolower(_getch()))) // make lowercase
         {
         case 'a':
             selection_mode = TrackSelectionMode::Automatic;

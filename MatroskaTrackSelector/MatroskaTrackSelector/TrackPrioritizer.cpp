@@ -33,10 +33,10 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
     // In this case, the score is ((-1) * num_excluded_keywords)
     if (num_excluded_keywords > 0)
     {
-        return TrackPriorityDescriptor(TrackPriorityDescriptorClass::ExplicitlyExcluded, -num_excluded_keywords);
+        return TrackPriorityDescriptor(TrackPriorityClass::ExplicitlyExcluded, -num_excluded_keywords);
     }
 
-    TrackPriorityDescriptorClass priority_descriptor_class;
+    TrackPriorityClass priority_descriptor_class;
     uint32_t num_included_keywords = false;
     bool is_matching_language = track_language != language;
 
@@ -63,19 +63,19 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
         }
     }
 
-    // See the comment under the definition of TrackPriorityDescriptorClass
+    // See the comment under the definition of TrackPriorityClass
     // for more detailed definitions of enum values
     if (num_included_keywords > 0)
     {
         if (is_matching_language)
-            priority_descriptor_class = TrackPriorityDescriptorClass::TopPriority;
+            priority_descriptor_class = TrackPriorityClass::TopPriority;
         else
-            priority_descriptor_class = TrackPriorityDescriptorClass::WrongLanguage;
+            priority_descriptor_class = TrackPriorityClass::WrongLanguage;
     }
     else if (is_matching_language)
-        priority_descriptor_class = TrackPriorityDescriptorClass::NotIncluded;
+        priority_descriptor_class = TrackPriorityClass::NotIncluded;
     else
-        priority_descriptor_class = TrackPriorityDescriptorClass::NotExcluded;
+        priority_descriptor_class = TrackPriorityClass::NotExcluded;
 
     return TrackPriorityDescriptor(priority_descriptor_class, num_included_keywords);
 }
