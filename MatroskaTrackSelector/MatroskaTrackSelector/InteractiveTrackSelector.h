@@ -55,7 +55,8 @@ private:
     static void _s_add_tracks_to_map(
         TracksMap& tracks_map,
         const Tracks& tracks,
-        shared_ptr<AutomaticTrackSelector> track_selector);
-    static void _s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files);
+        shared_ptr<AutomaticTrackSelector> track_selector,
+        const TrackPrioritizer& track_prioritizer);
+    static void _s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, size_t num_files);
 };
 

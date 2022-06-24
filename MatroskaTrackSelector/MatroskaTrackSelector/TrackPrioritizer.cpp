@@ -18,15 +18,26 @@
 
 TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track_name, const string_view& track_language) const
 {
+    int32_t num_excluded_keywords = 0;
+
+    // Count the number of excluded keywords in the track's name
     for (const std::regex& exclude_keyword : exclude_keywords)
     {
         if (std::regex_search(track_name, exclude_keyword))
         {
-            return TrackPriorityDescriptor::ExplicitlyExcluded;
+            ++num_excluded_keywords;
         }
     }
 
-    bool has_include_keyword = false;
+    // If excluded keyword have been detected, don't bother to check other criterias
+    // In this case, the score is ((-1) * num_excluded_keywords)
+    if (num_excluded_keywords > 0)
+    {
+        return TrackPriorityDescriptor(TrackPriorityDescriptorClass::ExplicitlyExcluded, -num_excluded_keywords);
+    }
+
+    TrackPriorityDescriptorClass priority_descriptor_class;
+    uint32_t num_included_keywords = false;
     bool is_matching_language = track_language != language;
 
     // If the language tag doesn't match, try to check if the name of the track contains the language
@@ -43,54 +54,45 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
         }
     }
 
+    // Count number of included keywords in the track's name
     for (const std::regex& include_keyword : include_keywords)
     {
         if (std::regex_search(track_name, include_keyword))
         {
-            has_include_keyword = true;
-            break;
+            ++num_included_keywords;
         }
     }
 
-    // See the comment under the definition of TrackPriorityDescriptor
+    // See the comment under the definition of TrackPriorityDescriptorClass
     // for more detailed definitions of enum values
-    if (has_include_keyword)
+    if (num_included_keywords > 0)
     {
         if (is_matching_language)
-            return TrackPriorityDescriptor::TopPriority;
+            priority_descriptor_class = TrackPriorityDescriptorClass::TopPriority;
         else
-            return TrackPriorityDescriptor::WrongLanguage;
+            priority_descriptor_class = TrackPriorityDescriptorClass::WrongLanguage;
     }
     else if (is_matching_language)
-        return TrackPriorityDescriptor::NotIncluded;
+        priority_descriptor_class = TrackPriorityDescriptorClass::NotIncluded;
     else
-        return TrackPriorityDescriptor::NotExcluded;
+        priority_descriptor_class = TrackPriorityDescriptorClass::NotExcluded;
+
+    return TrackPriorityDescriptor(priority_descriptor_class, num_included_keywords);
 }
 
 const TrackEntry* TrackPrioritizer::get_track_with_highest_priority(const Tracks& tracks) const
 {
-    std::array<const TrackEntry*, static_cast<uint32_t>(TrackPriorityDescriptor::NumberOfPriorities)> tracks_by_priority;
-    for (const auto& track : tracks)
+    if (tracks.empty())
+        return nullptr;
+
+    std::vector<TrackPriorityDescriptor> priority_descriptors(tracks.size());
+    for (uint32_t i = 0; i < tracks.size(); ++i)
     {
-        TrackPriorityDescriptor priority = get_track_priority(track.name, track.language);
-
-        // No reason to inspect other track if a track with the highest priority was found
-        if (TrackPriorityDescriptor::TopPriority == priority)
-            return &track;
-
-        // If a track with the same priority doesn't exist, place it in the index of it's priority
-        if (tracks_by_priority[static_cast<uint32_t>(priority)] != nullptr)
-            tracks_by_priority[static_cast<uint32_t>(priority)] = &track;
+        priority_descriptors[i] = get_track_priority(tracks[i].name, tracks[i].language);
     }
 
-    // Return the track with the highest priority
-    for (const TrackEntry* track : tracks_by_priority)
-    {
-        if (track != nullptr)
-            return track;
-    }
-
-    return nullptr;
+    // Calculate the index of the max element within "priority_descriptors" and return the element from "tracks" at that index
+    return tracks.data() + std::distance(priority_descriptors.cbegin(), std::max_element(priority_descriptors.cbegin(), priority_descriptors.cend()));
 }
 
 TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)

@@ -24,7 +24,7 @@
 
 DECL_EXCEPTION(SelectionRulesParsingError);
 
-enum class TrackPriorityDescriptor
+enum class TrackPriorityDescriptorClass
 {
     // Must be sorted from the highest to lowest priority.
     // Priority description:
@@ -40,9 +40,41 @@ enum class TrackPriorityDescriptor
     NumberOfPriorities
 };
 
+class TrackPriorityDescriptor
+{
+public:
+    TrackPriorityDescriptor() = default;
+    TrackPriorityDescriptor(const TrackPriorityDescriptorClass priority_class, int32_t score) : priority_class(priority_class), m_score(score) {}
+
+    bool operator==(const TrackPriorityDescriptor& other) const
+    {
+        return (priority_class == other.priority_class) && (m_score == other.m_score);
+    }
+    bool operator!=(const TrackPriorityDescriptor& other) const
+    {
+        return !(*this == other);
+    }
+
+    bool operator<(const TrackPriorityDescriptor& other) const
+    {
+        if (priority_class != other.priority_class)
+            return priority_class > other.priority_class;
+        else
+            return m_score < other.m_score;
+    }
+
+public:
+    TrackPriorityDescriptorClass priority_class;
+
+private:
+    // Allows comparing priority of different tracks in the same priority class.
+    // larger score equals highet priority
+    int32_t m_score;
+};
+
 class TrackPrioritizer;
 
-using TrackPrioritizers = pair<TrackPrioritizer, TrackPrioritizer>;
+using TrackPrioritizers = pair<TrackPrioritizer, TrackPrioritizer>; // (subtitle, audio)
 
 class TrackPrioritizer
 {

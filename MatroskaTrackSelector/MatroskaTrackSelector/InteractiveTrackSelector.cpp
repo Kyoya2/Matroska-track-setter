@@ -33,44 +33,48 @@ void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& file
 
         if (subtitle_tracks.size() > 0)
         {
-            _s_add_tracks_to_map(subtitle_tracks_map, subtitle_tracks, track_selector);
+            _s_add_tracks_to_map(subtitle_tracks_map, subtitle_tracks, track_selector, track_prioritizers.first);
             ++num_subtitle_files;
         }
 
         if (audio_tracks.size() > 0)
         {
-            _s_add_tracks_to_map(audio_tracks_map, audio_tracks, track_selector);
+            _s_add_tracks_to_map(audio_tracks_map, audio_tracks, track_selector, track_prioritizers.second);
             ++num_audio_files;
         }
     }
 
-    _s_select_tracks_interactively(subtitle_tracks_map, TrackType::Subtitle, track_prioritizers.first, num_subtitle_files);
-    _s_select_tracks_interactively(audio_tracks_map, TrackType::Audio, track_prioritizers.second, num_audio_files);
+    _s_select_tracks_interactively(subtitle_tracks_map, TrackType::Subtitle, num_subtitle_files);
+    _s_select_tracks_interactively(audio_tracks_map, TrackType::Audio, num_audio_files);
 }
 
-void InteractiveTrackSelector::_s_add_tracks_to_map(TracksMap& tracks_map, const Tracks& tracks, shared_ptr<AutomaticTrackSelector> track_selector)
+void InteractiveTrackSelector::_s_add_tracks_to_map(
+    TracksMap& tracks_map,
+    const Tracks& tracks,
+    shared_ptr<AutomaticTrackSelector> track_selector,
+    const TrackPrioritizer& track_prioritizer)
 {
     size_t unnamed_track_count = 1;
 
     for (size_t i = 0; i < tracks.size(); ++i)
     {
-        tracks_map[MinTrackEntry(tracks[i], unnamed_track_count)].emplace_back(track_selector, i);
+        tracks_map[
+            MinTrackEntry(
+                tracks[i],
+                unnamed_track_count,
+                track_prioritizer.get_track_priority(tracks[i].name, tracks[i].language)
+            )
+        ].emplace_back(track_selector, i);
 
         if (tracks[i].name.empty())
             ++unnamed_track_count;
     }
 }
 
-void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, const TrackPrioritizer& track_prioritizer, size_t num_files)
+void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_map, const TrackType track_type, size_t num_files)
 {
     using namespace ConsoleAttributes;
     static const vector<string> TABLE_HEADERS{ "#", "%", "Name", "Language" };
-    static const string PRIORITY_ORDER_DESCRIPTOR = ' ' +
-        LightGreenBG + "  " + BlackBG + " > " +
-        LightCyanBG + "  " + BlackBG + " > " +
-        LightYellowBG + "  " + BlackBG + " > " +
-        LightMagentaBG + "  " + BlackBG + " > " +
-        LightRedBG + "  " + BlackBG;
 
     while (tracks_map.size() > 0)
     {
@@ -79,7 +83,7 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
         // Building table to print
         vector<vector<string>> table_rows;
         string num_files_str = std::to_string(num_files);
-        size_t i = 1;
+        size_t row_number = 1;
         for (const auto& [track_entry, track_selectors] : tracks_map)
         {
             std::stringstream strstr;
@@ -87,19 +91,18 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
             strstr << std::setprecision(percentage >= 10 ? 4 : 3) << percentage << '%';
 
             table_rows.emplace_back(vector{
-                std::to_string(i),
+                std::to_string(row_number),
                 std::move(strstr.str()),
-                track_entry.get_colored_name(track_prioritizer),
+                track_entry.get_colored_name(),
                 string(track_entry.language) });
-            ++i;
+            ++row_number;
         }
 
         size_t choice = 0;
         ConsoleUtils::print_table(string("Choose ") + ((track_type == TrackType::Subtitle) ? "a subtitle" : "an audio") + " track", TABLE_HEADERS, table_rows);
-        cout << PRIORITY_ORDER_DESCRIPTOR << endl << endl;
 
         // Prompt for input
-        cout << " Enter the number of the track you want to choose: ";
+        cout << endl << " Enter the number of the track you want to choose: ";
         if (!(std::cin >> choice))
         {
             std::cin.clear();
