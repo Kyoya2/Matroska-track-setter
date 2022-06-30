@@ -105,6 +105,15 @@ static void do_automatic_selection(const pair<wstring, vector<wstring>>& files, 
 
 int main()
 {
+    /*
+        TODO: Make this application non-interactive by adding command-line arguments such as:
+        [-r --rules] - path to rules file
+        [-i --interactive] - if used, the user will select tracks manually. The rules file will
+            only be used for coloring the available tracks by their priority.
+        [-v -vv -vvv] - verbosity level, usefull for debugging
+        [--dry-run] - Don't actually change the file's content
+
+    */
     using namespace ConsoleAttributes;
 
     // Enable printing unicode characters for building pretty tables
