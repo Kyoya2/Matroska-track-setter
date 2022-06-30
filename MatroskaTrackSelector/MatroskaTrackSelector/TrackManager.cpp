@@ -262,6 +262,15 @@ void TrackManager::_s_set_default_track(
             if (&track != untouchable_track)
                 working_state.push_back(&track);
         }
+        std::sort(
+            working_state.begin(),
+            working_state.end(),
+            [default_track](TrackEntry* first, TrackEntry* second)
+            {
+                return default_track->track_element->get_distance_from(first->track_element) <
+                       default_track->track_element->get_distance_from(second->track_element);
+            }
+        );
 
         eligible_case_found = false;
         for (TrackEntry* track : working_state)
