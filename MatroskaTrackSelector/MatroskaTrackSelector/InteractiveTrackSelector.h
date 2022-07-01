@@ -28,7 +28,7 @@
 #include "TrackPrioritizer.h"
 #include "TrackManager.h"
 #include "MinTrackEntry.h"
-#include "MatroskaElementSpecification.h"
+#include "MatroskaElementSpecification.auto.h"
 #include "AutomaticTrackSelector.h"
 
 DECL_EXCEPTION(FileSelectionError);

@@ -84,7 +84,7 @@
     <ClInclude Include="EbmlElementLength.h">
       <Filter>Ebml\EbmlVint</Filter>
     </ClInclude>
-    <ClInclude Include="MatroskaElementSpecification.h">
+    <ClInclude Include="MatroskaElementSpecification.auto.h">
       <Filter>Ebml\EbmlParser</Filter>
     </ClInclude>
     <ClInclude Include="EbmlElement.h">

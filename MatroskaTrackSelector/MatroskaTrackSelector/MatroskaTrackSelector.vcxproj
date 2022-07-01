@@ -194,7 +194,7 @@
     <ClInclude Include="EbmlParserUT.h" />
     <ClInclude Include="EbmlVintUT.h" />
     <ClInclude Include="MatroskaLanguageTags.h" />
-    <ClInclude Include="MatroskaElementSpecification.h" />
+    <ClInclude Include="MatroskaElementSpecification.auto.h" />
     <ClInclude Include="EbmlVintUtils.h" />
     <ClInclude Include="BasicSharedPtr.h" />
     <ClInclude Include="MatroskaLanguageTagsUT.h" />

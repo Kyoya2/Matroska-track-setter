@@ -21,7 +21,7 @@
 #include "Common.h"
 #include "EbmlElementID.h"
 #include "EbmlElementLength.h"
-#include "MatroskaElementSpecification.h"
+#include "MatroskaElementSpecification.auto.h"
 #include "BasicSharedPtr.h"
 
 DECL_EXCEPTION(UnsupportedDocument);

@@ -241,7 +241,7 @@ def main():
     with open('MatroskaElementSpecification.template.h', 'r') as template_file:
         template = template_file.read()
 
-    with open('../MatroskaTrackSelector/MatroskaTrackSelector/MatroskaElementSpecification.h', 'w') as f:
+    with open('../MatroskaTrackSelector/MatroskaTrackSelector/MatroskaElementSpecification.auto.h', 'w') as f:
         f.write(template.replace('{ELEMENTS_INFO}', elements_string).replace('{ENUM_ELEMENTS}', enums_string))
 
 
