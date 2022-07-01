@@ -16,8 +16,10 @@
  */
 #pragma once
 
+#define DECL_ELEMENT_ID(name, value) static constexpr EbmlElementIDType name##_ID = value
+
 // Element IDs
 {ELEMENTS_INFO}
 
-
+// Enum element values
 {ENUM_ELEMENTS}
