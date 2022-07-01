@@ -16,6 +16,10 @@
  */
 #pragma once
 
+/*
+ *  DISCLAIMER: This file was generated automatically by "generate_element_specification.py"
+ */
+
 #define DECL_ELEMENT_ID(name, value) static constexpr EbmlElementIDType name##_ID = value
 
 // Element IDs
