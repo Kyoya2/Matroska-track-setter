@@ -200,16 +200,17 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
         seen_enum_names = {}
         enum_string = 'enum class ' + element.name + ' {\n'
         for value, name in element.possible_enum_values.items():
+            if name[0].isdigit():
+                name = '_'+name
+
             if name in seen_enum_names:
                 seen_enum_names[name] += 1
                 name += str(seen_enum_names[name])
             else:
                 seen_enum_names.update({name:1})
             enum_string += ' ' * 4
-            if name == '3DES':
-                enum_string += 'ThreeDes'
-            else:
-                enum_string += re.sub(r'(^\w|[ -]\(?\w|\(\w)', make_uppercamel, name.lower().replace('/', ' or ').replace(')', '').replace(' - ', ' to ').replace('.', '_').replace("'", '').replace(',', '').replace('  ', ' ').replace('`',''))
+            
+            enum_string += re.sub(r'(^\w|[ -]\(?\w|\(\w)', make_uppercamel, name.lower().replace('/', ' or ').replace(')', '').replace(' - ', ' to ').replace('.', '_').replace("'", '').replace(',', '').replace('  ', ' ').replace('`',''))
             enum_string += f' = {repr(value)},\n'
 
 

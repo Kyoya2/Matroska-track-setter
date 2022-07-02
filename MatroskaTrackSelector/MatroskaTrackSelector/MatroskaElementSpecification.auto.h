@@ -461,7 +461,7 @@ enum class ContentCompAlgo {
 enum class ContentEncAlgo {
     NotEncrypted = 0,
     Des = 1,
-    ThreeDes = 2,
+    _3des = 2,
     Twofish = 3,
     Blowfish = 4,
     Aes = 5
