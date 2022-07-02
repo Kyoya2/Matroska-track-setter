@@ -78,43 +78,46 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
 
     while (tracks_map.size() > 0)
     {
+        auto selected_element = tracks_map.begin();
         ConsoleUtils::cls();
         
-        // Building table to print
-        vector<vector<string>> table_rows;
-        string num_files_str = std::to_string(num_files);
-        size_t row_number = 1;
-        for (const auto& [track_entry, track_selectors] : tracks_map)
+        // Don't prompts user if there's a single track, or no tracks at all
+        if (tracks_map.size() > 1)
         {
-            std::stringstream strstr;
-            float percentage = static_cast<float>(track_selectors.size()) / num_files * 100;
-            strstr << std::setprecision(percentage >= 10 ? 4 : 3) << percentage << '%';
+            // Building table to print
+            vector<vector<string>> table_rows;
+            string num_files_str = std::to_string(num_files);
+            size_t row_number = 1;
+            for (const auto& [track_entry, track_selectors] : tracks_map)
+            {
+                std::stringstream strstr;
+                float percentage = static_cast<float>(track_selectors.size()) / num_files * 100;
+                strstr << std::setprecision(percentage >= 10 ? 4 : 3) << percentage << '%';
 
-            table_rows.emplace_back(vector{
-                std::to_string(row_number),
-                std::move(strstr.str()),
-                track_entry.get_colored_name(),
-                string(track_entry.language) });
-            ++row_number;
+                table_rows.emplace_back(vector{
+                    std::to_string(row_number),
+                    std::move(strstr.str()),
+                    track_entry.get_colored_name(),
+                    string(track_entry.language) });
+                ++row_number;
+            }
+
+            size_t choice = 0;
+            ConsoleUtils::print_table(string("Choose ") + ((track_type == TrackType::Subtitle) ? "a subtitle" : "an audio") + " track", TABLE_HEADERS, table_rows);
+
+            // Prompt for input
+            cout << endl << " Enter the number of the track you want to choose: ";
+            if (!(std::cin >> choice))
+            {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+            else if (choice > tracks_map.size() || choice == 0)
+                continue;
+
+            std::advance(selected_element, choice - 1);
         }
-
-        size_t choice = 0;
-        ConsoleUtils::print_table(string("Choose ") + ((track_type == TrackType::Subtitle) ? "a subtitle" : "an audio") + " track", TABLE_HEADERS, table_rows);
-
-        // Prompt for input
-        cout << endl << " Enter the number of the track you want to choose: ";
-        if (!(std::cin >> choice))
-        {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
-        }
-        else if (choice > tracks_map.size() || choice == 0)
-            continue;
-
-
-        auto selected_element = tracks_map.begin();
-        std::advance(selected_element, choice - 1);
 
         // Iterate over all track selectors that contain the selected track
         for (const auto& [track_selector, track_index] : selected_element->second)
