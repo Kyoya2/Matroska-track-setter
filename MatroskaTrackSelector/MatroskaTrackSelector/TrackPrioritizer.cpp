@@ -38,7 +38,7 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
 
     TrackPriorityClass priority_descriptor_class;
     uint32_t num_included_keywords = false;
-    bool is_matching_language = track_language != language;
+    bool is_matching_language = track_language == language;
 
     // If the language tag doesn't match, try to check if the name of the track contains the language
     // for example, a track with the name "English subtitles"
