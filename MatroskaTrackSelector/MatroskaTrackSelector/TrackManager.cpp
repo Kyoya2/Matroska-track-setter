@@ -27,6 +27,26 @@ static bool can_expand_to_contain_ff(const TrackEntry* track)
         track->track_element->get_data_length().get_encoded_size();
 }
 
+static void add_track_components_to_vector(vector<BasicSharedPtr<EbmlElement>> components, TrackEntry* track)
+{
+    if (track->has_FlagDefault())
+        components.push_back(track->flag_default_element);
+
+    if (track->has_FlagForced())
+        components.push_back(track->flag_forced_element);
+
+    if (track->has_Language())
+        components.push_back(track->language_element);
+
+    if (track->has_LanguageIETF())
+        components.push_back(track->language_ietf_element);
+
+    if (track->name_element)
+        components.push_back(track->name_element);
+
+    components.push_back(track->track_element);
+}
+
 TrackManager::TrackManager(const wstring& file) : m_file_stream(file, std::ios_base::binary | std::ios_base::out | std::ios_base::in)
 {
     m_file_stream.seekg(0);
@@ -259,130 +279,142 @@ void TrackManager::_s_set_default_track(
     // If the default track can expand by sizeof(FlagForced) without changing the size of the encoded length of the track
     else if (can_expand_to_contain_ff(default_track))
     {
-        // TODO: Add another case where if (num_tracks == num_flag_default) move FlagDefault away from the desired track to some other track
         DEBUG_PRINT_LINE("The desired track can expand by sizeof(FlagForced)");
-        // Add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their 
-        // distance from the default track such that the closest tracks appear first
-        for (TrackEntry& track : other_tracks)
-        {
-            if (&track != untouchable_track)
-                working_state.push_back(&track);
-        }
-        std::sort(
-            working_state.begin(),
-            working_state.end(),
-            [default_track](TrackEntry* first, TrackEntry* second)
-            {
-                return default_track->track_element->get_distance_from(first->track_element) <
-                       default_track->track_element->get_distance_from(second->track_element);
-            }
-        );
 
-        BasicSharedPtr<EbmlElement> element_to_be_moved;
-        for (TrackEntry* track : working_state)
+        if (default_track->has_FlagDefault() &&
+            std::count_if(working_state.cbegin(), working_state.cend(),
+                [](const TrackEntry* track) {
+                    return !track->has_FlagDefault();
+                }
+            ) == 1)
         {
-            // Case 5
-            // If another track has FlagForced
-            if (track->has_FlagForced())
-            {
-                DEBUG_PRINT_LINE("Moving FlagForced from track at " << track->track_element->get_offset() << " to the desired track");
-                element_to_be_moved = track->flag_forced_element;
-                break;
-            }
-            // Case 6
-            // If another track has both Language and LanguageIETF
-            else if (track->has_Language() && track->has_LanguageIETF())
-            {
-                DEBUG_PRINT_LINE("Track " << track->track_element->get_offset() << " has both Language and LanguageIETF, moving Language to the desired track");
-                element_to_be_moved = track->language_element;
-                break;
-            }
-            // Case 7
-            // If another track's language is explicitly set to English 
-            else if (track->language == "English" && (track->has_Language() || track->has_LanguageIETF()))
-            {
-                DEBUG_PRINT_LINE("The language of track " << track->track_element->get_offset() << " is explicitly set to English");
-                if (track->has_Language())
+            DEBUG_PRINT_LINE("There is only one track without FlagDefault and it's not the desired track, move FlagDefault from the desired track to the other track and set it to 0");
+            TrackEntry* track_without_fd = nullptr;
+
+            // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
+            // track and the track without the FD
+            vector<BasicSharedPtr<EbmlElement>> elements_to_adjust;
+            for (TrackEntry* track : working_state)
+                if (track->has_FlagDefault())
+                    add_track_components_to_vector(elements_to_adjust, track);
+                else
+                    track_without_fd = track;
+
+            // Perform the move
+            default_track->flag_default_element->move_to(track_without_fd->track_element, elements_to_adjust);
+
+            // Update the TrackEntry objects
+            track_without_fd->flag_default_element = default_track->flag_default_element;
+            default_track->flag_default_element = nullptr;
+
+            // Set the new FlagDefault to false
+            track_without_fd->flag_default_element->change_bool_value(false);
+        }
+        else
+        {
+            // Add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their 
+            // distance from the default track such that the closest tracks appear first
+            for (TrackEntry& track : other_tracks)
+                if (&track != untouchable_track)
+                    working_state.push_back(&track);
+            std::sort(
+                working_state.begin(),
+                working_state.end(),
+                [default_track](TrackEntry* first, TrackEntry* second)
                 {
-                    DEBUG_PRINT_LINE("Moving Language to the desired track");
+                    return default_track->track_element->get_distance_from(first->track_element) <
+                        default_track->track_element->get_distance_from(second->track_element);
+                }
+            );
+
+            BasicSharedPtr<EbmlElement> element_to_be_moved;
+            for (TrackEntry* track : working_state)
+            {
+                // Case 5
+                // If another track has FlagForced
+                if (track->has_FlagForced())
+                {
+                    DEBUG_PRINT_LINE("Moving FlagForced from track at " << track->track_element->get_offset() << " to the desired track");
+                    element_to_be_moved = track->flag_forced_element;
+                    break;
+                }
+                // Case 6
+                // If another track has both Language and LanguageIETF
+                else if (track->has_Language() && track->has_LanguageIETF())
+                {
+                    DEBUG_PRINT_LINE("Track " << track->track_element->get_offset() << " has both Language and LanguageIETF, moving Language to the desired track");
                     element_to_be_moved = track->language_element;
                     break;
                 }
-                else if (track->has_LanguageIETF())
+                // Case 7
+                // If another track's language is explicitly set to English 
+                else if (track->language == "English" && (track->has_Language() || track->has_LanguageIETF()))
                 {
-                    DEBUG_PRINT_LINE("Moving LanguageIETF to the desired track");
-                    element_to_be_moved = track->language_ietf_element;
-                    break;
-                }
-            }
-        }
-
-        if (element_to_be_moved)
-        {
-            // Make a vector with ALL referenced elements in the "Tracks" segment
-            vector<BasicSharedPtr<EbmlElement>> elements_to_adjust;
-            for (TrackEntry* track : working_state)
-            {
-                if (track != default_track)
-                {
-                    if (track->has_FlagDefault())
-                        elements_to_adjust.push_back(track->flag_default_element);
-
-                    if (track->has_FlagForced())
-                        elements_to_adjust.push_back(track->flag_forced_element);
-
+                    DEBUG_PRINT_LINE("The language of track " << track->track_element->get_offset() << " is explicitly set to English");
                     if (track->has_Language())
-                        elements_to_adjust.push_back(track->language_element);
-
-                    if (track->has_LanguageIETF())
-                        elements_to_adjust.push_back(track->language_ietf_element);
-
-                    if (track->name_element)
-                        elements_to_adjust.push_back(track->name_element);
-
-                    elements_to_adjust.push_back(track->track_element);
-                }
-            }
-
-            // Find the TrackEntry from which the element is going to be moved and adjust
-            // it to the state after the element is moved
-            for (TrackEntry* track : working_state)
-            {
-                if (track->track_element == element_to_be_moved->get_parent())
-                {
-                    switch (element_to_be_moved->get_id().get_value())
                     {
-                    case FlagForced_ID:
-                        default_track->flag_forced_element = track->flag_forced_element;
-                        track->flag_forced_element = nullptr;
-                        break;
-
-                    case Language_ID:
-                        default_track->flag_forced_element = track->language_element;
-                        track->language_element = nullptr;
-                        break;
-
-                    case LanguageIETF_ID:
-                        default_track->flag_forced_element = track->language_ietf_element;
-                        track->language_ietf_element = nullptr;
+                        DEBUG_PRINT_LINE("Moving Language to the desired track");
+                        element_to_be_moved = track->language_element;
                         break;
                     }
-
-                    break;
+                    else if (track->has_LanguageIETF())
+                    {
+                        DEBUG_PRINT_LINE("Moving LanguageIETF to the desired track");
+                        element_to_be_moved = track->language_ietf_element;
+                        break;
+                    }
                 }
             }
 
+            if (element_to_be_moved)
+            {
+                // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
+                // track and the track from which the element is going to be moved
+                vector<BasicSharedPtr<EbmlElement>> elements_to_adjust;
+                for (TrackEntry* track : working_state)
+                    if (track->track_element != element_to_be_moved->get_parent())
+                        add_track_components_to_vector(elements_to_adjust, track);
+
+                // Find the TrackEntry from which the element is going to be moved and adjust
+                // it to the state after the element is moved
+                for (TrackEntry* track : working_state)
+                {
+                    if (track->track_element == element_to_be_moved->get_parent())
+                    {
+                        switch (element_to_be_moved->get_id().get_value())
+                        {
+                        case FlagForced_ID:
+                            default_track->flag_forced_element = track->flag_forced_element;
+                            track->flag_forced_element = nullptr;
+                            break;
+
+                        case Language_ID:
+                            default_track->flag_forced_element = track->language_element;
+                            track->language_element = nullptr;
+                            break;
+
+                        case LanguageIETF_ID:
+                            default_track->flag_forced_element = track->language_ietf_element;
+                            track->language_ietf_element = nullptr;
+                            break;
+                        }
+
+                        break;
+                    }
+                }
+
 #ifndef DONT_APPLY_TRACK_SELECTION
-            // Move the selected element to the desired track and turn it into FlagForced with value 1
-            element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
-            if (FlagForced_ID == element_to_be_moved->get_id().get_value())
-                element_to_be_moved->change_bool_value(true);
-            else
-                element_to_be_moved->overwrite_with_bool_element(FlagForced_ID, true);
+                // Move the selected element to the desired track and turn it into FlagForced with value 1
+                element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
+                if (FlagForced_ID == element_to_be_moved->get_id().get_value())
+                    element_to_be_moved->change_bool_value(true);
+                else
+                    element_to_be_moved->overwrite_with_bool_element(FlagForced_ID, true);
 #endif
+            }
+            else
+                eligible_case_found = false;
         }
-        else
-            eligible_case_found = false;
     }
     else
         eligible_case_found = false;
