@@ -62,6 +62,7 @@ public:
     // Make sure to take ownership of the pointer if you don't want it to be overwritten.
     BasicSharedPtr<EbmlElement> get_next_element();
     BasicSharedPtr<EbmlElement> get_first_child();
+    inline BasicSharedPtr<EbmlElement> get_parent() { return m_parent; }
 
     bool is_last() { return this->_get_offset(EbmlOffset::End) == m_parent->_get_offset(EbmlOffset::End); }
 
@@ -98,9 +99,9 @@ public:
     uint64_t get_distance_from(BasicSharedPtr<EbmlElement> other);
 
     // Moves the current element to a given parent.
-    // Note that after calling this function, all previous references to elements
-    // located between the current element and the new parent will become invalid
-    void move_to(BasicSharedPtr<EbmlElement> new_parent);
+    // Note that after calling this function. elements_to_adjust must contain all referenced elements
+    // between the new parent and the current element (not including the new parent, current element or current parent)
+    void move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust);
 
 PRIVATE:
     /******************************************************************************************************/

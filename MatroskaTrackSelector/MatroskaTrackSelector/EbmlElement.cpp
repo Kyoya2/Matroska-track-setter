@@ -218,12 +218,32 @@ uint64_t EbmlElement::get_distance_from(BasicSharedPtr<EbmlElement> other)
     }
 }
 
-void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
+void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust)
 {
-    // TODO:
-    // - recieve a list of elements that are present in the bridge and adjust them as well
-    // - return the number of bytes bu which all elements in the bridge were shifted
     Buffer current_element(this->get_total_size());
+    pair<uint64_t, uint64_t> affected_range;
+    int32_t shift_amount;
+
+    // Store the current element in a buffer
+    this->_seek_to(EbmlOffset::Header);
+    m_stream.get().read(reinterpret_cast<char*>(current_element.data()), current_element.size());
+
+    // Calculate the ahift amount and the range
+    if (new_parent->m_offset < this->m_offset)
+    {
+        shift_amount = this->get_total_size();
+        affected_range = std::make_pair(new_parent->_get_offset(EbmlOffset::End), this->_get_offset(EbmlOffset::End));
+    }
+    else
+    {
+        shift_amount = -static_cast<int32_t>(this->get_total_size());
+        affected_range = std::make_pair(this->get_offset(), new_parent->_get_offset(EbmlOffset::Data));
+    }
+
+    // A buffer that's going to store all of the content that are going to be switched with the current_element
+    Buffer part_to_switch(affected_range.second - affected_range.first - this->get_total_size());
+
+    // Perform the switch between `part_to_switch` and the current element
     if (new_parent->m_offset < this->m_offset)
     {
         /*
@@ -237,18 +257,15 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
         | . . . [new_parent [current_element]] [...bridge...] [parent [parent_first_part] [parent_second_part]] . . . |
         * ----------------------------------------------------------------------------------------------------------- *
         */
-
-        Buffer bridge_and_parent_first_part(this->m_offset - new_parent->_get_offset(EbmlOffset::End));
         
-        // Store buffers
+        // Store the part to switch
         new_parent->_seek_to(EbmlOffset::End);
-        m_stream.get().read(reinterpret_cast<char*>(bridge_and_parent_first_part.data()), bridge_and_parent_first_part.size());
-        m_stream.get().read(reinterpret_cast<char*>(current_element.data()), current_element.size());
+        m_stream.get().read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
         // Write buffers in new order
         new_parent->_seek_to(EbmlOffset::End);
         m_stream.get().write(reinterpret_cast<char*>(current_element.data()), current_element.size());
-        m_stream.get().write(reinterpret_cast<char*>(bridge_and_parent_first_part.data()), bridge_and_parent_first_part.size());
+        m_stream.get().write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
     // Update referencing objects:
         // Current element offset
@@ -281,16 +298,13 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
         * ------------------------------------------------------------------------------------------------------------------------------------------------- *
         */
 
-        Buffer parent_second_part_and_bridge_and_new_parent_header(new_parent->_get_offset(EbmlOffset::Data) - this->_get_offset(EbmlOffset::End));
-
-        // Store buffers
-        this->_seek_to(EbmlOffset::Header);
-        m_stream.get().read(reinterpret_cast<char*>(current_element.data()), current_element.size());
-        m_stream.get().read(reinterpret_cast<char*>(parent_second_part_and_bridge_and_new_parent_header.data()), parent_second_part_and_bridge_and_new_parent_header.size());
+        // Store the part to switch
+        this->_seek_to(EbmlOffset::End);
+        m_stream.get().read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
         // Write buffers in new order
         this->_seek_to(EbmlOffset::Header);
-        m_stream.get().write(reinterpret_cast<char*>(parent_second_part_and_bridge_and_new_parent_header.data()), parent_second_part_and_bridge_and_new_parent_header.size());
+        m_stream.get().write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
         m_stream.get().write(reinterpret_cast<char*>(current_element.data()), current_element.size());
 
     // Update referencing objects:
@@ -299,11 +313,11 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
         m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
         m_stream.get() << m_parent->m_length;
 
-        // Current element offset
-        this->m_offset = new_parent->_get_offset(EbmlOffset::Data);
-
         // New parent offset
         new_parent->m_offset -= current_element.size();
+
+        // Current element offset
+        this->m_offset = new_parent->_get_offset(EbmlOffset::Data);
 
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
@@ -313,6 +327,15 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent)
 
     // Update the parent of the current element
     m_parent = new_parent;
+
+    // Adjust offset of every element that was in the affected range
+    for (auto& element : elements_to_adjust)
+    {
+        if ((element->get_offset() > affected_range.first) && (element->get_offset() < affected_range.second))
+        {
+            element->m_offset += shift_amount;
+        }
+    }
 }
 
 /******************************************************************************************************/
