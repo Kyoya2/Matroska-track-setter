@@ -80,7 +80,7 @@ TrackPriorityDescriptor TrackPrioritizer::get_track_priority(const string& track
     return TrackPriorityDescriptor(priority_descriptor_class, num_included_keywords);
 }
 
-const TrackEntry* TrackPrioritizer::get_track_with_highest_priority(const Tracks& tracks) const
+TrackEntry* TrackPrioritizer::get_track_with_highest_priority(Tracks& tracks) const
 {
     if (tracks.empty())
         return nullptr;

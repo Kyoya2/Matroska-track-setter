@@ -90,7 +90,7 @@ public:
 
 public:
     TrackPriorityDescriptor get_track_priority(const string& track_name, const string_view& track_language) const;
-    const TrackEntry* get_track_with_highest_priority(const Tracks& tracks) const;
+    TrackEntry* get_track_with_highest_priority(Tracks& tracks) const;
 
 PRIVATE:
     TrackPrioritizer() = default;

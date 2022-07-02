@@ -84,6 +84,10 @@ public:
 
     inline const T* operator->() const { return &m_internal_ptr->obj; }
 
+    inline operator bool() const { return !is_null(); }
+
+    inline bool operator==(const BasicSharedPtr<T>& other) const { return m_internal_ptr == other.m_internal_ptr; }
+
     /******************************************************************************************************/
     /************************************************ Misc ************************************************/
     /******************************************************************************************************/

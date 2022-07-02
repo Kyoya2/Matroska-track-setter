@@ -107,7 +107,7 @@ void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement
     }
 }
 
-void TrackManager::set_default_tracks(const TrackEntry* subtitle_track, const TrackEntry* audio_track)
+void TrackManager::set_default_tracks(TrackEntry* subtitle_track, TrackEntry* audio_track)
 {
     DEBUG_PRINT_LINE(endl << "Setting default subtitle track");
     _s_set_default_track(
@@ -124,7 +124,7 @@ void TrackManager::set_default_tracks(const TrackEntry* subtitle_track, const Tr
         subtitle_track);
 }
 
-void TrackManager::set_default_tracks(const size_t subtitle_track_index, const size_t audio_track_index)
+void TrackManager::set_default_tracks(size_t subtitle_track_index, size_t audio_track_index)
 {
     set_default_tracks(&m_subtitle_tracks[subtitle_track_index], &m_audio_tracks[audio_track_index]);
 }
@@ -159,11 +159,11 @@ void TrackManager::_s_set_default_track(
     Tracks& tracks,
     TrackEntry* default_track,
     Tracks& other_tracks,
-    const TrackEntry* untouchable_track)
+    TrackEntry* untouchable_track)
 {
     // Define this to prevent the program from modifying files.
     // Usefull for debugging
-#define DONT_APPLY_TRACK_SELECTION
+//#define DONT_APPLY_TRACK_SELECTION
 
     // Reset FlagForced and FlagDefault of all elements (except the default element)
     for (TrackEntry& track : tracks)
@@ -199,7 +199,7 @@ void TrackManager::_s_set_default_track(
     // If the current track has FlagForced
     if (default_track->has_FlagForced())
     {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 1");
+        DEBUG_PRINT_LINE("The desired track has FlagForced, setting it to 1");
 #ifndef DONT_APPLY_TRACK_SELECTION
         default_track->set_FlagForced(true);
 #endif
@@ -208,7 +208,7 @@ void TrackManager::_s_set_default_track(
     // If all other tracks of the same type have FlagDefault
     else if (std::all_of(working_state.cbegin(), working_state.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
     {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 2");
+        DEBUG_PRINT_LINE("All non-desired tracks have FlagDefault, set them to 0");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
         if (default_track->has_FlagDefault())
@@ -219,7 +219,7 @@ void TrackManager::_s_set_default_track(
     // If the default track has both Language and LanguageIETF
     else if (default_track->has_Language() && default_track->has_LanguageIETF())
     {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 3");
+        DEBUG_PRINT_LINE("The desired track has both Language and LanguageIETF, overwriting Language with FlagForced");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
         default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
@@ -234,17 +234,19 @@ void TrackManager::_s_set_default_track(
     else if ((default_track->language == "English") &&
             (default_track->has_Language() || default_track->has_LanguageIETF()))
     {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 4");
+        DEBUG_PRINT_LINE("The desired track's language is explicitly set to English");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
         if (default_track->has_Language())
         {
+            DEBUG_PRINT_LINE("overwriting Language with FlagForced");
             default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
             default_track->flag_forced_element = default_track->language_element;
             default_track->language_element = nullptr;
         }
         else
         {
+            DEBUG_PRINT_LINE("overwriting LanguageIETF with FlagForced");
             default_track->language_ietf_element->overwrite_with_bool_element(FlagForced_ID, true);
             default_track->flag_forced_element = default_track->language_ietf_element;
             default_track->language_ietf_element = nullptr;
@@ -257,6 +259,8 @@ void TrackManager::_s_set_default_track(
     // If the default track can expand by sizeof(FlagForced) without changing the size of the encoded length of the track
     else if (can_expand_to_contain_ff(default_track))
     {
+        // TODO: Add another case where if (num_tracks == num_flag_default) move FlagDefault away from the desired track to some other track
+        DEBUG_PRINT_LINE("The desired track can expand by sizeof(FlagForced)");
         // Add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their 
         // distance from the default track such that the closest tracks appear first
         for (TrackEntry& track : other_tracks)
@@ -274,38 +278,111 @@ void TrackManager::_s_set_default_track(
             }
         );
 
-        eligible_case_found = false;
+        BasicSharedPtr<EbmlElement> element_to_be_moved;
         for (TrackEntry* track : working_state)
         {
             // Case 5
             // If another track has FlagForced
             if (track->has_FlagForced())
             {
-                DEBUG_PRINT_LINE("The current track set is eligible for case 5");
-                // TODO
-                eligible_case_found = true;
+                DEBUG_PRINT_LINE("Moving FlagForced from track at " << track->track_element->get_offset() << " to the desired track");
+                element_to_be_moved = track->flag_forced_element;
                 break;
             }
             // Case 6
             // If another track has both Language and LanguageIETF
             else if (track->has_Language() && track->has_LanguageIETF())
             {
-                DEBUG_PRINT_LINE("The current track set is eligible for case 6");
-                // TODO
-                eligible_case_found = true;
+                DEBUG_PRINT_LINE("Track " << track->track_element->get_offset() << " has both Language and LanguageIETF, moving Language to the desired track");
+                element_to_be_moved = track->language_element;
                 break;
             }
             // Case 7
             // If another track's language is explicitly set to English 
-            else if ((track->language == "English") &&
-                    (track->has_Language() || track->has_LanguageIETF()))
+            else if (track->language == "English" && (track->has_Language() || track->has_LanguageIETF()))
             {
-                DEBUG_PRINT_LINE("The current track set is eligible for case 7");
-                // TODO
-                eligible_case_found = true;
-                break;
+                DEBUG_PRINT_LINE("The language of track " << track->track_element->get_offset() << " is explicitly set to English");
+                if (track->has_Language())
+                {
+                    DEBUG_PRINT_LINE("Moving Language to the desired track");
+                    element_to_be_moved = track->language_element;
+                    break;
+                }
+                else if (track->has_LanguageIETF())
+                {
+                    DEBUG_PRINT_LINE("Moving LanguageIETF to the desired track");
+                    element_to_be_moved = track->language_ietf_element;
+                    break;
+                }
             }
         }
+
+        if (element_to_be_moved)
+        {
+            // Make a vector with ALL referenced elements in the "Tracks" segment
+            vector<BasicSharedPtr<EbmlElement>> elements_to_adjust;
+            for (TrackEntry* track : working_state)
+            {
+                if (track != default_track)
+                {
+                    if (track->has_FlagDefault())
+                        elements_to_adjust.push_back(track->flag_default_element);
+
+                    if (track->has_FlagForced())
+                        elements_to_adjust.push_back(track->flag_forced_element);
+
+                    if (track->has_Language())
+                        elements_to_adjust.push_back(track->language_element);
+
+                    if (track->has_LanguageIETF())
+                        elements_to_adjust.push_back(track->language_ietf_element);
+
+                    if (track->name_element)
+                        elements_to_adjust.push_back(track->name_element);
+
+                    elements_to_adjust.push_back(track->track_element);
+                }
+            }
+
+            // Find the TrackEntry from which the element is going to be moved and adjust
+            // it to the state after the element is moved
+            for (TrackEntry* track : working_state)
+            {
+                if (track->track_element == element_to_be_moved->get_parent())
+                {
+                    switch (element_to_be_moved->get_id().get_value())
+                    {
+                    case FlagForced_ID:
+                        default_track->flag_forced_element = track->flag_forced_element;
+                        track->flag_forced_element = nullptr;
+                        break;
+
+                    case Language_ID:
+                        default_track->flag_forced_element = track->language_element;
+                        track->language_element = nullptr;
+                        break;
+
+                    case LanguageIETF_ID:
+                        default_track->flag_forced_element = track->language_ietf_element;
+                        track->language_ietf_element = nullptr;
+                        break;
+                    }
+
+                    break;
+                }
+            }
+
+#ifndef DONT_APPLY_TRACK_SELECTION
+            // Move the selected element to the desired track and turn it into FlagForced with value 1
+            element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
+            if (FlagForced_ID == element_to_be_moved->get_id().get_value())
+                element_to_be_moved->change_bool_value(true);
+            else
+                element_to_be_moved->overwrite_with_bool_element(FlagForced_ID, true);
+#endif
+        }
+        else
+            eligible_case_found = false;
     }
     else
         eligible_case_found = false;
@@ -317,4 +394,6 @@ void TrackManager::_s_set_default_track(
         DEBUG_PRINT_LINE("The current track set is eligible for case 8");
         // TODO
     }
+
+    // TODO: what if no subtitle track, aka untouchable_track==nullptr
 }

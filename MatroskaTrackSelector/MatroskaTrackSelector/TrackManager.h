@@ -27,11 +27,11 @@ public:
     explicit TrackManager(const wstring& file);
 
 public:
-    const Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }
-    const Tracks& get_audio_tracks() { return m_audio_tracks;  }
+    Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }
+    Tracks& get_audio_tracks() { return m_audio_tracks;  }
 
-    void set_default_tracks(const TrackEntry* subtitle_track, const TrackEntry* audio_track);
-    void set_default_tracks(const size_t subtitle_track_index, const size_t audio_track_index);
+    void set_default_tracks(TrackEntry* subtitle_track, TrackEntry* audio_track);
+    void set_default_tracks(size_t subtitle_track_index, size_t audio_track_index);
 
 PRIVATE:
     void _load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element);
@@ -41,7 +41,7 @@ PRIVATE:
         Tracks& tracks,                         // Either subtitle tracks or audio tracks
         TrackEntry* default_track,              // A pointer to the track to set as the default amongst the tracks in 'tracks'
         Tracks& other_tracks,                   // The track set that's not specified by 'tracks'. e.g. if `tracks` is subtitles then this is audio
-        const TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
+        TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
 
 PRIVATE:
     std::fstream m_file_stream;
