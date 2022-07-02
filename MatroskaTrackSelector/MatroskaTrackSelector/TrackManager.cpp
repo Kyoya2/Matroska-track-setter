@@ -161,12 +161,17 @@ void TrackManager::_s_set_default_track(
     Tracks& other_tracks,
     const TrackEntry* untouchable_track)
 {
+    // Define this to prevent the program from modifying files.
+    // Usefull for debugging
+#define DONT_APPLY_TRACK_SELECTION
+
     // Reset FlagForced and FlagDefault of all elements (except the default element)
     for (TrackEntry& track : tracks)
     {
         if (&track == default_track)
             continue;
 
+#ifndef DONT_APPLY_TRACK_SELECTION
         if (track.has_FlagForced())
         {
             track.set_FlagForced(false);
@@ -176,6 +181,7 @@ void TrackManager::_s_set_default_track(
         {
             track.set_FlagDefault(false);
         }
+#endif
     }
 
     // Fill the working state with all tracks of the default track's type except the default track
@@ -188,10 +194,6 @@ void TrackManager::_s_set_default_track(
 
     // From this point we try to find the best case for setting the default track
     bool eligible_case_found = true;
-
-    // Define this to prevent the program from modifying files.
-    // Usefull for debugging
-#define DONT_APPLY_TRACK_SELECTION
 
     // Case 1
     // If the current track has FlagForced
