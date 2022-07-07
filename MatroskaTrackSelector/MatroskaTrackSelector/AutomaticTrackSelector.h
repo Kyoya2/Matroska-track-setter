@@ -10,7 +10,7 @@
 class AutomaticTrackSelector : public TrackManager
 {
 public:
-    explicit AutomaticTrackSelector(const wstring& file) : 
+    explicit AutomaticTrackSelector(const string& file) : 
         TrackManager(file),
         m_selected_subtitle_track_index(static_cast<size_t>(-1)),
         m_selected_audio_track_index(static_cast<size_t>(-1))

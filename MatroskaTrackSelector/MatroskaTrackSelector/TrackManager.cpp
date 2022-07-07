@@ -47,7 +47,7 @@ static void add_track_components_to_vector(vector<BasicSharedPtr<EbmlElement>> c
     components.push_back(track->track_element);
 }
 
-TrackManager::TrackManager(const wstring& file) : m_file_stream(file, std::ios_base::binary | std::ios_base::out | std::ios_base::in)
+TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_base::binary | std::ios_base::out | std::ios_base::in)
 {
     m_file_stream.seekg(0);
     auto segment_element = EbmlElement::s_construct_from_stream(m_file_stream);

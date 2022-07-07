@@ -24,7 +24,7 @@
 class TrackManager
 {
 public:
-    explicit TrackManager(const wstring& file);
+    explicit TrackManager(const string& file);
 
 public:
     Tracks& get_subtitle_tracks() { return m_subtitle_tracks;  }

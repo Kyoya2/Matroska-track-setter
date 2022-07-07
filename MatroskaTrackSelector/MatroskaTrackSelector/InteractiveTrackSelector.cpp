@@ -16,7 +16,7 @@
  */
 #include "InteractiveTrackSelector.h"
 
-void InteractiveTrackSelector::s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers)
+void InteractiveTrackSelector::s_select_tracks_interactively(const string& files_dir, const vector<string>& file_names, const TrackPrioritizers& track_prioritizers)
 {
     // Maps between track names (case insensitively) to vectors of track selectors that have tracks with those names
     TracksMap subtitle_tracks_map;

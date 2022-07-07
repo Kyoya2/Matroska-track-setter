@@ -36,7 +36,6 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::string;
-using std::wstring;
 using std::string_view;
 using std::reference_wrapper;
 using std::pair;
@@ -73,7 +72,6 @@ namespace Utility
     inline uint32_t get_msb(uint32_t num);
     inline size_t get_msb_index(uint64_t num);
     inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
-    inline string wstring_to_string(const wstring& str);
 }
 
 inline uint64_t Utility::get_msb(uint64_t num)
@@ -129,24 +127,5 @@ inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_
     {
         result = (result << 8) | stream.get();
     }
-    return result;
-}
-
-string Utility::wstring_to_string(const wstring& str)
-{
-    string result;
-    const int string_size = static_cast<int>(str.size());
-
-    result.resize(string_size);
-    WideCharToMultiByte(
-        CP_UTF8,
-        0,
-        str.c_str(),
-        string_size,
-        result.data(),
-        string_size,
-        nullptr,
-        nullptr);
-
     return result;
 }

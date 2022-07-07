@@ -51,37 +51,36 @@ static string get_current_exe_directory()
     return string(buffer, string_view(buffer).find_last_of("\\/") + 1);
 }
 
-static pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
+static pair<string, vector<string>> prompt_mkv_file_selection_dialog()
 {
-    vector<wchar_t> file_names(0x4000); // Anime file names can get quite large so we put then on the heap
-    file_names[0] = '\0';
+    string file_names(0x4000, '\0');
 
-    OPENFILENAMEW open_file_name = { 0 };
+    OPENFILENAMEA open_file_name = { 0 };
 
     open_file_name.lStructSize = sizeof(open_file_name);
-    open_file_name.lpstrFilter = L"MKV files\0*.mkv\0\0";
+    open_file_name.lpstrFilter = "MKV files\0*.mkv\0\0";
     open_file_name.nFilterIndex = 1;
     open_file_name.lpstrFile = file_names.data();
     open_file_name.nMaxFile = static_cast<DWORD>(file_names.size());
-    open_file_name.lpstrTitle = L"Select MKV files to process";
+    open_file_name.lpstrTitle = "Select MKV files to process";
     open_file_name.Flags = OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
-    open_file_name.lpstrDefExt = L"mkv";
+    open_file_name.lpstrDefExt = "mkv";
 
-    if (!GetOpenFileNameW(&open_file_name))
+    if (!GetOpenFileNameA(&open_file_name))
     {
         throw FileSelectionError();
     }
 
-    wstring parent_directory(file_names.data(), open_file_name.nFileOffset);
-    if (parent_directory[parent_directory.size() - 1] == L'\0')
-        parent_directory[parent_directory.size() - 1] = L'\\';
+    string parent_directory(file_names.data(), open_file_name.nFileOffset);
+    if (parent_directory[parent_directory.size() - 1] == '\0')
+        parent_directory[parent_directory.size() - 1] = '\\';
 
-    vector<wstring> file_name_list;
+    vector<string> file_name_list;
 
-    wchar_t* ptr = file_names.data() + open_file_name.nFileOffset;
-    while (L'\0' != *ptr)
+    char* ptr = file_names.data() + open_file_name.nFileOffset;
+    while ('\0' != *ptr)
     {
-        wstring current_file_name(ptr);
+        string current_file_name(ptr);
 
         ptr += current_file_name.size() + 1;
 
@@ -91,9 +90,9 @@ static pair<wstring, vector<wstring>> prompt_mkv_file_selection_dialog()
     return std::make_pair(std::move(parent_directory), std::move(file_name_list));
 }
 
-static void do_automatic_selection(const pair<wstring, vector<wstring>>& files, const TrackPrioritizers& track_prioritizers)
+static void do_automatic_selection(const pair<string, vector<string>>& files, const TrackPrioritizers& track_prioritizers)
 {
-    for (const wstring& file_name : files.second)
+    for (const string& file_name : files.second)
     {
         TrackManager track_manager(files.first + file_name);
         track_manager.set_default_tracks(

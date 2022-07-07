@@ -45,7 +45,7 @@ public:
     InteractiveTrackSelector& operator=(const InteractiveTrackSelector&) = delete;
 
 public:
-    static void s_select_tracks_interactively(const wstring& files_dir, const vector<wstring>& file_names, const TrackPrioritizers& track_prioritizers);
+    static void s_select_tracks_interactively(const string& files_dir, const vector<string>& file_names, const TrackPrioritizers& track_prioritizers);
 
 private:
     using TracksMapValueContent = pair<shared_ptr<AutomaticTrackSelector>, size_t>;
