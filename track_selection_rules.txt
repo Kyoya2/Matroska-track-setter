@@ -14,7 +14,8 @@
 ; a subtitle track, they will have a higher selection priority.
 !INCLUDE KEYWORDS
 full
-dialog(?:ue)?
+dialog
+dialogue
 
 ; If one or more of the RegEx patterns in the following lines match the name of
 ; a subtitle track, they will not be selected.
@@ -24,7 +25,8 @@ sings
 songs
 s&s
 titles
-jap(?:anese)?
+jap
+japanese
 
 
 ; Same as above but applied to audio tracks instead of subtitle tracks
@@ -32,8 +34,10 @@ jap(?:anese)?
 !LANGUAGE: Japanese
 
 !INCLUDE KEYWORDS
-dialog(?:ue)?
+dialog
+dialogue
 
 !EXCLUDE KEYWORDS
 commentary
-eng(?:lish)?
+eng
+english
