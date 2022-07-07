@@ -300,6 +300,7 @@ void TrackManager::_s_set_default_track(
                 else
                     track_without_fd = track;
 
+#ifndef DONT_APPLY_TRACK_SELECTION
             // Perform the move
             default_track->flag_default_element->move_to(track_without_fd->track_element, elements_to_adjust);
 
@@ -309,6 +310,7 @@ void TrackManager::_s_set_default_track(
 
             // Set the new FlagDefault to false
             track_without_fd->flag_default_element->change_bool_value(false);
+#endif
         }
         else
         {
