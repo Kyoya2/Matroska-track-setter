@@ -133,7 +133,7 @@ TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)
         // The rest of the cases require the current rule set to be set
         else if (nullptr == current_prioritizer)
         {
-            throw SelectionRulesParsingError();
+            throw InvalidRulesFileFormat();
         }
         // Check if the current line begins with LANGUAGE_SPECIFIER
         else if (0 == current_line.rfind(LANGUAGE_SPECIFIER, 0))
@@ -168,7 +168,7 @@ TrackPrioritizers TrackPrioritizer::s_from_file(const string& rules_file_path)
         // The last case requires the current word container to be set
         else if (nullptr == current_keyword_container)
         {
-            throw SelectionRulesParsingError();
+            throw InvalidRulesFileFormat();
         }
         else
         {

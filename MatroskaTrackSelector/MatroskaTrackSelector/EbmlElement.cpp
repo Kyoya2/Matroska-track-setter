@@ -37,7 +37,7 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
 BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
 {
     if (this->is_last())
-        throw NoMoreElements();
+        return nullptr;
     
     _seek_to(EbmlOffset::End);
 
@@ -182,7 +182,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
 
     if (element_size_delta < 0)
     {
-        throw ElementTooSmall("The current element is too small to be overwritten with the given element");
+        throw exception("Element is too small to be overridden");
     }
 
     m_id = new_id;
@@ -379,8 +379,10 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
 
     case EbmlOffset::End:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value();
+
+    default:
+        throw exception("Unexpected value");
     }
-    throw UnexpectedValueException();
 }
 
 void EbmlElement::_read_content(void* container) const
@@ -403,21 +405,21 @@ void EbmlElement::_initialize_as_root()
     if ((children[DocType_ID].is_null()) ||
         (children[DocType_ID]->get_string_value() != "matroska"))
     {
-        throw UnsupportedDocument("This is not a matroska document");
+        throw InvalidMatroskaFile();
     }
 
     // Check that the maximum ID length of the current stream is supported
     if ((!children[EBMLMaxIDLength_ID].is_null()) &&
         (children[EBMLMaxIDLength_ID]->get_uint_value() > sizeof(EbmlElementIDType)))
     {
-        throw UnsupportedDocument("Max ID length is bigger then the supported size");
+        throw UnsupportedMatroskaFile();
     }
 
     // Check that the maximum element size length of the current stream is supported
     if ((!children[EBMLMaxSizeLength_ID].is_null()) &&
         (children[EBMLMaxSizeLength_ID]->get_uint_value() > sizeof(EbmlElementLengthType)))
     {
-        throw UnsupportedDocument("Max element size length is bigger then the supported size");
+        throw UnsupportedMatroskaFile();
     }
 
     // Set the current element to be the 'Segment' element
@@ -428,17 +430,14 @@ void EbmlElement::_initialize_as_root()
 
     // Make sure that it's indeed the 'Segment' element
     if (Segment_ID != m_id.get_value())
-        throw UnexpectedElementException("Expected segment element");
+        throw InvalidMatroskaFile();
 
     DEBUG_PRINT_LINE("The 'EBML' element has been verified and now points to the corresponding 'Segment' element");
 }
 
 void EbmlElement::_create_void_element(size_t size)
 {
-    if (size < 2)
-    {
-        throw SizeTooSmall("Can't create a Void element of less than 2 bytes");
-    }
+    assert(size >= 2);
 
     EbmlElementID void_element_id = Void_ID;
 

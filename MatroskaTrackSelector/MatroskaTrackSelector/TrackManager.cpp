@@ -54,7 +54,7 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
     
     if (Segment_ID != segment_element->get_id().get_value())
     {
-        throw UnexpectedElementException("Expected segment element");
+        throw InvalidMatroskaFile();
     }
 
     auto current_top_level_element = segment_element->get_first_child();

@@ -68,7 +68,7 @@ static pair<string, vector<string>> prompt_mkv_file_selection_dialog()
 
     if (!GetOpenFileNameA(&open_file_name))
     {
-        throw FileSelectionError();
+        return std::make_pair("", vector<string>(0));
     }
 
     string parent_directory(file_names.data(), open_file_name.nFileOffset);
@@ -154,6 +154,12 @@ int main()
     }
 
     auto files_to_process = prompt_mkv_file_selection_dialog();
+    if (files_to_process.second.empty())
+    {
+        cout << "No files were selected" << endl;
+        return 0;
+    }
+
     TrackPrioritizers track_prioritizers = TrackPrioritizer::s_from_file(get_current_exe_directory() + "track_selection_rules.txt");
 
     if (selection_mode == TrackSelectionMode::Automatic)

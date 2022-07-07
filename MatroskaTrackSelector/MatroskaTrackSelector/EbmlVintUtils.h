@@ -17,8 +17,6 @@
 #pragma once
 #include "Common.h"
 
-DECL_EXCEPTION(VINTOverflowError);
-
 namespace EbmlVintUtils
 {
     inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
@@ -63,7 +61,7 @@ inline T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_wit
 
     if (size_of_vint > sizeof(T))
     {
-        throw VINTOverflowError();
+        throw exception("Value too big to parse");
     }
 
     // Unset VINT_MARKER

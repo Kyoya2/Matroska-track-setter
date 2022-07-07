@@ -26,8 +26,6 @@ namespace BasicSharedPtrStats
 }
 #endif
 
-DECL_EXCEPTION(ReleaseOwnershipExcetion);
-
 /*
     This class is identical to std::share_pointer except it has a function that allows a pointer object to
     relinquish himself from ownership of the stored object while still allowing it to be copied validly.
@@ -217,6 +215,6 @@ inline void BasicSharedPtr<T>::release_ownership()
     }
     else
     {
-        throw ReleaseOwnershipExcetion("Can't release ownership of single-owned object or can't release ownership twice");
+        throw exception("Can't release ownership of single-owned object or can't release ownership twice");
     }
 }

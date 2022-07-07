@@ -24,8 +24,6 @@
 
 #include "Common.h"
 
-DECL_EXCEPTION(InvalidTableContent);
-
 namespace ConsoleAttributes
 {
     static const string BlackFG         = "\x1b[30m";
@@ -75,7 +73,7 @@ public:
         size_t num_columns = headers.size();
         if (!rows.empty() && (rows[0].size() != num_columns))
         {
-            throw InvalidTableContent();
+            throw exception("Bad table format");
         }
 
         // Calculate the maximum width of each column

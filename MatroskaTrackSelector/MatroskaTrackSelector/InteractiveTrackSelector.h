@@ -31,8 +31,6 @@
 #include "MatroskaElementSpecification.auto.h"
 #include "AutomaticTrackSelector.h"
 
-DECL_EXCEPTION(FileSelectionError);
-
 using std::shared_ptr;
 
 

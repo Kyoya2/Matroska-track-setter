@@ -24,13 +24,6 @@
 #include "MatroskaElementSpecification.auto.h"
 #include "BasicSharedPtr.h"
 
-DECL_EXCEPTION(UnsupportedDocument);
-DECL_EXCEPTION(UnexpectedElementException);
-DECL_EXCEPTION(NoMoreElements);
-DECL_EXCEPTION(UnexpectedValueException);
-DECL_EXCEPTION(ElementTooSmall);
-DECL_EXCEPTION(SizeTooSmall);
-
 using std::unordered_map;
 
 // Offsets relative to the current element

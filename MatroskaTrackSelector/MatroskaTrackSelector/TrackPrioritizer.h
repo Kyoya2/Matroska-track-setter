@@ -22,8 +22,6 @@
 #include "Common.h"
 #include "TrackEntry.h"
 
-DECL_EXCEPTION(SelectionRulesParsingError);
-
 enum class TrackPriorityClass
 {
     // Must be sorted from the highest to lowest priority.

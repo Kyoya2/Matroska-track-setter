@@ -23,6 +23,7 @@
 
 #define NOMINMAX
 #include <Windows.h>
+#include <cassert>
 #include <string>
 #include <cstdint>
 #include <iostream>
@@ -31,6 +32,7 @@
 #include <memory>
 #include <functional>
 #include <string_view>
+#include <exception>
 
 using std::cout;
 using std::endl;
@@ -39,6 +41,7 @@ using std::string;
 using std::string_view;
 using std::reference_wrapper;
 using std::pair;
+using std::exception;
 
 using Buffer = vector<uint8_t>;
 
@@ -52,19 +55,16 @@ using Buffer = vector<uint8_t>;
 
 #define WriteLine(something) cout << something << endl
 
-#define DECL_EXCEPTION(ex_name)                                                                    \
-struct ex_name : public BaseMatroskaTrackSelectorException                                         \
-{                                                                                                  \
-    ex_name(const char* const message = nullptr) : BaseMatroskaTrackSelectorException(message) {}  \
+#define DECL_EXCEPTION(ex_name) \
+struct ex_name                  \
+{                               \
+    ex_name() = default;        \
 }
 
-struct BaseMatroskaTrackSelectorException
-{
-    BaseMatroskaTrackSelectorException(const char* const msg = nullptr) : message(msg) {}
-    const char* const message;
-};
-
-DECL_EXCEPTION(SizeTooBigError);
+// Declare an exception object for each exception that can be displayed to the user, only high-level stuff.
+DECL_EXCEPTION(InvalidMatroskaFile);
+DECL_EXCEPTION(UnsupportedMatroskaFile);
+DECL_EXCEPTION(InvalidRulesFileFormat);
 
 namespace Utility
 {
@@ -116,11 +116,10 @@ inline size_t Utility::get_msb_index(uint64_t num)
 
 inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_t size)
 {
+    assert(size <= sizeof(uint64_t));
+
     if (0 == size)
         return 0;
-
-    if (size > sizeof(uint64_t))
-        throw SizeTooBigError();
 
     uint64_t result = stream.get();
     for (size_t i = 0; i < size - 1; ++i)

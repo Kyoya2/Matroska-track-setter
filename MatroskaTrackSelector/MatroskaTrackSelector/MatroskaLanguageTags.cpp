@@ -61,6 +61,7 @@ const string_view& MatroskaLanguageTags::get_tag_language(const string& tag)
 
 const vector<string_view>& MatroskaLanguageTags::get_language_tags(const string& language)
 {
+    static const vector<string_view> NO_TAGS(0);
     for (const LanguageDescriptor& langeage_descriptor : language_tags)
     {
         // If the given language matches one of the current language names
@@ -74,5 +75,5 @@ const vector<string_view>& MatroskaLanguageTags::get_language_tags(const string&
         }
     }
 
-    throw UnknownLanguageException();
+    return NO_TAGS;
 }

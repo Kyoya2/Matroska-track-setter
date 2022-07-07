@@ -21,8 +21,6 @@
 
 #include "Common.h"
 
-DECL_EXCEPTION(UnknownLanguageException);
-
 struct LanguageDescriptor
 {
     vector<string_view> language_names;
