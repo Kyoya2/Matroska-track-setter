@@ -156,7 +156,7 @@ int main()
     auto files_to_process = prompt_mkv_file_selection_dialog();
     if (files_to_process.second.empty())
     {
-        cout << "No files were selected" << endl;
+        WriteLine("No files were selected");
         return 0;
     }
 

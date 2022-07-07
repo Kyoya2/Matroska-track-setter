@@ -108,16 +108,16 @@ public:
         cout << u8"╔";                 
         for (size_t i = 0; i < frame_width; ++i)
             cout << u8"═";
-        cout << u8"╗" << endl;
+        WriteLine(u8"╗");
 
         // title
-        cout << u8"║ " << padded_text(title, frame_width - 2) << u8" ║" << endl;
+        WriteLine(u8"║ " << padded_text(title, frame_width - 2) << u8" ║");
 
         // title separator
         cout << u8"╟";
         for (size_t i = 0; i < frame_width; ++i)
             cout << u8"─";
-        cout << u8"╢" << endl;
+        WriteLine(u8"╢");
 
         // Headers
         cout << u8"║ ";
@@ -128,7 +128,7 @@ public:
 
             cout << padded_text(headers[col], column_widths[col]);
         }
-        cout << internal_padding << u8" ║" << endl;
+        WriteLine(internal_padding << u8" ║");
 
         // Header separator
         cout << u8"║ ";
@@ -140,7 +140,7 @@ public:
             for (size_t i = 0; i < column_widths[col]; ++i)
                 cout << u8"─";
         }
-        cout << internal_padding << u8" ║" << endl;
+        WriteLine(internal_padding << u8" ║");
 
         // Rows
         for (size_t row = 0; row < rows.size(); ++row)
@@ -153,7 +153,7 @@ public:
 
                 cout << padded_text(rows[row][col], column_widths[col]);
             }
-            cout << internal_padding << u8" ║" << endl;
+            WriteLine(internal_padding << u8" ║");
         }
 #undef padded_text
 
@@ -161,7 +161,7 @@ public:
         cout << u8"╚";
         for (size_t i = 0; i < frame_width; ++i)
             cout << u8"═";
-        cout << u8"╝" << endl;
+        WriteLine(u8"╝");
     }
 
 private:
