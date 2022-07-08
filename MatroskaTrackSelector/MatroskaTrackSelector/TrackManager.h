@@ -38,9 +38,9 @@ PRIVATE:
     void _load_tracks(BasicSharedPtr<EbmlElement>& tracks_element);
 
     void _s_set_default_track(
-        Tracks& tracks,                         // Either subtitle tracks or audio tracks
-        TrackEntry* default_track,              // A pointer to the track to set as the default amongst the tracks in 'tracks'
-        Tracks& other_tracks,                   // The track set that's not specified by 'tracks'. e.g. if `tracks` is subtitles then this is audio
+        Tracks& tracks,                   // Either subtitle tracks or audio tracks
+        TrackEntry* default_track,        // A pointer to the track to set as the default amongst the tracks in 'tracks'
+        Tracks& other_tracks,             // The track set that's not specified by 'tracks'. e.g. if `tracks` is subtitles then this is audio
         TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
 
 PRIVATE:

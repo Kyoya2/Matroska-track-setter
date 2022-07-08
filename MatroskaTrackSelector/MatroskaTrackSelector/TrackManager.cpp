@@ -428,6 +428,4 @@ void TrackManager::_s_set_default_track(
         DEBUG_PRINT_LINE("The current track set is eligible for case 8");
         // TODO
     }
-
-    // TODO: what if no subtitle track, aka untouchable_track==nullptr
 }
