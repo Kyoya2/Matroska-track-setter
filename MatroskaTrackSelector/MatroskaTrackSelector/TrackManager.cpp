@@ -130,14 +130,14 @@ void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement
 void TrackManager::set_default_tracks(TrackEntry* subtitle_track, TrackEntry* audio_track)
 {
     DEBUG_PRINT_LINE(endl << "Setting default subtitle track");
-    _s_set_default_track(
+    _set_default_track(
         m_subtitle_tracks,
         const_cast<TrackEntry*>(subtitle_track),
         m_audio_tracks,
         audio_track);
 
     DEBUG_PRINT_LINE("Setting default audio track");
-    _s_set_default_track(
+    _set_default_track(
         m_audio_tracks,
         const_cast<TrackEntry*>(audio_track),
         m_subtitle_tracks,
@@ -175,7 +175,7 @@ void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
     }
 }
 
-void TrackManager::_s_set_default_track(
+void TrackManager::_set_default_track(
     Tracks& tracks,
     TrackEntry* default_track,
     Tracks& other_tracks,
