@@ -194,7 +194,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
 
     // If there's only one byte left to fill, extend the encoded length of the m_length element by one
     m_length.write(m_stream, (1 == element_size_delta) ? 2 : 1);
-    m_stream.get().put(static_cast<bool>(value));
+    m_stream.get().put(value);
 
     // Fill the rest of the remaining space with a Void element
     if (element_size_delta > 1)
