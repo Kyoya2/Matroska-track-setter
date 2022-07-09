@@ -15,7 +15,7 @@ Considerations for selecting one of the two methods:
     so sometimes the script WILL add a FF element to an audio track.
 - When multiple subtitle tracks have FD=1 VLC Media Player will select the subtitle track that has both
 	FD=1 and the largest track number.
-- When multiple subtitle tracks have FD=1 VLC Media Player will select the audio track that has both FD=1
+- When multiple audio tracks have FD=1 VLC Media Player will select the audio track that has both FD=1
 	and the smallest track number.
 
 
