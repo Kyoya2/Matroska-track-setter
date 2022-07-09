@@ -20,6 +20,8 @@ SeekEntry::SeekEntry(BasicSharedPtr<EbmlElement>& seek_element) :
     seek_element(seek_element),
     m_seek_position(0)
 {
+    assert(seek_element->get_id().get_value() == Seek_ID);
+
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
         {SeekID_ID, nullptr},
         {SeekPosition_ID, nullptr},

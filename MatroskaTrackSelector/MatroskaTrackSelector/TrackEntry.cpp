@@ -22,6 +22,8 @@ TrackEntry::TrackEntry(BasicSharedPtr<EbmlElement>& track_element) :
     is_default(true),
     is_forced(false)
 {
+    assert(track_element->get_id().get_value() == TrackEntry_ID);
+
     unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
         {Name_ID, nullptr},
         {Language_ID, nullptr},

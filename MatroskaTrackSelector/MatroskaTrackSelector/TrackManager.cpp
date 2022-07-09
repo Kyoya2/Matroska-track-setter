@@ -151,9 +151,10 @@ void TrackManager::set_default_tracks(size_t subtitle_track_index, size_t audio_
 
 void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
 {
-    DEBUG_PRINT_LINE("Loading tracks");
+    assert(tracks_element->get_id().get_value() == Tracks_ID);
     auto tracks = tracks_element->get_identical_children_by_id(TrackEntry_ID);
 
+    DEBUG_PRINT_LINE("Loading tracks");
     for (BasicSharedPtr<EbmlElement>& track : tracks)
     {
         TrackEntry current_track_entry = track;
