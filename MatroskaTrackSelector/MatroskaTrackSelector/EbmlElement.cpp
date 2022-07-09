@@ -218,7 +218,7 @@ uint64_t EbmlElement::get_distance_from(BasicSharedPtr<EbmlElement> other)
     }
 }
 
-void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust)
+int32_t EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust)
 {
     Buffer current_element(this->get_total_size());
     pair<uint64_t, uint64_t> affected_range;
@@ -336,6 +336,8 @@ void EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSh
             element->m_offset += shift_amount;
         }
     }
+
+    return shift_amount;
 }
 
 /******************************************************************************************************/

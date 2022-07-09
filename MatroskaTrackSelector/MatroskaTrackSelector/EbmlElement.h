@@ -94,7 +94,8 @@ public:
     // Moves the current element to a given parent.
     // Note that after calling this function. elements_to_adjust must contain all referenced elements
     // between the new parent and the current element (not including the new parent, current element or current parent)
-    void move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust);
+    // Returns the amount by which all relevant elements were shifted
+    int32_t move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust);
 
 PRIVATE:
     /******************************************************************************************************/
