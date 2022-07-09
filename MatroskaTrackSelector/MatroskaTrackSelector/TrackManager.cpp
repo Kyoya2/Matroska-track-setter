@@ -59,29 +59,11 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
 
     auto current_top_level_element = segment_element->get_first_child();
 
-    if (current_top_level_element->get_id().get_value() != SeekHead_ID)
-    {
-        // TODO: weird file structure, disable last case, also ignore all other top-level elements and
-        // load only the tracks element for the rest of the cases
-        throw std::exception();
-    }
-
     // Iterate over all top-level elements
     while (current_top_level_element)
     {
         switch (current_top_level_element->get_id().get_value())
         {
-        case SeekHead_ID:
-            DEBUG_PRINT_LINE("Encountered a SeekHead element");
-            if (!m_seek_entries.empty())
-            {
-                // TODO: weird file structure, disable last case, also ignore all other top-level elements and
-                // load only the tracks element for the rest of the cases
-                throw std::exception();
-            }
-            _load_seek_entries(current_top_level_element);
-            break;
-
         case Tracks_ID:
             DEBUG_PRINT_LINE("Encountered a Tracks element");
             _load_tracks(current_top_level_element);
@@ -105,10 +87,19 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
             }
             break;
 
+        case SeekHead_ID:
+            // TODO: handle the case where there are multiple SeekHead elements
+            // one of them is shifted due to last case, which means that some "Seek"
+            // entries under that entry may to be updated (the ones that were not shifted along
+            // with the parent SeekHead)
+            DEBUG_PRINT_LINE("Encountered a SeekHead element");
+            _load_seek_entries(current_top_level_element);
+            __fallthrough;
+
         default:
             if (_are_tracks_loaded())
                 m_void_after_tracks.second.push_back(current_top_level_element);
-            else
+            else if (m_void_before_tracks.first)
                 m_void_before_tracks.second.push_back(current_top_level_element);
             break;
         }
