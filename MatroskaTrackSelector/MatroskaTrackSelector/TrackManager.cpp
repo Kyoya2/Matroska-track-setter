@@ -409,7 +409,7 @@ void TrackManager::_set_default_track(
                 }
 
 #ifndef DONT_APPLY_TRACK_SELECTION
-                // Move the selected element to the desired track and turn it into FlagForced with value 1
+                // Move the selected element to the desired track and turn it into FF with value 1
                 element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
                 if (FlagForced_ID == element_to_be_moved->get_id().get_value())
                     element_to_be_moved->change_bool_value(true);

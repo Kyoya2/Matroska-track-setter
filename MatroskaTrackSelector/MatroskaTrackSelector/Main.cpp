@@ -109,6 +109,8 @@ int main()
         [-r --rules] - path to rules file
         [-i --interactive] - if used, the user will select tracks manually. The rules file will
             only be used for coloring the available tracks by their priority.
+        [-s --standard] - perform changes strictly by the Matroska starndard. By default some changes are not compatible with the standard
+            but still work, like adding FlagForced to audio tracks
         [-v -vv -vvv] - verbosity level, usefull for debugging
         [--dry-run] - Don't actually change the file's content
 
