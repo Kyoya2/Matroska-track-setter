@@ -28,7 +28,7 @@ EbmlElementID::EbmlElementID(std::istream& stream) :
 
 void EbmlElementID::write(std::ostream& stream) const
 {
-    EbmlVintUtils::encode_and_write(m_value, m_encoded_size, stream);
+    Utility::write_big_endian_to_stream(m_value, m_encoded_size, stream);
 }
 
 std::ostream& operator<<(std::ostream& stream, const EbmlElementID& element_id)

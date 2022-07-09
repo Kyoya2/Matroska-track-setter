@@ -25,8 +25,6 @@ namespace EbmlVintUtils
     inline T extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr);
 
     inline uint64_t remove_vint_marker(uint64_t value);
-
-    inline void encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream);
 }
 
 inline size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker)
@@ -81,14 +79,4 @@ inline T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_wit
 inline uint64_t EbmlVintUtils::remove_vint_marker(uint64_t value)
 {
     return value ^ Utility::get_msb(value);
-}
-
-inline void EbmlVintUtils::encode_and_write(uint64_t value, size_t encoded_length, std::ostream& stream)
-{
-    // Convert to big-endian
-    char* encoded_bytes_ptr = reinterpret_cast<char*>(&value);
-    std::reverse(encoded_bytes_ptr, encoded_bytes_ptr + encoded_length);
-
-    // Write
-    stream.write(encoded_bytes_ptr, encoded_length);
 }
