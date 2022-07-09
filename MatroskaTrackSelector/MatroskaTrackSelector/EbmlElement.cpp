@@ -166,7 +166,7 @@ bool EbmlElement::get_bool_value() const
 /******************************************************************************************************/
 /****************************************** Element modifiers *****************************************/
 /******************************************************************************************************/
-void EbmlElement::change_bool_value(bool new_value)
+void EbmlElement::update_bool_value(bool new_value)
 {
     _seek_to(EbmlOffset::Data);
     m_stream.get().put(static_cast<uint8_t>(new_value));

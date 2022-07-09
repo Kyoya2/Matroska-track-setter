@@ -303,7 +303,7 @@ void TrackManager::_set_default_track(
             default_track->flag_default_element = nullptr;
 
             // Set the new FlagDefault to false
-            track_without_fd->flag_default_element->change_bool_value(false);
+            track_without_fd->flag_default_element->update_bool_value(false);
 #endif
         }
         else
@@ -403,7 +403,7 @@ void TrackManager::_set_default_track(
                 // Move the selected element to the desired track and turn it into FF with value 1
                 element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
                 if (FlagForced_ID == element_to_be_moved->get_id().get_value())
-                    element_to_be_moved->change_bool_value(true);
+                    element_to_be_moved->update_bool_value(true);
                 else
                     element_to_be_moved->overwrite_with_bool_element(FlagForced_ID, true);
 #endif

@@ -73,7 +73,7 @@ inline void TrackEntry::set_FlagDefault(bool new_value)
     if (is_default == new_value)
         return;
 
-    flag_default_element->change_bool_value(new_value);
+    flag_default_element->update_bool_value(new_value);
     is_default = new_value;
 }
 
@@ -82,6 +82,6 @@ inline void TrackEntry::set_FlagForced(bool new_value)
     if (is_forced == new_value)
         return;
 
-    flag_forced_element->change_bool_value(new_value);
+    flag_forced_element->update_bool_value(new_value);
     is_forced = new_value;
 }
