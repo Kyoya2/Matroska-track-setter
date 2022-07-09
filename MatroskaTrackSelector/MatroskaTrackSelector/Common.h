@@ -72,7 +72,7 @@ namespace Utility
     inline uint32_t get_msb(uint32_t num);
     inline size_t get_msb_index(uint64_t num);
     inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
-    inline void write_big_endian_to_stream(uint64_t value, size_t encoded_length, std::ostream& stream);
+    inline void write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length);
 }
 
 inline uint64_t Utility::get_msb(uint64_t num)
@@ -130,7 +130,7 @@ inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_
     return result;
 }
 
-inline void Utility::write_big_endian_to_stream(uint64_t value, size_t encoded_length, std::ostream& stream)
+inline void Utility::write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length)
 {
     // Convert to big-endian
     char* encoded_bytes_ptr = reinterpret_cast<char*>(&value);

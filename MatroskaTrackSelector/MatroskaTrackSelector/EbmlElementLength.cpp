@@ -47,7 +47,7 @@ void EbmlElementLength::write(std::ostream& stream, size_t encoded_length) const
     EbmlElementLengthType encoded_value = m_value;
     encoded_value |= ((EbmlElementLengthType)1 << (7 * encoded_length));
 
-    Utility::write_big_endian_to_stream(encoded_value, encoded_length, stream);
+    Utility::write_big_endian_to_stream(stream, encoded_value, encoded_length);
 
     // Update encoded size to match
     m_encoded_size = encoded_length;
