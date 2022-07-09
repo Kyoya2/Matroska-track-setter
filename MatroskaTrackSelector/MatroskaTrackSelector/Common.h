@@ -110,9 +110,9 @@ inline uint32_t Utility::get_msb(uint32_t num)
 
 inline size_t Utility::get_msb_index(uint64_t num)
 {
-    size_t msb_index = 0;
-    while (0 != (num >>= 1)) ++msb_index;
-    return msb_index;
+    unsigned long result;
+    _BitScanReverse64(&result, num);
+    return static_cast<size_t>(result);
 }
 
 inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_t size)
@@ -122,20 +122,24 @@ inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_
     if (0 == size)
         return 0;
 
-    uint64_t result = stream.get();
-    for (size_t i = 0; i < size - 1; ++i)
-    {
-        result = (result << 8) | stream.get();
-    }
+    uint64_t result = 0;
+
+    // Read as big-endian
+    stream.read(reinterpret_cast<char*>(&result) + (sizeof(result) - size), size);
+
+    // Convert to little-endian
+    std::reverse(reinterpret_cast<char*>(&result), reinterpret_cast<char*>(&result + 1));
     return result;
 }
 
 inline void Utility::write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length)
 {
+    assert(encoded_length <= sizeof(uint64_t));
+    assert((get_msb_index(value) + 1) / 8 <= encoded_length);
+
     // Convert to big-endian
     char* encoded_bytes_ptr = reinterpret_cast<char*>(&value);
     std::reverse(encoded_bytes_ptr, encoded_bytes_ptr + encoded_length);
 
-    // Write
     stream.write(encoded_bytes_ptr, encoded_length);
 }
