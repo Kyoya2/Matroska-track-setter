@@ -31,14 +31,14 @@
     <Filter Include="Track management\InteractiveTrackSelector">
       <UniqueIdentifier>{c99096bc-a4fd-4622-b219-73550fd88a71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Track management\TrackEntry">
-      <UniqueIdentifier>{b944767a-b2ba-450d-bf37-33cbf6a47e5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Track management\InteractiveTrackSelector\MinTrackEntry">
       <UniqueIdentifier>{b54f6c32-3fe2-424d-8214-e76294acec92}</UniqueIdentifier>
     </Filter>
     <Filter Include="Track management\InteractiveTrackSelector\AutomaticTrackSelector">
       <UniqueIdentifier>{d86b3454-3544-4b20-b34f-2db927142e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Track management\TrackManager\TrackEntry">
+      <UniqueIdentifier>{b944767a-b2ba-450d-bf37-33cbf6a47e5c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Track management\TrackManager\SeekEntry">
       <UniqueIdentifier>{464b81f0-fd0c-4c19-a02b-bd36420ec57c}</UniqueIdentifier>
@@ -56,7 +56,7 @@
       <Filter>Ebml\EbmlParser</Filter>
     </ClCompile>
     <ClCompile Include="TrackEntry.cpp">
-      <Filter>Track management\TrackEntry</Filter>
+      <Filter>Track management\TrackManager\TrackEntry</Filter>
     </ClCompile>
     <ClCompile Include="MatroskaLanguageTags.cpp">
       <Filter>Track management\MatroskaLanguageTags</Filter>
@@ -118,7 +118,7 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="TrackEntry.h">
-      <Filter>Track management\TrackEntry</Filter>
+      <Filter>Track management\TrackManager\TrackEntry</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTags.h">
       <Filter>Track management\MatroskaLanguageTags</Filter>
