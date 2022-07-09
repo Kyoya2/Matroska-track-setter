@@ -59,71 +59,64 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
 
     auto current_top_level_element = segment_element->get_first_child();
 
-    BasicSharedPtr<EbmlElement> last_void_element = nullptr;
-    EbmlElementIDType previous_element_id = 0;
+    if (current_top_level_element->get_id().get_value() != SeekHead_ID)
+    {
+        // TODO: weird file structure, disable last case, also ignore all other top-level elements and
+        // load only the tracks element for the rest of the cases
+        throw std::exception();
+    }
 
     // Iterate over all top-level elements
-    while (true)
+    while (current_top_level_element)
     {
         switch (current_top_level_element->get_id().get_value())
         {
         case SeekHead_ID:
             DEBUG_PRINT_LINE("Encountered a SeekHead element");
-            if (m_tracks_seek_position.is_null())
-                _load_tracks_seek_position_element(current_top_level_element);
+            if (!m_seek_entries.empty())
+            {
+                // TODO: weird file structure, disable last case, also ignore all other top-level elements and
+                // load only the tracks element for the rest of the cases
+                throw std::exception();
+            }
+            _load_seek_entries(current_top_level_element);
             break;
 
         case Tracks_ID:
             DEBUG_PRINT_LINE("Encountered a Tracks element");
-            // The last seen Void element is the closest Void element that appears before the Tracks element
-            if (previous_element_id == Void_ID)
-                m_void_before_tracks = last_void_element;
             _load_tracks(current_top_level_element);
             break;
 
         case Void_ID:
             DEBUG_PRINT_LINE("Encountered a Void element");
-            last_void_element = current_top_level_element;
-            // If the tracks have already been loaded and the closes Void element that comes after the Tracks
-            // element wasn't loaded. Set it to be the current Void element.
-            if ((previous_element_id == Tracks_ID) && m_void_after_tracks.is_null())
+            // Need a Void element to be able to contain at least 2 FFs:
+            // 2+4+4=10 where 2 is the minimal size of Void header and 4 is size of FF
+            if (current_top_level_element->get_total_size() < 10)
+                break;
+
+            if (_are_tracks_loaded())
+                m_void_after_tracks.first = current_top_level_element;
+            else
             {
-                m_void_after_tracks = last_void_element;
+                m_void_before_tracks.first = current_top_level_element;
+
+                // Clear the top-level elements before the previous Void element, if there were any
+                m_void_before_tracks.second.clear();
             }
+            break;
+
+        default:
+            if (_are_tracks_loaded())
+                m_void_after_tracks.second.push_back(current_top_level_element);
+            else
+                m_void_before_tracks.second.push_back(current_top_level_element);
             break;
         }
 
-        previous_element_id = current_top_level_element->get_id().get_value();
-
-        if (current_top_level_element->is_last())
+        if (m_void_after_tracks.first)
             break;
 
         current_top_level_element = current_top_level_element->get_next_element();
-    }
-}
-
-void TrackManager::_load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element)
-{
-    DEBUG_PRINT_LINE("Searching for a 'Seek' element with a SeekID of 'Tracks' element");
-    auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
-
-    // Iterate over all Seek elements untill we find the Seek element that points to the Tracks element
-    for (BasicSharedPtr<EbmlElement>& current_seek_element : seek_elements)
-    {
-       unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> seek_children{
-            {SeekID_ID, nullptr},
-            {SeekPosition_ID, nullptr}
-       };
-
-       current_seek_element->get_unique_children(seek_children);
-
-       // If the current seek ID matches the ID of a "Tracks" element, save it's SeekPosition and return
-       if (seek_children[SeekID_ID]->get_uint_value() == Tracks_ID)
-       {
-           DEBUG_PRINT_LINE("Found Tracks SeekID");
-           m_tracks_seek_position = seek_children[SeekPosition_ID];
-           return;
-       }
     }
 }
 
@@ -174,6 +167,15 @@ void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
             break;
         }
     }
+}
+
+void TrackManager::_load_seek_entries(BasicSharedPtr<EbmlElement>& seek_head_element)
+{
+    assert(seek_head_element->get_id().get_value() == SeekHead_ID);
+    auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
+
+    for (auto& seek_element : seek_elements)
+        m_seek_entries.emplace_back(seek_element);
 }
 
 void TrackManager::_set_default_track(

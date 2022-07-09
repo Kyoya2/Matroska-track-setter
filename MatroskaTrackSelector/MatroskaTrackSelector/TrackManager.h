@@ -20,6 +20,7 @@
 #include "Common.h"
 #include "EbmlElement.h"
 #include "TrackEntry.h"
+#include "SeekEntry.h"
 
 class TrackManager
 {
@@ -34,23 +35,27 @@ public:
     void set_default_tracks(size_t subtitle_track_index, size_t audio_track_index);
 
 PRIVATE:
-    void _load_tracks_seek_position_element(BasicSharedPtr<EbmlElement>& seek_head_element);
     void _load_tracks(BasicSharedPtr<EbmlElement>& tracks_element);
-
+    void _load_seek_entries(BasicSharedPtr<EbmlElement>& seek_head_element);
     void _set_default_track(
         Tracks& tracks,                   // Either subtitle tracks or audio tracks
         TrackEntry* default_track,        // A pointer to the track to set as the default amongst the tracks in 'tracks'
         Tracks& other_tracks,             // The track set that's not specified by 'tracks'. e.g. if `tracks` is subtitles then this is audio
         TrackEntry* untouchable_track);   // A pointer to the track amongst 'other_tracks' that shouldn't be modified
 
+    inline bool _are_tracks_loaded() { return !m_audio_tracks.empty(); }
+
 PRIVATE:
     std::fstream m_file_stream;
-    BasicSharedPtr<EbmlElement> m_tracks_seek_position;
+    vector<SeekEntry> m_seek_entries;
     Tracks m_subtitle_tracks;
     Tracks m_audio_tracks;
 
-    // Theese refer to void elements that USUSALLY appear between top-level elements
-    BasicSharedPtr<EbmlElement> m_void_before_tracks;
-    BasicSharedPtr<EbmlElement> m_void_after_tracks;
+    // The first entry points to a top-level void element, the second entry contains all top-level elements
+    // between that void element and the 'Tracks' entry
+    using TopLevelVoidElementDescriptor = pair<BasicSharedPtr<EbmlElement>, vector<BasicSharedPtr<EbmlElement>>>;
+
+    TopLevelVoidElementDescriptor m_void_before_tracks;
+    TopLevelVoidElementDescriptor m_void_after_tracks;
 };
 
