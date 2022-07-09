@@ -452,7 +452,7 @@ void EbmlElement::_create_void_element(size_t size)
 
     // There are rare cases when the total element size is one byte smaller than the required size
     // this happens when the reqired size is one of the following values: [2**7+2, 2**14+3, 2**21+4, ...]
-    // In order to handle this case, we expand the ncoded length of the element size by one byte.
+    // In order to handle this case, we expand the encoded length of the element size by one byte.
     size_t encoded_length_size = void_length.get_minimal_encoded_size();
     if ((void_element_id.get_encoded_size() + void_length.get_minimal_encoded_size() + void_length.get_value()) == size - 1)
         ++encoded_length_size;
