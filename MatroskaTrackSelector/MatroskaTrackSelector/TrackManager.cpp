@@ -202,6 +202,11 @@ void TrackManager::_set_default_track(
 #endif
     }
 
+    // Set FlagDefault of the default track (if exists)
+#ifndef DONT_APPLY_TRACK_SELECTION
+    if (default_track->has_FlagDefault())
+        default_track->set_FlagDefault(true);
+#endif
 
     // From this point we try to find the best case for setting the default track
     bool eligible_case_found = true;
@@ -220,11 +225,7 @@ void TrackManager::_set_default_track(
     else if (std::all_of(working_state.cbegin(), working_state.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
     {
         DEBUG_PRINT_LINE("All non-desired tracks have FlagDefault, set them to 0");
-
-#ifndef DONT_APPLY_TRACK_SELECTION
-        if (default_track->has_FlagDefault())
-            default_track->set_FlagDefault(true);
-#endif
+        // All of the stuff has already been done at the start of the function
     }
     // Case 3
     // If the default track has both Language and LanguageIETF
