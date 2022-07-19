@@ -236,10 +236,10 @@ void TrackManager::_set_default_track(
         DEBUG_PRINT_LINE("The desired track has both Language and LanguageIETF, overwriting Language with FlagForced");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
-        default_track->language_element->overwrite_with_bool_element(FlagForced_ID, true);
+        default_track->language_ietf_element->overwrite_with_bool_element(FlagForced_ID, true);
 
-        default_track->flag_forced_element = default_track->language_element;
-        default_track->language_element = nullptr;
+        default_track->flag_forced_element = default_track->language_ietf_element;
+        default_track->language_ietf_element = nullptr;
         default_track->is_forced = true;
 #endif
     }
