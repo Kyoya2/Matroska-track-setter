@@ -180,10 +180,14 @@ void TrackManager::_set_default_track(
 //#define DONT_APPLY_TRACK_SELECTION
 
     // Reset FlagForced and FlagDefault of all elements (except the default element)
+    // Fill the working state with all tracks of the default track's type except the default track
+    vector<TrackEntry*> working_state;
     for (TrackEntry& track : tracks)
     {
         if (&track == default_track)
             continue;
+
+        working_state.push_back(&track);
 
 #ifndef DONT_APPLY_TRACK_SELECTION
         if (track.has_FlagForced())
@@ -198,13 +202,6 @@ void TrackManager::_set_default_track(
 #endif
     }
 
-    // Fill the working state with all tracks of the default track's type except the default track
-    vector<TrackEntry*> working_state;
-    for (TrackEntry& track : tracks)
-    {
-        if (&track != default_track)
-            working_state.push_back(&track);
-    }
 
     // From this point we try to find the best case for setting the default track
     bool eligible_case_found = true;
