@@ -47,14 +47,14 @@ public:
     void set_FlagForced(bool is_forced);
 
     inline bool has_Language() const { return !language_element.is_null(); }
-    inline bool has_LanguageIETF() const { return !language_ietf_element.is_null(); }
+    inline bool has_LanguageBCP47() const { return !language_bcp47_element.is_null(); }
 
 public:
     // Elements
     BasicSharedPtr<EbmlElement> track_element;
     BasicSharedPtr<EbmlElement> name_element;
     BasicSharedPtr<EbmlElement> language_element;
-    BasicSharedPtr<EbmlElement> language_ietf_element;
+    BasicSharedPtr<EbmlElement> language_bcp47_element;
     BasicSharedPtr<EbmlElement> flag_default_element;
     BasicSharedPtr<EbmlElement> flag_forced_element;
 

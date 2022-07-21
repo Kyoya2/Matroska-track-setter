@@ -36,8 +36,8 @@ static void add_track_components_to_vector(vector<BasicSharedPtr<EbmlElement>> c
     if (track->has_Language())
         components.push_back(track->language_element);
 
-    if (track->has_LanguageIETF())
-        components.push_back(track->language_ietf_element);
+    if (track->has_LanguageBCP47())
+        components.push_back(track->language_bcp47_element);
 
     if (track->name_element)
         components.push_back(track->name_element);
@@ -228,23 +228,23 @@ void TrackManager::_set_default_track(
         // All of the stuff has already been done at the start of the function
     }
     // Case 3
-    // If the default track has both Language and LanguageIETF
-    else if (default_track->has_Language() && default_track->has_LanguageIETF())
+    // If the default track has both Language and LanguageBCP47
+    else if (default_track->has_Language() && default_track->has_LanguageBCP47())
     {
-        DEBUG_PRINT_LINE("The desired track has both Language and LanguageIETF, overwriting Language with FlagForced");
+        DEBUG_PRINT_LINE("The desired track has both Language and LanguageBCP47, overwriting Language with FlagForced");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
-        default_track->language_ietf_element->overwrite_with_bool_element(FlagForced_ID, true);
+        default_track->language_bcp47_element->overwrite_with_bool_element(FlagForced_ID, true);
 
-        default_track->flag_forced_element = default_track->language_ietf_element;
-        default_track->language_ietf_element = nullptr;
+        default_track->flag_forced_element = default_track->language_bcp47_element;
+        default_track->language_bcp47_element = nullptr;
         default_track->is_forced = true;
 #endif
     }
     // Case 4
     // If the track's language is explicitly set to English
     else if ((default_track->language == "English") &&
-        (default_track->has_Language() || default_track->has_LanguageIETF()))
+        (default_track->has_Language() || default_track->has_LanguageBCP47()))
     {
         DEBUG_PRINT_LINE("The desired track's language is explicitly set to English");
 
@@ -258,10 +258,10 @@ void TrackManager::_set_default_track(
         }
         else
         {
-            DEBUG_PRINT_LINE("overwriting LanguageIETF with FlagForced");
-            default_track->language_ietf_element->overwrite_with_bool_element(FlagForced_ID, true);
-            default_track->flag_forced_element = default_track->language_ietf_element;
-            default_track->language_ietf_element = nullptr;
+            DEBUG_PRINT_LINE("overwriting LanguageBCP47 with FlagForced");
+            default_track->language_bcp47_element->overwrite_with_bool_element(FlagForced_ID, true);
+            default_track->flag_forced_element = default_track->language_bcp47_element;
+            default_track->language_bcp47_element = nullptr;
         }
 
         default_track->is_forced = true;
@@ -334,16 +334,16 @@ void TrackManager::_set_default_track(
                 break;
             }
             // Case 6
-            // If another track has both Language and LanguageIETF
-            else if (track->has_Language() && track->has_LanguageIETF())
+            // If another track has both Language and LanguageBCP47
+            else if (track->has_Language() && track->has_LanguageBCP47())
             {
-                DEBUG_PRINT_LINE("Track " << track->track_element->get_offset() << " has both Language and LanguageIETF, moving Language to the desired track");
+                DEBUG_PRINT_LINE("Track " << track->track_element->get_offset() << " has both Language and LanguageBCP47, moving Language to the desired track");
                 element_to_be_moved = track->language_element;
                 break;
             }
             // Case 7
             // If another track's language is explicitly set to English 
-            else if (track->language == "English" && (track->has_Language() || track->has_LanguageIETF()))
+            else if (track->language == "English" && (track->has_Language() || track->has_LanguageBCP47()))
             {
                 DEBUG_PRINT_LINE("The language of track " << track->track_element->get_offset() << " is explicitly set to English");
                 if (track->has_Language())
@@ -352,10 +352,10 @@ void TrackManager::_set_default_track(
                     element_to_be_moved = track->language_element;
                     break;
                 }
-                else if (track->has_LanguageIETF())
+                else if (track->has_LanguageBCP47())
                 {
-                    DEBUG_PRINT_LINE("Moving LanguageIETF to the desired track");
-                    element_to_be_moved = track->language_ietf_element;
+                    DEBUG_PRINT_LINE("Moving LanguageBCP47 to the desired track");
+                    element_to_be_moved = track->language_bcp47_element;
                     break;
                 }
             }
@@ -388,9 +388,9 @@ void TrackManager::_set_default_track(
                         track->language_element = nullptr;
                         break;
 
-                    case LanguageIETF_ID:
-                        default_track->flag_forced_element = track->language_ietf_element;
-                        track->language_ietf_element = nullptr;
+                    case LanguageBCP47_ID:
+                        default_track->flag_forced_element = track->language_bcp47_element;
+                        track->language_bcp47_element = nullptr;
                         break;
                     }
 
