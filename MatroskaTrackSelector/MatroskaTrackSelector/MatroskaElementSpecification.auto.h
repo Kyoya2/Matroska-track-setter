@@ -42,11 +42,11 @@ DECL_ELEMENT_ID(Seek, 0x4dbb);
 DECL_ELEMENT_ID(SeekID, 0x53ab);
 DECL_ELEMENT_ID(SeekPosition, 0x53ac);
 DECL_ELEMENT_ID(Info, 0x1549a966);
-DECL_ELEMENT_ID(SegmentUID, 0x73a4);
+DECL_ELEMENT_ID(SegmentUUID, 0x73a4);
 DECL_ELEMENT_ID(SegmentFilename, 0x7384);
-DECL_ELEMENT_ID(PrevUID, 0x3cb923);
+DECL_ELEMENT_ID(PrevUUID, 0x3cb923);
 DECL_ELEMENT_ID(PrevFilename, 0x3c83ab);
-DECL_ELEMENT_ID(NextUID, 0x3eb923);
+DECL_ELEMENT_ID(NextUUID, 0x3eb923);
 DECL_ELEMENT_ID(NextFilename, 0x3e83bb);
 DECL_ELEMENT_ID(SegmentFamily, 0x4444);
 DECL_ELEMENT_ID(ChapterTranslate, 0x6924);
@@ -71,8 +71,8 @@ DECL_ELEMENT_ID(Block, 0xa1);
 DECL_ELEMENT_ID(BlockVirtual, 0xa2);
 DECL_ELEMENT_ID(BlockAdditions, 0x75a1);
 DECL_ELEMENT_ID(BlockMore, 0xa6);
-DECL_ELEMENT_ID(BlockAddID, 0xee);
 DECL_ELEMENT_ID(BlockAdditional, 0xa5);
+DECL_ELEMENT_ID(BlockAddID, 0xee);
 DECL_ELEMENT_ID(BlockDuration, 0x9b);
 DECL_ELEMENT_ID(ReferencePriority, 0xfa);
 DECL_ELEMENT_ID(ReferenceBlock, 0xfb);
@@ -118,7 +118,7 @@ DECL_ELEMENT_ID(BlockAddIDType, 0x41e7);
 DECL_ELEMENT_ID(BlockAddIDExtraData, 0x41ed);
 DECL_ELEMENT_ID(Name, 0x536e);
 DECL_ELEMENT_ID(Language, 0x22b59c);
-DECL_ELEMENT_ID(LanguageIETF, 0x22b59d);
+DECL_ELEMENT_ID(LanguageBCP47, 0x22b59d);
 DECL_ELEMENT_ID(CodecID, 0x86);
 DECL_ELEMENT_ID(CodecPrivate, 0x63a2);
 DECL_ELEMENT_ID(CodecName, 0x258688);
@@ -257,7 +257,7 @@ DECL_ELEMENT_ID(ChapterTimeStart, 0x91);
 DECL_ELEMENT_ID(ChapterTimeEnd, 0x92);
 DECL_ELEMENT_ID(ChapterFlagHidden, 0x98);
 DECL_ELEMENT_ID(ChapterFlagEnabled, 0x4598);
-DECL_ELEMENT_ID(ChapterSegmentUID, 0x6e67);
+DECL_ELEMENT_ID(ChapterSegmentUUID, 0x6e67);
 DECL_ELEMENT_ID(ChapterSegmentEditionUID, 0x6ebc);
 DECL_ELEMENT_ID(ChapterPhysicalEquiv, 0x63c3);
 DECL_ELEMENT_ID(ChapterTrack, 0x8f);
@@ -265,7 +265,7 @@ DECL_ELEMENT_ID(ChapterTrackUID, 0x89);
 DECL_ELEMENT_ID(ChapterDisplay, 0x80);
 DECL_ELEMENT_ID(ChapString, 0x85);
 DECL_ELEMENT_ID(ChapLanguage, 0x437c);
-DECL_ELEMENT_ID(ChapLanguageIETF, 0x437d);
+DECL_ELEMENT_ID(ChapLanguageBCP47, 0x437d);
 DECL_ELEMENT_ID(ChapCountry, 0x437e);
 DECL_ELEMENT_ID(ChapProcess, 0x6944);
 DECL_ELEMENT_ID(ChapProcessCodecID, 0x6955);
@@ -285,7 +285,7 @@ DECL_ELEMENT_ID(TagAttachmentUID, 0x63c6);
 DECL_ELEMENT_ID(SimpleTag, 0x67c8);
 DECL_ELEMENT_ID(TagName, 0x45a3);
 DECL_ELEMENT_ID(TagLanguage, 0x447a);
-DECL_ELEMENT_ID(TagLanguageIETF, 0x447b);
+DECL_ELEMENT_ID(TagLanguageBCP47, 0x447b);
 DECL_ELEMENT_ID(TagDefault, 0x4484);
 DECL_ELEMENT_ID(TagDefaultBogus, 0x44b4);
 DECL_ELEMENT_ID(TagString, 0x4487);
@@ -396,10 +396,9 @@ enum class Range {
     DefinedByMatrixcoefficientsOrTransfercharacteristics = 3
 };
 enum class TransferCharacteristics {
-    Reserved = 0,
+    Reserved = 3,
     ItuRBt_709 = 1,
     Unspecified = 2,
-    Reserved2 = 3,
     Gamma2_2CurveToBt_470m = 4,
     Gamma2_8CurveToBt_470bg = 5,
     Smpte170m = 6,
@@ -417,10 +416,9 @@ enum class TransferCharacteristics {
     AribStdB67Hlg = 18
 };
 enum class Primaries {
-    Reserved = 0,
+    Reserved = 3,
     ItuRBt_709 = 1,
     Unspecified = 2,
-    Reserved2 = 3,
     ItuRBt_470m = 4,
     ItuRBt_470bgToBt_601625 = 5,
     ItuRBt_601525ToSmpte170m = 6,
@@ -494,25 +492,11 @@ enum class TargetTypeValue {
     Shot = 10
 };
 /*enum class TargetType {
-    Collection = 'COLLECTION',
-    Edition = 'EDITION',
-    Issue = 'ISSUE',
-    Volume = 'VOLUME',
-    Opus = 'OPUS',
-    Season = 'SEASON',
-    Sequel = 'SEQUEL',
-    Album = 'ALBUM',
-    Opera = 'OPERA',
-    Concert = 'CONCERT',
-    Movie = 'MOVIE',
-    Episode = 'EPISODE',
-    Part = 'PART',
-    Session = 'SESSION',
-    Track = 'TRACK',
-    Song = 'SONG',
-    Chapter = 'CHAPTER',
-    Subtrack = 'SUBTRACK',
-    Movement = 'MOVEMENT',
-    Scene = 'SCENE',
-    Shot = 'SHOT'
+    Targettypevalue70 = 'COLLECTION',
+    Targettypevalue60 = 'SEQUEL',
+    Targettypevalue50 = 'EPISODE',
+    Targettypevalue40 = 'SESSION',
+    Targettypevalue30 = 'CHAPTER',
+    Targettypevalue20 = 'SCENE',
+    Targettypevalue10 = 'SHOT'
 };*/
