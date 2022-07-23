@@ -98,7 +98,7 @@ void InteractiveTrackSelector::_s_select_tracks_interactively(TracksMap& tracks_
                     std::to_string(row_number),
                     std::move(strstr.str()),
                     track_entry.get_colored_name(),
-                    string(track_entry.language) });
+                    track_entry.language });
                 ++row_number;
             }
 

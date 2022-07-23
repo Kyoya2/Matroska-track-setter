@@ -41,7 +41,7 @@ bool MatroskaLanguageTags::does_tag_match_language(const string& language, const
     return false;
 }
 
-const string_view& MatroskaLanguageTags::get_tag_language(const string& tag)
+string MatroskaLanguageTags::get_tag_language(const string& tag)
 {
     for (const LanguageDescriptor& langeage_descriptor : language_tags)
     {
@@ -52,7 +52,14 @@ const string_view& MatroskaLanguageTags::get_tag_language(const string& tag)
             tag
         ) != langeage_descriptor.tags.cend())
         {
-            return langeage_descriptor.language_names[0];
+            string result = "";
+            for (const auto& language : langeage_descriptor.language_names)
+            {
+                result += language;
+                if (&language != &langeage_descriptor.language_names.back())
+                    result += " / ";
+            }
+            return result;
         }
     }
 

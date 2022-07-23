@@ -29,12 +29,12 @@ struct LanguageDescriptor
 
 namespace MatroskaLanguageTags
 {
-    static const string_view UNKNOWN_LANGUGAGE = "UNKNOWN";
+    static string UNKNOWN_LANGUGAGE = "UNKNOWN";
     static const std::array<LanguageDescriptor, {NUM_LANGUAGE_TAGS}> language_tags{{
 {LANGUAGE_TAGS}
     }};
     
     bool does_tag_match_language(const string& language, const string& tag);
-    const string_view& get_tag_language(const string& tag);
+    string get_tag_language(const string& tag);
     const vector<string_view>& get_language_tags(const string& language);
 }

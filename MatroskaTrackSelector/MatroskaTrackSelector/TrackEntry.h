@@ -61,7 +61,7 @@ public:
     // Element values
     TrackType type;
     string name;
-    string_view language;
+    string language;
     bool is_default;
     bool is_forced;
 };

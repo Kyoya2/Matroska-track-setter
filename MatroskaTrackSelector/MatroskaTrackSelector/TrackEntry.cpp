@@ -52,7 +52,7 @@ void TrackEntry::load_values()
         name = name_element->get_string_value();
 
     // Initilize the language tag with the default value
-    string language_tag = "en";
+    string language_tag = "eng";
     if (!language_bcp47_element.is_null())
         language_tag = language_bcp47_element->get_string_value();
     else if (!language_element.is_null())

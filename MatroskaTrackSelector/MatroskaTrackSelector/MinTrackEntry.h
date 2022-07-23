@@ -20,7 +20,7 @@ struct MinTrackEntry
     bool operator<(const MinTrackEntry& other) const;
 
     const string& name;
-    const string_view& language;
+    const string language;
     const size_t unnamed_track_number;
     const TrackPriorityDescriptor m_priority_descriptor;
 };
