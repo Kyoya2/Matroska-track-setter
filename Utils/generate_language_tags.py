@@ -72,7 +72,7 @@ def get_bcp47_language_tags():
 
 def set_to_cpp_array_entry(s: set):
     result = '{'
-    for entry in s:
+    for entry in sorted(s):
         r = repr(entry)  
         if r.startswith('"'):
             result += r
@@ -107,15 +107,7 @@ def main():
     #for language, bcp47_tag in bcp47_tags:
     #    all_tags.append(({language}, {bcp47_tag}))
 
-    # Sort pairs by one of theit languages (the one that the iterator returns first)
-    all_tags.sort(key=lambda pair:next(iter(pair[0])))
-
-    result_string = ''
-    for pair in all_tags:
-        result_string += ' ' * 8 + '{' + ', '.join(set_to_cpp_array_entry(e) for e in pair) + '},\n'
-
-    # Remove last "",\n"
-    result_string = result_string[:-2]
+    result_string = ',\n'.join(sorted([(' ' * 8 + '{' + ', '.join(set_to_cpp_array_entry(e) for e in pair) + '}') for pair in all_tags]))
 
     with open(TEMPLATE_FILE_PATH, 'r') as template_file:
         template = template_file.read()
