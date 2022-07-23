@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "MatroskaLanguageTags.h"
+#include "MatroskaLanguageTags.auto.h"
 
 bool MatroskaLanguageTags::does_tag_match_language(const string& language, const string& tag)
 {

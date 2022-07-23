@@ -120,7 +120,7 @@
     <ClInclude Include="TrackEntry.h">
       <Filter>Track management\TrackManager\TrackEntry</Filter>
     </ClInclude>
-    <ClInclude Include="MatroskaLanguageTags.h">
+    <ClInclude Include="MatroskaLanguageTags.auto.h">
       <Filter>Track management\MatroskaLanguageTags</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTagsUT.h">
@@ -146,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="SeekEntry.h">
       <Filter>Track management\TrackManager\SeekEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Utils\MatroskaLanguageTags.template.h">
+      <Filter>Track management\MatroskaLanguageTags</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

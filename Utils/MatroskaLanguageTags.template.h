@@ -15,17 +15,26 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #pragma once
-#include "UTCommon.h"
-#include "MatroskaLanguageTags.auto.h"
 
-namespace MatroskaLanguageTagsUT
+#include <array>
+#include <algorithm>
+
+#include "Common.h"
+
+struct LanguageDescriptor
 {
-    void run_tests()
-    {
-        CHECK(MatroskaLanguageTags::does_tag_match_language("English", "en"));
-        CHECK(!MatroskaLanguageTags::does_tag_match_language("Italian", "eng"));
-        CHECK(MatroskaLanguageTags::does_tag_match_language("Italian", "ita"));
-        CHECK(MatroskaLanguageTags::get_tag_language("ja") == "Japanese");
-        CHECK(MatroskaLanguageTags::get_tag_language("en") == "English");
-    }
+    vector<string_view> language_names;
+    vector<string_view> tags;
+};
+
+namespace MatroskaLanguageTags
+{
+    static const string_view UNKNOWN_LANGUGAGE = "UNKNOWN";
+    static const std::array<LanguageDescriptor, {NUM_LANGUAGE_TAGS}> language_tags{{
+{LANGUAGE_TAGS}
+    }};
+    
+    bool does_tag_match_language(const string& language, const string& tag);
+    const string_view& get_tag_language(const string& tag);
+    const vector<string_view>& get_language_tags(const string& language);
 }

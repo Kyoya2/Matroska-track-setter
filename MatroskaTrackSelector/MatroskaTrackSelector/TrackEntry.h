@@ -21,7 +21,7 @@
 
 #include "Common.h"
 #include "EbmlElement.h"
-#include "MatroskaLanguageTags.h"
+#include "MatroskaLanguageTags.auto.h"
 
 using std::string_view;
 
