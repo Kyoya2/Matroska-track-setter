@@ -1,5 +1,5 @@
 ﻿/*   
- *   Matroska track setter  Copyright (C) 2021  Kyoya2
+ *   Matroska track setter  Copyright (C) 2022  Kyoya2
  *   
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -131,7 +131,7 @@ int main()
     TrackSelectionMode selection_mode = TrackSelectionMode::NotSelected;
 
     // Credit
-    cout << " Matroska track setter  Copyright (C) 2021  Kyoya2" << endl
+    cout << " Matroska track setter  Copyright (C) 2022  Kyoya2" << endl
         << " GitHub: http://github.com/Kyoya2/Matroska-track-setter" << endl
         << endl
         << " Please choose the selection mode:" << endl
