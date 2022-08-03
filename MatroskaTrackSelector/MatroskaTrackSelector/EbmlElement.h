@@ -78,11 +78,11 @@ public:
    /******************************************************************************************************/
    /********************************************* Data getters *******************************************/
    /******************************************************************************************************/
-    Buffer get_binary_value() const;
-    uint64_t get_uint_value() const;
-    int64_t get_int_value() const;
-    string get_string_value() const;
-    bool get_bool_value() const;
+    Buffer get_binary_value();
+    uint64_t get_uint_value();
+    int64_t get_int_value();
+    string get_string_value();
+    bool get_bool_value();
 
    /******************************************************************************************************/
    /****************************************** Element modifiers *****************************************/
@@ -128,7 +128,7 @@ PRIVATE:
     void _read_content(void* container) const;
 
 PRIVATE:
-    reference_wrapper<std::iostream> m_stream;
+    std::iostream& m_stream;
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;
@@ -155,5 +155,5 @@ inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
 
 inline void EbmlElement::_seek_to(uint64_t seek_pos) const
 {
-    m_stream.get().seekp(seek_pos);
+    m_stream.seekp(seek_pos);
 }

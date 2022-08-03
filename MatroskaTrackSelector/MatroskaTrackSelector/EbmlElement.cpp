@@ -46,9 +46,9 @@ EbmlElementPtr EbmlElement::get_next_element()
         // This is an optimization: if the refcount of the current object is 1, this function will OVERWRITE
         // the current element with the next one instead of allocating new space for the next element
         // and deallocating the space of the current element once it goes out of scope.
-        m_offset = m_stream.get().tellg();
-        m_id = EbmlElementID(m_stream.get());
-        m_length = EbmlElementLength(m_stream.get());
+        m_offset = m_stream.tellg();
+        m_id = EbmlElementID(m_stream);
+        m_length = EbmlElementLength(m_stream);
         return m_self;
     }
     else
@@ -130,25 +130,25 @@ EbmlElements EbmlElement::get_identical_children_by_id(const EbmlElementIDType i
 /******************************************************************************************************/
 /********************************************* Data getters *******************************************/
 /******************************************************************************************************/
-Buffer EbmlElement::get_binary_value() const
+Buffer EbmlElement::get_binary_value()
 {
     Buffer result(m_length.get_value());
     _read_content(result.data());
     return result;
 }
 
-uint64_t EbmlElement::get_uint_value() const
+uint64_t EbmlElement::get_uint_value()
 {
     _seek_to(EbmlOffset::Data);
     return Utility::read_big_endian_from_stream(m_stream, m_length.get_value());
 }
 
-int64_t EbmlElement::get_int_value() const
+int64_t EbmlElement::get_int_value()
 {
     return static_cast<int64_t>(get_uint_value());
 }
 
-string EbmlElement::get_string_value() const
+string EbmlElement::get_string_value()
 {
     string result;
     result.resize(m_length.get_value()); // Reserve one extra character for null-terminator
@@ -157,10 +157,10 @@ string EbmlElement::get_string_value() const
     return result;
 }
 
-bool EbmlElement::get_bool_value() const
+bool EbmlElement::get_bool_value()
 {
     _seek_to(EbmlOffset::Data);
-    return static_cast<bool>(m_stream.get().get());
+    return static_cast<bool>(m_stream.get());
 }
 
 /******************************************************************************************************/
@@ -169,7 +169,7 @@ bool EbmlElement::get_bool_value() const
 void EbmlElement::update_bool_value(bool new_value)
 {
     _seek_to(EbmlOffset::Data);
-    m_stream.get().put(static_cast<uint8_t>(new_value));
+    m_stream.put(static_cast<uint8_t>(new_value));
 }
 
 void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value)
@@ -194,7 +194,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
 
     // If there's only one byte left to fill, extend the encoded length of the m_length element by one
     m_length.write(m_stream, (1 == element_size_delta) ? 2 : 1);
-    m_stream.get().put(static_cast<uint8_t>(value));
+    m_stream.put(static_cast<uint8_t>(value));
 
     // Fill the rest of the remaining space with a Void element
     if (element_size_delta > 1)
@@ -226,7 +226,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
 
     // Store the current element in a buffer
     this->_seek_to(EbmlOffset::Header);
-    m_stream.get().read(reinterpret_cast<char*>(current_element.data()), current_element.size());
+    m_stream.read(reinterpret_cast<char*>(current_element.data()), current_element.size());
 
     // Calculate the ahift amount and the range
     if (new_parent->m_offset < this->m_offset)
@@ -260,12 +260,12 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
         
         // Store the part to switch
         new_parent->_seek_to(EbmlOffset::End);
-        m_stream.get().read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
+        m_stream.read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
         // Write buffers in new order
         new_parent->_seek_to(EbmlOffset::End);
-        m_stream.get().write(reinterpret_cast<char*>(current_element.data()), current_element.size());
-        m_stream.get().write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
+        m_stream.write(reinterpret_cast<char*>(current_element.data()), current_element.size());
+        m_stream.write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
     // Update referencing objects:
         // Current element offset
@@ -274,7 +274,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
         new_parent->m_length = new_parent->m_length.get_value() + current_element.size();
-        m_stream.get() << new_parent->m_length;
+        m_stream << new_parent->m_length;
 
         // Old parent offset
         m_parent->m_offset += current_element.size();
@@ -282,7 +282,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
         // Old parent size
         _seek_to(m_parent->m_offset + m_parent->m_id.get_encoded_size());
         m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
-        m_stream.get() << m_parent->m_length;
+        m_stream << m_parent->m_length;
     }
     else
     {
@@ -300,18 +300,18 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
 
         // Store the part to switch
         this->_seek_to(EbmlOffset::End);
-        m_stream.get().read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
+        m_stream.read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
         // Write buffers in new order
         this->_seek_to(EbmlOffset::Header);
-        m_stream.get().write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
-        m_stream.get().write(reinterpret_cast<char*>(current_element.data()), current_element.size());
+        m_stream.write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
+        m_stream.write(reinterpret_cast<char*>(current_element.data()), current_element.size());
 
     // Update referencing objects:
         // Old parent size
         _seek_to(m_parent->m_offset + m_parent->m_id.get_encoded_size());
         m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
-        m_stream.get() << m_parent->m_length;
+        m_stream << m_parent->m_length;
 
         // New parent offset
         new_parent->m_offset -= current_element.size();
@@ -322,7 +322,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
         new_parent->m_length = new_parent->m_length.get_value() + current_element.size();
-        m_stream.get() << new_parent->m_length;
+        m_stream << new_parent->m_length;
     }
 
     // Update the parent of the current element
@@ -354,7 +354,7 @@ EbmlElement::EbmlElement(std::iostream& stream) :
 
 EbmlElement::EbmlElement(EbmlElementPtr parent) :
     m_stream(parent->m_stream),
-    m_offset(parent->m_stream.get().tellg()),
+    m_offset(parent->m_stream.tellg()),
     m_id(parent->m_stream),
     m_length(parent->m_stream),
     m_parent(parent),
@@ -390,7 +390,7 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
 void EbmlElement::_read_content(void* container) const
 {
     _seek_to(EbmlOffset::Data);
-    m_stream.get().read(reinterpret_cast<char*>(container), m_length.get_value());
+    m_stream.read(reinterpret_cast<char*>(container), m_length.get_value());
 }
 
 void EbmlElement::_initialize_as_root()
@@ -426,9 +426,9 @@ void EbmlElement::_initialize_as_root()
 
     // Set the current element to be the 'Segment' element
     _seek_to(EbmlOffset::End);
-    m_offset = m_stream.get().tellg();
-    m_id = EbmlElementID(m_stream.get());
-    m_length = EbmlElementLength(m_stream.get());
+    m_offset = m_stream.tellg();
+    m_id = EbmlElementID(m_stream);
+    m_length = EbmlElementLength(m_stream);
 
     // Make sure that it's indeed the 'Segment' element
     if (Segment_ID != m_id.get_value())
