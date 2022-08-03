@@ -16,13 +16,13 @@
  */
 #include "SeekEntry.h"
 
-SeekEntry::SeekEntry(BasicSharedPtr<EbmlElement>& seek_element) :
+SeekEntry::SeekEntry(EbmlElementPtr& seek_element) :
     seek_element(seek_element),
     m_seek_position(0)
 {
     assert(seek_element->get_id().get_value() == Seek_ID);
 
-    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+    unordered_map<EbmlElementIDType, EbmlElementPtr> children{
         {SeekID_ID, nullptr},
         {SeekPosition_ID, nullptr},
     };

@@ -29,7 +29,7 @@ struct TrackEntry
 {
 public:
     // Load elements and track type but do not parse values
-    TrackEntry(BasicSharedPtr<EbmlElement>& track_element);
+    TrackEntry(EbmlElementPtr& track_element);
 
     TrackEntry(const TrackEntry&) = delete;
     TrackEntry& operator=(const TrackEntry&) = delete;
@@ -51,12 +51,12 @@ public:
 
 public:
     // Elements
-    BasicSharedPtr<EbmlElement> track_element;
-    BasicSharedPtr<EbmlElement> name_element;
-    BasicSharedPtr<EbmlElement> language_element;
-    BasicSharedPtr<EbmlElement> language_bcp47_element;
-    BasicSharedPtr<EbmlElement> flag_default_element;
-    BasicSharedPtr<EbmlElement> flag_forced_element;
+    EbmlElementPtr track_element;
+    EbmlElementPtr name_element;
+    EbmlElementPtr language_element;
+    EbmlElementPtr language_bcp47_element;
+    EbmlElementPtr flag_default_element;
+    EbmlElementPtr flag_forced_element;
 
     // Element values
     TrackType type;

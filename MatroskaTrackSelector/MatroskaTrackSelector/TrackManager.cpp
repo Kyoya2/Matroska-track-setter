@@ -25,7 +25,7 @@ static bool can_track_expand_without_size_overflow(const TrackEntry* track, size
         track->track_element->get_data_length().get_encoded_size();
 }
 
-static void add_track_components_to_vector(vector<BasicSharedPtr<EbmlElement>> components, TrackEntry* track)
+static void add_track_components_to_vector(vector<EbmlElementPtr> components, TrackEntry* track)
 {
     if (track->has_FlagDefault())
         components.push_back(track->flag_default_element);
@@ -131,13 +131,13 @@ void TrackManager::set_default_tracks(size_t subtitle_track_index, size_t audio_
     set_default_tracks(&m_subtitle_tracks[subtitle_track_index], &m_audio_tracks[audio_track_index]);
 }
 
-void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
+void TrackManager::_load_tracks(EbmlElementPtr& tracks_element)
 {
     assert(tracks_element->get_id().get_value() == Tracks_ID);
     auto tracks = tracks_element->get_identical_children_by_id(TrackEntry_ID);
 
     DEBUG_PRINT_LINE("Loading tracks");
-    for (BasicSharedPtr<EbmlElement>& track : tracks)
+    for (EbmlElementPtr& track : tracks)
     {
         TrackEntry current_track_entry = track;
 
@@ -158,7 +158,7 @@ void TrackManager::_load_tracks(BasicSharedPtr<EbmlElement>& tracks_element)
     }
 }
 
-void TrackManager::_load_seek_entries(BasicSharedPtr<EbmlElement>& seek_head_element)
+void TrackManager::_load_seek_entries(EbmlElementPtr& seek_head_element)
 {
     assert(seek_head_element->get_id().get_value() == SeekHead_ID);
     auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
@@ -282,7 +282,7 @@ void TrackManager::_set_default_track(
 
         // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
         // track and the track without the FD
-        vector<BasicSharedPtr<EbmlElement>> elements_to_adjust;
+        vector<EbmlElementPtr> elements_to_adjust;
         for (TrackEntry* track : working_state)
             if (track->has_FlagDefault())
                 add_track_components_to_vector(elements_to_adjust, track);
@@ -322,7 +322,7 @@ void TrackManager::_set_default_track(
             }
         );
 
-        BasicSharedPtr<EbmlElement> element_to_be_moved;
+        EbmlElementPtr element_to_be_moved;
         for (TrackEntry* track : working_state)
         {
             // Case 5
@@ -365,7 +365,7 @@ void TrackManager::_set_default_track(
         {
             // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
             // track and the track from which the element is going to be moved
-            vector<BasicSharedPtr<EbmlElement>> elements_to_adjust;
+            vector<EbmlElementPtr> elements_to_adjust;
             for (TrackEntry* track : working_state)
                 if (track->track_element != element_to_be_moved->get_parent())
                     add_track_components_to_vector(elements_to_adjust, track);

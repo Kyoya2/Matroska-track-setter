@@ -22,7 +22,7 @@
 class SeekEntry
 {
 public:
-    SeekEntry(BasicSharedPtr<EbmlElement>& seek_element);
+    SeekEntry(EbmlElementPtr& seek_element);
 
     SeekEntry(const SeekEntry&) = delete;
     SeekEntry& operator=(const SeekEntry&) = delete;
@@ -34,9 +34,9 @@ public:
     uint64_t get_seek_position();
 
 public:
-    BasicSharedPtr<EbmlElement> seek_element;
-    BasicSharedPtr<EbmlElement> seek_id_element;
-    BasicSharedPtr<EbmlElement> seek_position_element;
+    EbmlElementPtr seek_element;
+    EbmlElementPtr seek_id_element;
+    EbmlElementPtr seek_position_element;
     EbmlElementIDType seek_id;
 
 PRIVATE:

@@ -16,7 +16,7 @@
  */
 #include "TrackEntry.h"
 
-TrackEntry::TrackEntry(BasicSharedPtr<EbmlElement>& track_element) :
+TrackEntry::TrackEntry(EbmlElementPtr& track_element) :
     track_element(track_element),
     // Initialize with default values
     is_default(true),
@@ -24,7 +24,7 @@ TrackEntry::TrackEntry(BasicSharedPtr<EbmlElement>& track_element) :
 {
     assert(track_element->get_id().get_value() == TrackEntry_ID);
 
-    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+    unordered_map<EbmlElementIDType, EbmlElementPtr> children{
         {Name_ID, nullptr},
         {Language_ID, nullptr},
         {LanguageBCP47_ID, nullptr},

@@ -44,7 +44,7 @@ namespace EbmlParserUT
             EbmlElementLength len = j;
             write_element(test_file, 0x4281, j);
             test_file.seekg(0);
-            BasicSharedPtr<EbmlElement> element = EbmlElement::s_construct_from_stream(test_file);
+            EbmlElementPtr element = EbmlElement::s_construct_from_stream(test_file);
             CHECK(element->get_total_size() == element->get_data_length().get_encoded_size() + 2 + j);
 
             uint64_t original_element_size = element->get_total_size();
@@ -61,7 +61,7 @@ namespace EbmlParserUT
             else if (j > 1)
             {
                 element->_seek_to(EbmlOffset::End);
-                BasicSharedPtr<EbmlElement> next_element = EbmlElement::s_construct_from_stream(test_file);
+                EbmlElementPtr next_element = EbmlElement::s_construct_from_stream(test_file);
                 CHECK(next_element->get_id().get_value() == 0xec);
 
                 // Check that the size of both telements sums up to the size of the original element

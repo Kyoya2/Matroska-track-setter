@@ -16,9 +16,9 @@
  */
 #include "EbmlElement.h"
 
-BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& stream)
+EbmlElementPtr EbmlElement::s_construct_from_stream(std::iostream& stream)
 {
-    BasicSharedPtr<EbmlElement> element = s_get(stream);
+    EbmlElementPtr element = s_get(stream);
 
     // If the current element is the root, verify some properties and then overwrite it with the underlying 'Segment' element
     if (EBML_ID == element->get_id().get_value())
@@ -34,7 +34,7 @@ BasicSharedPtr<EbmlElement> EbmlElement::s_construct_from_stream(std::iostream& 
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
-BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
+EbmlElementPtr EbmlElement::get_next_element()
 {
     if (this->is_last())
         return nullptr;
@@ -57,18 +57,18 @@ BasicSharedPtr<EbmlElement> EbmlElement::get_next_element()
     }
 }
 
-BasicSharedPtr<EbmlElement> EbmlElement::get_first_child()
+EbmlElementPtr EbmlElement::get_first_child()
 {
     _seek_to(EbmlOffset::Data);
     return _s_construct_from_parent(m_self);
 }
 
-void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children)
+void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, EbmlElementPtr>& children)
 {
     const size_t number_of_children_to_find = children.size();
     size_t children_found = 0;
 
-    BasicSharedPtr<EbmlElement> current_element = get_first_child();
+    EbmlElementPtr current_element = get_first_child();
 
     while (true)
     {
@@ -88,9 +88,9 @@ void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, BasicShar
     }
 }
 
-BasicSharedPtr<EbmlElement> EbmlElement::find_child(const EbmlElementIDType id)
+EbmlElementPtr EbmlElement::find_child(const EbmlElementIDType id)
 {
-    BasicSharedPtr<EbmlElement> current_element = get_first_child();
+    EbmlElementPtr current_element = get_first_child();
 
     while (true)
     {
@@ -106,10 +106,10 @@ BasicSharedPtr<EbmlElement> EbmlElement::find_child(const EbmlElementIDType id)
     }
 }
 
-vector<BasicSharedPtr<EbmlElement>> EbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
+vector<EbmlElementPtr> EbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
 {
-    vector<BasicSharedPtr<EbmlElement>> result;
-    BasicSharedPtr<EbmlElement> current_element = get_first_child();
+    vector<EbmlElementPtr> result;
+    EbmlElementPtr current_element = get_first_child();
 
     while (true)
     {
@@ -206,7 +206,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
 /******************************************************************************************************/
 /******************************************** Miscellaneous *******************************************/
 /******************************************************************************************************/
-uint64_t EbmlElement::get_distance_from(BasicSharedPtr<EbmlElement> other)
+uint64_t EbmlElement::get_distance_from(EbmlElementPtr other)
 {
     if (this->get_offset() < other->get_offset())
     {
@@ -218,7 +218,7 @@ uint64_t EbmlElement::get_distance_from(BasicSharedPtr<EbmlElement> other)
     }
 }
 
-int32_t EbmlElement::move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust)
+int32_t EbmlElement::move_to(EbmlElementPtr new_parent, vector<EbmlElementPtr>& elements_to_adjust)
 {
     Buffer current_element(this->get_total_size());
     pair<uint64_t, uint64_t> affected_range;
@@ -352,7 +352,7 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     m_self()
 {}
 
-EbmlElement::EbmlElement(BasicSharedPtr<EbmlElement> parent) :
+EbmlElement::EbmlElement(EbmlElementPtr parent) :
     m_stream(parent->m_stream),
     m_offset(parent->m_stream.get().tellg()),
     m_id(parent->m_stream),
@@ -364,7 +364,7 @@ EbmlElement::EbmlElement(BasicSharedPtr<EbmlElement> parent) :
 /******************************************************************************************************/
 /****************************************** Internal Utility ******************************************/
 /******************************************************************************************************/
-BasicSharedPtr<EbmlElement> EbmlElement::_s_construct_from_parent(BasicSharedPtr<EbmlElement>& parent)
+EbmlElementPtr EbmlElement::_s_construct_from_parent(EbmlElementPtr& parent)
 {
     return s_get(parent);
 }
@@ -395,7 +395,7 @@ void EbmlElement::_read_content(void* container) const
 
 void EbmlElement::_initialize_as_root()
 {
-    unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>> children{
+    unordered_map<EbmlElementIDType, EbmlElementPtr> children{
         {DocType_ID, nullptr},
         {EBMLMaxIDLength_ID, nullptr},
         {EBMLMaxSizeLength_ID, nullptr}
@@ -464,7 +464,7 @@ void EbmlElement::_create_void_element(size_t size)
     void_length.write(m_stream, encoded_length_size);
 }
 
-std::ostream& operator<<(std::ostream& stream, const BasicSharedPtr<EbmlElement>& element)
+std::ostream& operator<<(std::ostream& stream, const EbmlElementPtr& element)
 {
     stream << std::hex << 
               "Offset: 0x"  << element->get_offset() <<

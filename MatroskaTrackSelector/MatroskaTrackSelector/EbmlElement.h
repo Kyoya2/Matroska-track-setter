@@ -34,10 +34,13 @@ enum class EbmlOffset
     End     // Offset to the first character after the end of the data
 };
 
+class EbmlElement;
+using EbmlElementPtr = BasicSharedPtr<EbmlElement>;
+
 class EbmlElement
 {
 public:
-    static BasicSharedPtr<EbmlElement> s_construct_from_stream(std::iostream& stream);
+    static EbmlElementPtr s_construct_from_stream(std::iostream& stream);
 
     /******************************************************************************************************/
     /********************************************** Getters ***********************************************/
@@ -53,21 +56,21 @@ public:
     /******************************************************************************************************/
     // This function WILL overwrite the current element if it's refcout is 1.
     // Make sure to take ownership of the pointer if you don't want it to be overwritten.
-    BasicSharedPtr<EbmlElement> get_next_element();
-    BasicSharedPtr<EbmlElement> get_first_child();
-    inline BasicSharedPtr<EbmlElement> get_parent() { return m_parent; }
+    EbmlElementPtr get_next_element();
+    EbmlElementPtr get_first_child();
+    inline EbmlElementPtr get_parent() { return m_parent; }
 
     bool is_last() { return this->_get_offset(EbmlOffset::End) == m_parent->_get_offset(EbmlOffset::End); }
 
     // Returns the first child element with the given ID or null if a child with that ID wasn't found
-    BasicSharedPtr<EbmlElement> find_child(const EbmlElementIDType id);
+    EbmlElementPtr find_child(const EbmlElementIDType id);
 
     // Returns a vector with all children of the current element with the given ID
-    vector<BasicSharedPtr<EbmlElement>> get_identical_children_by_id(const EbmlElementIDType id);
+    vector<EbmlElementPtr> get_identical_children_by_id(const EbmlElementIDType id);
 
     // Sets the value of each {ID:Element} pair to a child of the current element with the corresponding key-ID.
     // All requested children should be unique elements (ones that can't appear more then once in one parent).
-    void get_unique_children(unordered_map<EbmlElementIDType, BasicSharedPtr<EbmlElement>>& children);
+    void get_unique_children(unordered_map<EbmlElementIDType, EbmlElementPtr>& children);
 
    /******************************************************************************************************/
    /********************************************* Data getters *******************************************/
@@ -89,25 +92,25 @@ public:
    /******************************************************************************************************/
     // Calculate distance of current elementy from another element
     // Both elements must be on the same level
-    uint64_t get_distance_from(BasicSharedPtr<EbmlElement> other);
+    uint64_t get_distance_from(EbmlElementPtr other);
 
     // Moves the current element to a given parent.
     // Note that after calling this function. elements_to_adjust must contain all referenced elements
     // between the new parent and the current element (not including the new parent, current element or current parent)
     // Returns the amount by which all relevant elements were shifted
-    int32_t move_to(BasicSharedPtr<EbmlElement> new_parent, vector<BasicSharedPtr<EbmlElement>>& elements_to_adjust);
+    int32_t move_to(EbmlElementPtr new_parent, vector<EbmlElementPtr>& elements_to_adjust);
 
 PRIVATE:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
     /******************************************************************************************************/
-    explicit EbmlElement(BasicSharedPtr<EbmlElement> parent);
+    explicit EbmlElement(EbmlElementPtr parent);
     explicit EbmlElement(std::iostream& stream);
 
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
     /******************************************************************************************************/
-    static BasicSharedPtr<EbmlElement> _s_construct_from_parent(BasicSharedPtr<EbmlElement>& parent);
+    static EbmlElementPtr _s_construct_from_parent(EbmlElementPtr& parent);
     constexpr uint64_t _get_offset(EbmlOffset seek_pos) const;
     inline void _seek_to(EbmlOffset seek_pos) const;
     inline void _seek_to(uint64_t seek_pos) const;
@@ -116,7 +119,7 @@ PRIVATE:
 
     // This function creates a pointer of an ebml element using any available contructor
     template <typename... Args>
-    static BasicSharedPtr<EbmlElement> s_get(Args&&... args);
+    static EbmlElementPtr s_get(Args&&... args);
 
     // Reads the raw content of the elemnt into the given container
     void _read_content(void* container) const;
@@ -126,20 +129,20 @@ PRIVATE:
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;
-    BasicSharedPtr<EbmlElement> m_parent;   // Owned
-    BasicSharedPtr<EbmlElement> m_self;     // Not owned
+    EbmlElementPtr m_parent;   // Owned
+    EbmlElementPtr m_self;     // Not owned
 
 public:
     friend class BasicSharedPtr<EbmlElement>;
 
     // Debug print
-    friend std::ostream& operator<<(std::ostream& stream, const BasicSharedPtr<EbmlElement>& element);
+    friend std::ostream& operator<<(std::ostream& stream, const EbmlElementPtr& element);
 };
 
 template<typename ...Args>
-inline BasicSharedPtr<EbmlElement> EbmlElement::s_get(Args&& ...args)
+inline EbmlElementPtr EbmlElement::s_get(Args&& ...args)
 {
-    BasicSharedPtr<EbmlElement> element = BasicSharedPtr<EbmlElement>::make_basic_shared(std::forward<Args>(args)...);
+    EbmlElementPtr element = EbmlElementPtr::make_basic_shared(std::forward<Args>(args)...);
     element->m_self = element;
     element->m_self.release_ownership();
     return element;
