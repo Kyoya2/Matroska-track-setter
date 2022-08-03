@@ -35,7 +35,10 @@ enum class EbmlOffset
 };
 
 class EbmlElement;
+
+// Typedefs
 using EbmlElementPtr = BasicSharedPtr<EbmlElement>;
+using EbmlElements = vector<EbmlElementPtr>;
 
 class EbmlElement
 {
@@ -66,7 +69,7 @@ public:
     EbmlElementPtr find_child(const EbmlElementIDType id);
 
     // Returns a vector with all children of the current element with the given ID
-    vector<EbmlElementPtr> get_identical_children_by_id(const EbmlElementIDType id);
+    EbmlElements get_identical_children_by_id(const EbmlElementIDType id);
 
     // Sets the value of each {ID:Element} pair to a child of the current element with the corresponding key-ID.
     // All requested children should be unique elements (ones that can't appear more then once in one parent).
@@ -98,7 +101,7 @@ public:
     // Note that after calling this function. elements_to_adjust must contain all referenced elements
     // between the new parent and the current element (not including the new parent, current element or current parent)
     // Returns the amount by which all relevant elements were shifted
-    int32_t move_to(EbmlElementPtr new_parent, vector<EbmlElementPtr>& elements_to_adjust);
+    int32_t move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust);
 
 PRIVATE:
     /******************************************************************************************************/

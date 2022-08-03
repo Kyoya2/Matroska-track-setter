@@ -53,7 +53,7 @@ PRIVATE:
 
     // The first entry points to a top-level void element, the second entry contains all top-level elements
     // between that void element and the 'Tracks' entry
-    using TopLevelVoidElementDescriptor = pair<EbmlElementPtr, vector<EbmlElementPtr>>;
+    using TopLevelVoidElementDescriptor = pair<EbmlElementPtr, EbmlElements>;
 
     TopLevelVoidElementDescriptor m_void_before_tracks;
     TopLevelVoidElementDescriptor m_void_after_tracks;

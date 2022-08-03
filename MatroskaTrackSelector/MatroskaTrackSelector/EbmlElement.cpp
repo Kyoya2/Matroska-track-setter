@@ -106,9 +106,9 @@ EbmlElementPtr EbmlElement::find_child(const EbmlElementIDType id)
     }
 }
 
-vector<EbmlElementPtr> EbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
+EbmlElements EbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
 {
-    vector<EbmlElementPtr> result;
+    EbmlElements result;
     EbmlElementPtr current_element = get_first_child();
 
     while (true)
@@ -218,7 +218,7 @@ uint64_t EbmlElement::get_distance_from(EbmlElementPtr other)
     }
 }
 
-int32_t EbmlElement::move_to(EbmlElementPtr new_parent, vector<EbmlElementPtr>& elements_to_adjust)
+int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust)
 {
     Buffer current_element(this->get_total_size());
     pair<uint64_t, uint64_t> affected_range;

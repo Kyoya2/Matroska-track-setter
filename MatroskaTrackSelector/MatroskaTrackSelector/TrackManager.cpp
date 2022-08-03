@@ -25,7 +25,7 @@ static bool can_track_expand_without_size_overflow(const TrackEntry* track, size
         track->track_element->get_data_length().get_encoded_size();
 }
 
-static void add_track_components_to_vector(vector<EbmlElementPtr> components, TrackEntry* track)
+static void add_track_components_to_vector(EbmlElements components, TrackEntry* track)
 {
     if (track->has_FlagDefault())
         components.push_back(track->flag_default_element);
@@ -282,7 +282,7 @@ void TrackManager::_set_default_track(
 
         // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
         // track and the track without the FD
-        vector<EbmlElementPtr> elements_to_adjust;
+        EbmlElements elements_to_adjust;
         for (TrackEntry* track : working_state)
             if (track->has_FlagDefault())
                 add_track_components_to_vector(elements_to_adjust, track);
@@ -365,7 +365,7 @@ void TrackManager::_set_default_track(
         {
             // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
             // track and the track from which the element is going to be moved
-            vector<EbmlElementPtr> elements_to_adjust;
+            EbmlElements elements_to_adjust;
             for (TrackEntry* track : working_state)
                 if (track->track_element != element_to_be_moved->get_parent())
                     add_track_components_to_vector(elements_to_adjust, track);
