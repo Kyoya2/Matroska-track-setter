@@ -55,7 +55,7 @@ namespace EbmlVintUT
                 uint64_t value_with_marker = test_number | ((uint64_t)1 << (7 * (i + 1)));
 
                 EbmlElementLength element_length = test_number;
-                CHECK(element_length.get_value() == test_number); // Sanity
+                CHECK(element_length == test_number); // Sanity
                 CHECK(i + 1 == element_length.get_minimal_encoded_size());// Check minimal size
 
                 test_file.seekp(0);
@@ -64,8 +64,8 @@ namespace EbmlVintUT
                 if (i + 1 <= sizeof(EbmlElementIDType))
                 {
                     EbmlElementID element_id = static_cast<EbmlElementIDType>(value_with_marker);
-                    CHECK(element_id.get_value() == value_with_marker);
-                    CHECK(EbmlVintUtils::remove_vint_marker(element_id.get_value()) == test_number); // Remove marker
+                    CHECK(element_id == value_with_marker);
+                    CHECK(EbmlVintUtils::remove_vint_marker(element_id) == test_number); // Remove marker
                     CHECK(i + 1 == element_id.get_encoded_size());
 
                 /************************************ TESTING USING FILE ************************************/
@@ -78,7 +78,7 @@ namespace EbmlVintUT
                     // Decoding and checking the VINT with the marker
                     test_file >> element_id;
                     CHECK(i + 1 == element_id.get_encoded_size());
-                    CHECK(element_id.get_value() == value_with_marker);
+                    CHECK(element_id == value_with_marker);
 
                     test_file.seekp(0);
                 }

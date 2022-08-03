@@ -22,7 +22,7 @@ TrackEntry::TrackEntry(EbmlElementPtr& track_element) :
     is_default(true),
     is_forced(false)
 {
-    assert(track_element->get_id().get_value() == TrackEntry_ID);
+    assert(track_element->get_id() == TrackEntry_ID);
 
     unordered_map<EbmlElementIDType, EbmlElementPtr> children{
         {Name_ID, nullptr},

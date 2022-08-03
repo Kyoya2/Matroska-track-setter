@@ -50,7 +50,7 @@ namespace EbmlParserUT
             uint64_t original_element_size = element->get_total_size();
             element->overwrite_with_bool_element(0x88, true);
 
-            CHECK(element->get_id().get_value() == 0x88);
+            CHECK(element->get_id() == 0x88);
             CHECK(element->get_bool_value());
             CHECK(element->get_total_size() == ((original_element_size - 3 == 1) ? 4 : 3));
 
@@ -62,7 +62,7 @@ namespace EbmlParserUT
             {
                 element->_seek_to(EbmlOffset::End);
                 EbmlElementPtr next_element = EbmlElement::s_construct_from_stream(test_file);
-                CHECK(next_element->get_id().get_value() == 0xec);
+                CHECK(next_element->get_id() == 0xec);
 
                 // Check that the size of both telements sums up to the size of the original element
                 CHECK(next_element->get_total_size() + element->get_total_size() == original_element_size);

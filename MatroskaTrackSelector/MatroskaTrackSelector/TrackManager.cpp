@@ -50,7 +50,7 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
     m_file_stream.seekg(0);
     auto segment_element = EbmlElement::s_construct_from_stream(m_file_stream);
 
-    if (Segment_ID != segment_element->get_id().get_value())
+    if (Segment_ID != segment_element->get_id())
     {
         throw InvalidMatroskaFile();
     }
@@ -60,7 +60,7 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
     // Iterate over all top-level elements
     while (current_top_level_element)
     {
-        switch (current_top_level_element->get_id().get_value())
+        switch (current_top_level_element->get_id())
         {
         case Tracks_ID:
             DEBUG_PRINT_LINE("Encountered a Tracks element");
@@ -133,7 +133,7 @@ void TrackManager::set_default_tracks(size_t subtitle_track_index, size_t audio_
 
 void TrackManager::_load_tracks(EbmlElementPtr& tracks_element)
 {
-    assert(tracks_element->get_id().get_value() == Tracks_ID);
+    assert(tracks_element->get_id() == Tracks_ID);
     auto tracks = tracks_element->get_identical_children_by_id(TrackEntry_ID);
 
     DEBUG_PRINT_LINE("Loading tracks");
@@ -160,7 +160,7 @@ void TrackManager::_load_tracks(EbmlElementPtr& tracks_element)
 
 void TrackManager::_load_seek_entries(EbmlElementPtr& seek_head_element)
 {
-    assert(seek_head_element->get_id().get_value() == SeekHead_ID);
+    assert(seek_head_element->get_id() == SeekHead_ID);
     auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
 
     for (auto& seek_element : seek_elements)
@@ -376,7 +376,7 @@ void TrackManager::_set_default_track(
             {
                 if (track->track_element == element_to_be_moved->get_parent())
                 {
-                    switch (element_to_be_moved->get_id().get_value())
+                    switch (element_to_be_moved->get_id())
                     {
                     case FlagForced_ID:
                         default_track->flag_forced_element = track->flag_forced_element;
@@ -401,7 +401,7 @@ void TrackManager::_set_default_track(
 #ifndef DONT_APPLY_TRACK_SELECTION
             // Move the selected element to the desired track and turn it into FF with value 1
             element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
-            if (FlagForced_ID == element_to_be_moved->get_id().get_value())
+            if (FlagForced_ID == element_to_be_moved->get_id())
                 element_to_be_moved->update_bool_value(true);
             else
                 element_to_be_moved->overwrite_with_bool_element(FlagForced_ID, true);

@@ -36,6 +36,8 @@ public:
     inline size_t get_encoded_size() const { return m_encoded_size; }
     void write(std::ostream& stream) const;
 
+    inline operator EbmlElementIDType() const;
+
     friend std::ostream& operator<<(std::ostream& stream, const EbmlElementID& element_id);
     friend std::istream& operator>>(std::istream& stream, EbmlElementID& element_id);
 
@@ -43,3 +45,9 @@ PRIVATE:
     size_t m_encoded_size;
     EbmlElementIDType m_value;
 };
+
+
+inline EbmlElementID::operator EbmlElementIDType() const
+{
+    return m_value;
+}

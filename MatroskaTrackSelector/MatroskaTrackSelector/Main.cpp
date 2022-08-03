@@ -104,6 +104,7 @@ static void do_automatic_selection(const pair<string, vector<string>>& files, co
 
 int main()
 {
+#ifndef _DEBUG
     /*
         TODO: Make this application non-interactive by adding command-line arguments such as:
         [-r --rules] - path to rules file
@@ -173,12 +174,12 @@ int main()
         InteractiveTrackSelector::s_select_tracks_interactively(files_to_process.first, files_to_process.second, track_prioritizers);
     }
     
-#ifndef _DEBUG
+
 #else
-    //EbmlVintUT::run_tests();
-    //BasicSharedPtrUT::run_tests();
-    //EbmlParserUT::run_tests();
-    //MatroskaLanguageTagsUT::run_tests();
+    EbmlVintUT::run_tests();
+    BasicSharedPtrUT::run_tests();
+    EbmlParserUT::run_tests();
+    MatroskaLanguageTagsUT::run_tests();
     //TrackParserUT::run_tests();
 
     WriteLine(endl << "Creations: " << BasicSharedPtrStats::total_creations);

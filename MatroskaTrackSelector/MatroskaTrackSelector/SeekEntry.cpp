@@ -20,7 +20,7 @@ SeekEntry::SeekEntry(EbmlElementPtr& seek_element) :
     seek_element(seek_element),
     m_seek_position(0)
 {
-    assert(seek_element->get_id().get_value() == Seek_ID);
+    assert(seek_element->get_id() == Seek_ID);
 
     unordered_map<EbmlElementIDType, EbmlElementPtr> children{
         {SeekID_ID, nullptr},

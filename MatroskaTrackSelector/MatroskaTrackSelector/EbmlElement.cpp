@@ -21,7 +21,7 @@ EbmlElementPtr EbmlElement::s_construct_from_stream(std::iostream& stream)
     EbmlElementPtr element = s_get(stream);
 
     // If the current element is the root, verify some properties and then overwrite it with the underlying 'Segment' element
-    if (EBML_ID == element->get_id().get_value())
+    if (EBML_ID == element->get_id())
     {
         DEBUG_PRINT_LINE("Encountered an 'EBML' element, verifying...");
         element->_initialize_as_root();
@@ -73,7 +73,7 @@ void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, EbmlEleme
     while (true)
     {
         // Check if a child with the ID of the current element was requested
-        auto requested_child = children.find(current_element->get_id().get_value());
+        auto requested_child = children.find(current_element->get_id());
         if (requested_child != children.end())
         {
             ++children_found;
@@ -95,7 +95,7 @@ EbmlElementPtr EbmlElement::find_child(const EbmlElementIDType id)
     while (true)
     {
         // If the current child has the requested ID, add it to the result vector
-        if (current_element->get_id().get_value() == id)
+        if (current_element->get_id() == id)
             return current_element;
 
         // Stop iterating when reached the end or if found all requested children
@@ -114,7 +114,7 @@ EbmlElements EbmlElement::get_identical_children_by_id(const EbmlElementIDType i
     while (true)
     {
         // If the current child has the requested ID, add it to the result vector
-        if (current_element->get_id().get_value() == id)
+        if (current_element->get_id() == id)
             result.push_back(current_element);
 
         // Stop iterating when reached the end or if found all requested children
@@ -132,7 +132,7 @@ EbmlElements EbmlElement::get_identical_children_by_id(const EbmlElementIDType i
 /******************************************************************************************************/
 Buffer EbmlElement::get_binary_value()
 {
-    Buffer result(m_length.get_value());
+    Buffer result(m_length);
     _read_content(result.data());
     return result;
 }
@@ -140,7 +140,7 @@ Buffer EbmlElement::get_binary_value()
 uint64_t EbmlElement::get_uint_value()
 {
     _seek_to(EbmlOffset::Data);
-    return Utility::read_big_endian_from_stream(m_stream, m_length.get_value());
+    return Utility::read_big_endian_from_stream(m_stream, m_length);
 }
 
 int64_t EbmlElement::get_int_value()
@@ -151,7 +151,7 @@ int64_t EbmlElement::get_int_value()
 string EbmlElement::get_string_value()
 {
     string result;
-    result.resize(m_length.get_value()); // Reserve one extra character for null-terminator
+    result.resize(m_length); // Reserve one extra character for null-terminator
     //result.data()[m_length.get_value()] = '\0';
     _read_content(result.data());
     return result;
@@ -177,7 +177,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
     EbmlElementID new_id = new_element_id;
     EbmlElementLength new_length = 1;
 
-    const size_t new_element_size = new_id.get_encoded_size() + new_length.get_encoded_size() + new_length.get_value();
+    const size_t new_element_size = new_id.get_encoded_size() + new_length.get_encoded_size() + new_length;
     const int32_t element_size_delta = (int32_t)(this->get_total_size() - new_element_size);
 
     if (element_size_delta < 0)
@@ -273,7 +273,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
 
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
-        new_parent->m_length = new_parent->m_length.get_value() + current_element.size();
+        new_parent->m_length = new_parent->m_length + current_element.size();
         m_stream << new_parent->m_length;
 
         // Old parent offset
@@ -281,7 +281,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
 
         // Old parent size
         _seek_to(m_parent->m_offset + m_parent->m_id.get_encoded_size());
-        m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
+        m_parent->m_length = m_parent->m_length - current_element.size();
         m_stream << m_parent->m_length;
     }
     else
@@ -310,7 +310,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
     // Update referencing objects:
         // Old parent size
         _seek_to(m_parent->m_offset + m_parent->m_id.get_encoded_size());
-        m_parent->m_length = m_parent->m_length.get_value() - current_element.size();
+        m_parent->m_length = m_parent->m_length - current_element.size();
         m_stream << m_parent->m_length;
 
         // New parent offset
@@ -321,7 +321,7 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
 
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
-        new_parent->m_length = new_parent->m_length.get_value() + current_element.size();
+        new_parent->m_length = new_parent->m_length + current_element.size();
         m_stream << new_parent->m_length;
     }
 
@@ -380,7 +380,7 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size();
 
     case EbmlOffset::End:
-        return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value();
+        return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length;
 
     default:
         throw exception("Unexpected value");
@@ -390,7 +390,7 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
 void EbmlElement::_read_content(void* container) const
 {
     _seek_to(EbmlOffset::Data);
-    m_stream.read(reinterpret_cast<char*>(container), m_length.get_value());
+    m_stream.read(reinterpret_cast<char*>(container), m_length);
 }
 
 void EbmlElement::_initialize_as_root()
@@ -431,7 +431,7 @@ void EbmlElement::_initialize_as_root()
     m_length = EbmlElementLength(m_stream);
 
     // Make sure that it's indeed the 'Segment' element
-    if (Segment_ID != m_id.get_value())
+    if (Segment_ID != m_id)
         throw InvalidMatroskaFile();
 
     DEBUG_PRINT_LINE("The 'EBML' element has been verified and now points to the corresponding 'Segment' element");
@@ -468,7 +468,7 @@ std::ostream& operator<<(std::ostream& stream, const EbmlElementPtr& element)
 {
     stream << std::hex << 
               "Offset: 0x"  << element->get_offset() <<
-              "; ID: 0x"     << element->get_id().get_value() <<
+              "; ID: 0x"     << element->get_id() <<
               "; Length: 0x" << element->get_total_size() << std::dec;
 
     return stream;

@@ -38,6 +38,8 @@ public:
 
     void write(std::ostream& stream, size_t encoded_length = 0) const;
 
+    inline operator EbmlElementLengthType() const;
+
     friend std::ostream& operator<<(std::ostream& stream, const EbmlElementLength& element_length);
     friend std::istream& operator>>(std::istream& stream, EbmlElementLength& element_length);
 
@@ -46,3 +48,9 @@ PRIVATE:
     EbmlElementLengthType m_value;
     size_t m_minimal_encoded_size;
 };
+
+
+inline EbmlElementLength::operator EbmlElementLengthType() const
+{
+    return m_value;
+}
