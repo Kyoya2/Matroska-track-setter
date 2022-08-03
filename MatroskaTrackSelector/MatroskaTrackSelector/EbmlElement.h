@@ -134,9 +134,6 @@ PRIVATE:
 
 public:
     friend class BasicSharedPtr<EbmlElement>;
-
-    // Debug print
-    friend std::ostream& operator<<(std::ostream& stream, const EbmlElementPtr& element);
 };
 
 template<typename ...Args>
