@@ -36,7 +36,7 @@ namespace EbmlParserUT
 
     void run_tests()
     {
-        std::fstream test_file("..\\..\\..\\..\\..\\Test files\\test_file.txt", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
+        std::fstream test_file("test_file.bin", std::ios_base::binary | std::ios_base::out | std::ios_base::in | std::ios_base::trunc);
 
         for (uint32_t j = 0; j < 250; ++j)
         {
