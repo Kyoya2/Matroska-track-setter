@@ -190,6 +190,7 @@ DECL_ELEMENT_ID(OutputSamplingFrequency, 0x78b5);
 DECL_ELEMENT_ID(Channels, 0x9f);
 DECL_ELEMENT_ID(ChannelPositions, 0x7d7b);
 DECL_ELEMENT_ID(BitDepth, 0x6264);
+DECL_ELEMENT_ID(Emphasis, 0x52f1);
 DECL_ELEMENT_ID(TrackOperation, 0xe2);
 DECL_ELEMENT_ID(TrackCombinePlanes, 0xe3);
 DECL_ELEMENT_ID(TrackPlane, 0xe4);
@@ -238,7 +239,7 @@ DECL_ELEMENT_ID(Attachments, 0x1941a469);
 DECL_ELEMENT_ID(AttachedFile, 0x61a7);
 DECL_ELEMENT_ID(FileDescription, 0x467e);
 DECL_ELEMENT_ID(FileName, 0x466e);
-DECL_ELEMENT_ID(FileMimeType, 0x4660);
+DECL_ELEMENT_ID(FileMediaType, 0x4660);
 DECL_ELEMENT_ID(FileData, 0x465c);
 DECL_ELEMENT_ID(FileUID, 0x46ae);
 DECL_ELEMENT_ID(FileReferral, 0x4675);
@@ -250,6 +251,9 @@ DECL_ELEMENT_ID(EditionUID, 0x45bc);
 DECL_ELEMENT_ID(EditionFlagHidden, 0x45bd);
 DECL_ELEMENT_ID(EditionFlagDefault, 0x45db);
 DECL_ELEMENT_ID(EditionFlagOrdered, 0x45dd);
+DECL_ELEMENT_ID(EditionDisplay, 0x4520);
+DECL_ELEMENT_ID(EditionString, 0x4521);
+DECL_ELEMENT_ID(EditionLanguageIETF, 0x45e4);
 DECL_ELEMENT_ID(ChapterAtom, 0xb6);
 DECL_ELEMENT_ID(ChapterUID, 0x73c4);
 DECL_ELEMENT_ID(ChapterStringUID, 0x5654);
@@ -258,6 +262,7 @@ DECL_ELEMENT_ID(ChapterTimeEnd, 0x92);
 DECL_ELEMENT_ID(ChapterFlagHidden, 0x98);
 DECL_ELEMENT_ID(ChapterFlagEnabled, 0x4598);
 DECL_ELEMENT_ID(ChapterSegmentUUID, 0x6e67);
+DECL_ELEMENT_ID(ChapterSkipType, 0x4588);
 DECL_ELEMENT_ID(ChapterSegmentEditionUID, 0x6ebc);
 DECL_ELEMENT_ID(ChapterPhysicalEquiv, 0x63c3);
 DECL_ELEMENT_ID(ChapterTrack, 0x8f);
@@ -396,9 +401,10 @@ enum class Range {
     DefinedByMatrixcoefficientsOrTransfercharacteristics = 3
 };
 enum class TransferCharacteristics {
-    Reserved = 3,
+    Reserved = 0,
     ItuRBt_709 = 1,
     Unspecified = 2,
+    Reserved2 = 3,
     Gamma2_2CurveToBt_470m = 4,
     Gamma2_8CurveToBt_470bg = 5,
     Smpte170m = 6,
@@ -416,9 +422,10 @@ enum class TransferCharacteristics {
     AribStdB67Hlg = 18
 };
 enum class Primaries {
-    Reserved = 3,
+    Reserved = 0,
     ItuRBt_709 = 1,
     Unspecified = 2,
+    Reserved2 = 3,
     ItuRBt_470m = 4,
     ItuRBt_470bgToBt_601625 = 5,
     ItuRBt_601525ToSmpte170m = 6,
@@ -435,6 +442,21 @@ enum class ProjectionType {
     Equirectangular = 1,
     Cubemap = 2,
     Mesh = 3
+};
+enum class Emphasis {
+    NoEmphasis = 0,
+    CdAudio = 1,
+    Reserved = 2,
+    CcitJ_17 = 3,
+    Fm50 = 4,
+    Fm75 = 5,
+    PhonoRiaa = 10,
+    PhonoIecN78 = 11,
+    PhonoTeldec = 12,
+    PhonoEmi = 13,
+    PhonoColumbiaLp = 14,
+    PhonoLondon = 15,
+    PhonoNartb = 16
 };
 enum class TrackPlaneType {
     LeftEye = 0,
@@ -476,6 +498,15 @@ enum class ContentSigHashAlgo {
     NotSigned = 0,
     Sha1160 = 1,
     Md5 = 2
+};
+enum class ChapterSkipType {
+    NoSkipping = 0,
+    OpeningCredits = 1,
+    EndCredits = 2,
+    Recap = 3,
+    NextPreview = 4,
+    Preview = 5,
+    Advertisement = 6
 };
 enum class ChapProcessTime {
     DuringTheWholeChapter = 0,
