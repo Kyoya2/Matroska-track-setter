@@ -16,7 +16,8 @@
  */
 #include "TrackManager.h"
 
- // Returns true if a track element can be expanded by the given amount of bytes such that the element's encoded size doesn't grow
+ // Returns true if a track element can be expanded by the given amount of bytes such that
+// the element's encoded size doesn't grow
 static bool can_track_expand_without_size_overflow(const TrackEntry* track, size_t expansion_size)
 {
     return EbmlElementLength(
@@ -86,7 +87,7 @@ TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_ba
             break;
 
         case SeekHead_ID:
-            // TODO: handle the case where there are multiple SeekHead elements
+            // TODO: handle the case where there are multiple SeekHead elements and
             // one of them is shifted due to last case, which means that some "Seek"
             // entries under that entry may to be updated (the ones that were not shifted along
             // with the parent SeekHead)
@@ -190,6 +191,7 @@ void TrackManager::_set_default_track(
         working_state.push_back(&track);
 
 #ifndef DONT_APPLY_TRACK_SELECTION
+        // Those actions are relevant to any case we chose
         if (track.has_FlagForced())
         {
             track.set_FlagForced(false);
@@ -212,7 +214,7 @@ void TrackManager::_set_default_track(
     bool eligible_case_found = true;
 
     // Case 1
-    // If the current track has FlagForced
+    // If the current track has FlagForced, we set it.
     if (default_track->has_FlagForced())
     {
         DEBUG_PRINT_LINE("The desired track has FlagForced, setting it to 1");
@@ -220,6 +222,7 @@ void TrackManager::_set_default_track(
         default_track->set_FlagForced(true);
 #endif
     }
+
     // Case 2
     // If all other tracks of the same type have FlagDefault
     else if (std::all_of(working_state.cbegin(), working_state.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
@@ -227,8 +230,9 @@ void TrackManager::_set_default_track(
         DEBUG_PRINT_LINE("All non-desired tracks have FlagDefault, set them to 0");
         // All of the stuff has already been done at the start of the function
     }
+
     // Case 3
-    // If the default track has both Language and LanguageBCP47
+    // If the default track has both Language and LanguageBCP47, we override LanguageBCP47 with FlagForced
     else if (default_track->has_Language() && default_track->has_LanguageBCP47())
     {
         DEBUG_PRINT_LINE("The desired track has both Language and LanguageBCP47, overwriting Language with FlagForced");
@@ -241,8 +245,10 @@ void TrackManager::_set_default_track(
         default_track->is_forced = true;
 #endif
     }
+
     // Case 4
-    // If the track's language is explicitly set to English
+    // If the track's language is explicitly set to English, override the
+    // present language-indicating element with FlagForced
     else if ((default_track->language == "English") &&
         (default_track->has_Language() || default_track->has_LanguageBCP47()))
     {
@@ -267,7 +273,9 @@ void TrackManager::_set_default_track(
         default_track->is_forced = true;
 #endif
     }
-    // There is only one track without FlagDefault and it's not the desired track, move FlagDefault from the desired track to the other track and set it to 0
+
+    // There is only one track without FlagDefault and it's not the desired track,
+    // move FlagDefault from the desired track to the other track and set it to 0
     else if (
         can_track_expand_without_size_overflow(default_track, FD_SIZE) &&
         default_track->has_FlagDefault() &&
