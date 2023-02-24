@@ -71,6 +71,7 @@ namespace Utility
     inline uint64_t get_msb(uint64_t num);
     inline uint32_t get_msb(uint32_t num);
     inline size_t get_msb_index(uint64_t num);
+    inline size_t get_byte_size(uint64_t num);
     inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
     inline void write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length);
 }
@@ -113,6 +114,11 @@ inline size_t Utility::get_msb_index(uint64_t num)
     unsigned long result;
     _BitScanReverse64(&result, num);
     return static_cast<size_t>(result);
+}
+
+inline size_t Utility::get_byte_size(uint64_t num)
+{
+    return (Utility::get_msb_index(num) / 8) + 1;
 }
 
 inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_t size)
