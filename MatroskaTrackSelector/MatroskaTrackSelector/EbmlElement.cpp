@@ -223,7 +223,7 @@ BasicSharedPtr<EbmlElement> EbmlElement::create_boolean_child(bool at_beginning,
 
     // Make sure that the current element is big enough to contain a child
     if (this->get_total_size() - new_element_size < 2) // 2 is the minimal size of a Void element header
-        throw exception("")
+        throw exception("Void element to small to create boolean child");
 
     // Write the element
     _seek_to(new_element_offset);
