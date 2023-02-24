@@ -88,6 +88,7 @@ public:
    /****************************************** Element modifiers *****************************************/
    /******************************************************************************************************/
     void update_bool_value(bool new_value);
+    void update_uint_value(uint64_t new_value);
     void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
    /******************************************************************************************************/

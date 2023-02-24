@@ -173,6 +173,12 @@ void EbmlElement::update_bool_value(bool new_value)
     m_stream.put(static_cast<uint8_t>(new_value));
 }
 
+void EbmlElement::update_uint_value(uint64_t new_value)
+{
+    _seek_to(EbmlOffset::Data);
+    Utility::write_big_endian_to_stream(m_stream, new_value, m_length.get_value());
+}
+
 void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value)
 {
     EbmlElementID new_id = new_element_id;
