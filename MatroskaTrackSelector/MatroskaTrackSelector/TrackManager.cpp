@@ -211,29 +211,33 @@ void TrackManager::_set_default_track(
 #endif
 
     // From this point we try to find the best case for setting the default track
-    bool eligible_case_found = true;
 
-    // Case 1
+
     // If the current track has FlagForced, we set it.
+#pragma region Case_1
     if (default_track->has_FlagForced())
     {
         DEBUG_PRINT_LINE("The desired track has FlagForced, setting it to 1");
 #ifndef DONT_APPLY_TRACK_SELECTION
         default_track->set_FlagForced(true);
 #endif
+        goto found_eligible_case;
     }
+#pragma endregion
 
-    // Case 2
     // If all other tracks of the same type have FlagDefault
-    else if (std::all_of(working_state.cbegin(), working_state.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
+#pragma region Case_2
+    if (std::all_of(working_state.cbegin(), working_state.cend(), [](const TrackEntry* track) { return track->has_FlagDefault(); }))
     {
         DEBUG_PRINT_LINE("All non-desired tracks have FlagDefault, set them to 0");
         // All of the stuff has already been done at the start of the function
+        goto found_eligible_case;
     }
+#pragma endregion
 
-    // Case 3
     // If the default track has both Language and LanguageBCP47, we override LanguageBCP47 with FlagForced
-    else if (default_track->has_Language() && default_track->has_LanguageBCP47())
+#pragma region Case_3
+    if (default_track->has_Language() && default_track->has_LanguageBCP47())
     {
         DEBUG_PRINT_LINE("The desired track has both Language and LanguageBCP47, overwriting Language with FlagForced");
 
@@ -244,12 +248,14 @@ void TrackManager::_set_default_track(
         default_track->language_bcp47_element = nullptr;
         default_track->is_forced = true;
 #endif
+        goto found_eligible_case;
     }
+#pragma endregion
 
-    // Case 4
     // If the track's language is explicitly set to English, override the
     // present language-indicating element with FlagForced
-    else if ((default_track->language == "English") &&
+#pragma region Case_4
+    if ((default_track->language == "English") &&
         (default_track->has_Language() || default_track->has_LanguageBCP47()))
     {
         DEBUG_PRINT_LINE("The desired track's language is explicitly set to English");
@@ -265,30 +271,34 @@ void TrackManager::_set_default_track(
 
         default_track->is_forced = true;
 #endif
+        goto found_eligible_case;
     }
+#pragma endregion
 
     // There is only one track without FlagDefault and it's not the desired track,
     // move FlagDefault from the desired track to the other track and set it to 0
-    else if (
-        can_track_expand_without_size_overflow(default_track, FD_SIZE) &&
-        default_track->has_FlagDefault() &&
-        std::count_if(working_state.cbegin(), working_state.cend(),
-            [](const TrackEntry* track) {
-                return !track->has_FlagDefault();
-            }
-        ) == 1)
+#pragma region Case_5
+    if (can_track_expand_without_size_overflow(default_track, FD_SIZE) &&
+        default_track->has_FlagDefault())
     {
-        DEBUG_PRINT_LINE("There is only one track without FlagDefault and it's not the desired track, move FlagDefault from the desired track to the other track and set it to 0");
         TrackEntry* track_without_fd = nullptr;
 
         // Make a vector with ALL referenced elements in the "Tracks" segment, except the default
         // track and the track without the FD
         EbmlElements elements_to_adjust;
         for (TrackEntry* track : working_state)
+        {
             if (track->has_FlagDefault())
                 add_track_components_to_vector(elements_to_adjust, track);
-            else
+            // Here we check that there's only one track without FD, otherwise we keep
+            // searching for another eligible case
+            else if (nullptr != track_without_fd)
                 track_without_fd = track;
+            else
+                goto case_5_end;
+        }
+
+        DEBUG_PRINT_LINE("There is only one track without FlagDefault and it's not the desired track, move FlagDefault from the desired track to the other track and set it to 0");
 
 #ifndef DONT_APPLY_TRACK_SELECTION
         // Perform the move
@@ -301,50 +311,61 @@ void TrackManager::_set_default_track(
         // Set the new FlagDefault to false
         track_without_fd->flag_default_element->update_bool_value(false);
 #endif
+        goto found_eligible_case;
     }
-            // Cases 5-7
-            // If the default track can expand by sizeof(FlagForced) without changing the size of the encoded length of the track
-    else if (can_track_expand_without_size_overflow(default_track, FF_SIZE))
+case_5_end:
+#pragma endregion
+
+    // Add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their 
+    // distance from the default track such that the closest tracks appear first
+    for (TrackEntry& track : other_tracks)
+        if (&track != untouchable_track)
+            working_state.push_back(&track);
+
+    std::sort(
+        working_state.begin(),
+        working_state.end(),
+        [default_track](TrackEntry* first, TrackEntry* second)
+        {
+            return default_track->track_element->get_distance_from(first->track_element) <
+                default_track->track_element->get_distance_from(second->track_element);
+        }
+    );
+
+    // If the default track can expand by sizeof(FlagForced) without changing the size
+    // of the encoded length of the track
+#pragma region Cases_6_8
+    if (can_track_expand_without_size_overflow(default_track, FF_SIZE))
     {
         DEBUG_PRINT_LINE("The desired track can expand by sizeof(FlagForced)");
-
-        // Add the other tracks (excluding 'untouchable_track') to the working state and sort the tracks by their 
-        // distance from the default track such that the closest tracks appear first
-        for (TrackEntry& track : other_tracks)
-            if (&track != untouchable_track)
-                working_state.push_back(&track);
-        std::sort(
-            working_state.begin(),
-            working_state.end(),
-            [default_track](TrackEntry* first, TrackEntry* second)
-            {
-                return default_track->track_element->get_distance_from(first->track_element) <
-                    default_track->track_element->get_distance_from(second->track_element);
-            }
-        );
 
         EbmlElementPtr element_to_be_moved;
         for (TrackEntry* track : working_state)
         {
-            // Case 5
             // If another track has FlagForced
+#pragma region Case_6
             if (track->has_FlagForced())
             {
                 DEBUG_PRINT_LINE("Moving FlagForced from track at " << track->track_element->get_offset() << " to the desired track");
                 element_to_be_moved = track->flag_forced_element;
                 break;
             }
-            // Case 6
+#pragma endregion
+
             // If another track has both Language and LanguageBCP47
+#pragma region Case_7
             else if (track->has_Language() && track->has_LanguageBCP47())
             {
                 DEBUG_PRINT_LINE("Track " << track->track_element->get_offset() << " has both Language and LanguageBCP47, moving Language to the desired track");
                 element_to_be_moved = track->language_element;
                 break;
             }
-            // Case 7
+#pragma endregion
+
             // If another track's language is explicitly set to English 
-            else if (track->language == "English" && (track->has_Language() || track->has_LanguageBCP47()))
+#pragma region Case_8
+            else if (track->language == "English" && 
+                    (track->has_Language() || track->has_LanguageBCP47()))
             {
                 DEBUG_PRINT_LINE("The language of track " << track->track_element->get_offset() << " is explicitly set to English");
                 if (track->has_Language())
@@ -353,13 +374,14 @@ void TrackManager::_set_default_track(
                     element_to_be_moved = track->language_element;
                     break;
                 }
-                else if (track->has_LanguageBCP47())
+                else
                 {
                     DEBUG_PRINT_LINE("Moving LanguageBCP47 to the desired track");
                     element_to_be_moved = track->language_bcp47_element;
                     break;
                 }
             }
+#pragma endregion
         }
 
         if (element_to_be_moved)
@@ -370,49 +392,52 @@ void TrackManager::_set_default_track(
             for (TrackEntry* track : working_state)
                 if (track->track_element != element_to_be_moved->get_parent())
                     add_track_components_to_vector(elements_to_adjust, track);
+            add_track_components_to_vector(elements_to_adjust, untouchable_track);
 
             // Find the TrackEntry from which the element is going to be moved and adjust
             // it to the state after the element is moved
             for (TrackEntry* track : working_state)
             {
-                if (track->track_element == element_to_be_moved->get_parent())
+                if (track->track_element != element_to_be_moved->get_parent())
+                    continue;
+
+                switch (element_to_be_moved->get_id())
                 {
-                    switch (element_to_be_moved->get_id())
-                    {
-                    case FlagForced_ID:
-                        default_track->flag_forced_element = track->flag_forced_element;
-                        track->flag_forced_element = nullptr;
-                        break;
+                case FlagForced_ID:
+                    default_track->flag_forced_element = track->flag_forced_element;
+                    track->flag_forced_element = nullptr;
+                    break;
 
-                    case Language_ID:
-                        default_track->flag_forced_element = track->language_element;
-                        track->language_element = nullptr;
-                        break;
+                case Language_ID:
+                    default_track->flag_forced_element = track->language_element;
+                    track->language_element = nullptr;
+                    break;
 
-                    case LanguageBCP47_ID:
-                        default_track->flag_forced_element = track->language_bcp47_element;
-                        track->language_bcp47_element = nullptr;
-                        break;
-                    }
-
+                case LanguageBCP47_ID:
+                    default_track->flag_forced_element = track->language_bcp47_element;
+                    track->language_bcp47_element = nullptr;
                     break;
                 }
+
+                break;
             }
 
 #ifndef DONT_APPLY_TRACK_SELECTION
             // Move the selected element to the desired track and turn it into FF with value 1
-            element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
             if (FlagForced_ID == element_to_be_moved->get_id())
                 element_to_be_moved->update_bool_value(true);
             else
                 element_to_be_moved->overwrite_with_bool_element(FlagForced_ID, true);
-#endif
+
+            element_to_be_moved->move_to(default_track->track_element, elements_to_adjust);
+#endif      
+            goto found_eligible_case;
         }
         else
-            eligible_case_found = false;
+            goto cases_6_8_end;
     }
-    else
-        eligible_case_found = false;
+cases_6_8_end:
+#pragma endregion
 
     // Case 8
     // If the track set wasn't eligible for any other case
@@ -421,4 +446,6 @@ void TrackManager::_set_default_track(
         DEBUG_PRINT_LINE("The current track set is eligible for case 8");
         // TODO
     }
+found_eligible_case:
+    1;
 }
