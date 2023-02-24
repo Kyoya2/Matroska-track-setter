@@ -41,6 +41,7 @@ EbmlElementPtr EbmlElement::get_next_element()
     
     _seek_to(EbmlOffset::End);
 
+    // TODO: make a new function like "advance_to_next_element" and use it explicitly instead of this ugly "optimization"
     if (1 == m_self.get_refcount())
     {
         // This is an optimization: if the refcount of the current object is 1, this function will OVERWRITE
