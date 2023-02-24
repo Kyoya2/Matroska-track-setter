@@ -210,6 +210,30 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
     }
 }
 
+BasicSharedPtr<EbmlElement> EbmlElement::create_boolean_child(bool at_beginning, EbmlElementIDType new_element_id, bool value)
+{
+    assert(m_id.get_value() == Void_ID);
+
+    static constexpr uint64_t BOOL_ELEMENT_LENGTH_AND_VALUE_SIZE = 2;
+    EbmlElementID new_element_id_obj(new_element_id);
+    EbmlElementLength new_element_length(1);
+
+    size_t new_element_size = new_element_id_obj.get_encoded_size() + new_element_length.get_encoded_size() + 1; // 1 for the bool value itself
+    uint64_t new_element_offset = at_beginning ? (_get_offset(EbmlOffset::Data)) : (_get_offset(EbmlOffset::End) - new_element_size);
+
+    // Make sure that the current element is big enough to contain a child
+    if (this->get_total_size() - new_element_size < 2) // 2 is the minimal size of a Void element header
+        throw exception("")
+
+    // Write the element
+    _seek_to(new_element_offset);
+    m_stream << new_element_id_obj << new_element_length << static_cast<uint8_t>(value);
+
+    // Parse the element and return it
+    _seek_to(new_element_offset);
+    return _s_construct_from_parent(m_parent);
+}
+
 /******************************************************************************************************/
 /******************************************** Miscellaneous *******************************************/
 /******************************************************************************************************/

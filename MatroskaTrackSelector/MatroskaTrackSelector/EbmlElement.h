@@ -91,6 +91,8 @@ public:
     void update_uint_value(uint64_t new_value);
     void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
+    BasicSharedPtr<EbmlElement> create_boolean_child(bool at_beginning, EbmlElementIDType new_element_id, bool value);
+
    /******************************************************************************************************/
    /******************************************** Miscellaneous *******************************************/
    /******************************************************************************************************/
