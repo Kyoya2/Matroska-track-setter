@@ -17,7 +17,7 @@
 #include "SeekEntry.h"
 
 SeekEntry::SeekEntry(EbmlElementPtr& seek_element) :
-    seek_element(seek_element),
+    m_seek_element(seek_element),
     m_seek_position(0)
 {
     assert(seek_element->get_id() == Seek_ID);
@@ -30,17 +30,22 @@ SeekEntry::SeekEntry(EbmlElementPtr& seek_element) :
     seek_element->get_unique_children(children);
 
     // Save element pointers
-    seek_id_element = children[SeekID_ID];
-    seek_position_element = children[SeekPosition_ID];
+    m_seek_id_element = children[SeekID_ID];
+    m_seek_position_element = children[SeekPosition_ID];
 
     // Load only the value of the seek ID
-    seek_id = static_cast<EbmlElementIDType>(children[SeekID_ID]->get_uint_value());
+    m_seek_id = static_cast<EbmlElementIDType>(children[SeekID_ID]->get_uint_value());
 }
 
 uint64_t SeekEntry::get_seek_position()
 {
     if (0 == m_seek_position)
-        m_seek_position = seek_position_element->get_uint_value();
+        m_seek_position = m_seek_position_element->get_uint_value();
 
     return m_seek_position;
+}
+
+void SeekEntry::update_seek_position(uint64_t new_seek_position)
+{
+    m_seek_element->update_uint_value(new_seek_position);
 }

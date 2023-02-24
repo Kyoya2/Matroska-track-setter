@@ -32,14 +32,13 @@ public:
 
 public:
     uint64_t get_seek_position();
-
-public:
-    EbmlElementPtr seek_element;
-    EbmlElementPtr seek_id_element;
-    EbmlElementPtr seek_position_element;
-    EbmlElementIDType seek_id;
+    void update_seek_position(uint64_t new_seek_position);
 
 PRIVATE:
+    EbmlElementPtr m_seek_element;
+    EbmlElementPtr m_seek_id_element;
+    EbmlElementPtr m_seek_position_element;
+    EbmlElementIDType m_seek_id;
     uint64_t m_seek_position;
 };
 
