@@ -249,27 +249,26 @@ uint64_t EbmlElement::get_distance_from(EbmlElementPtr other)
     }
 }
 
-int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust)
+pair<EbmlElement::OffsetRange, int64_t> EbmlElement::calculate_element_move_parameters(const EbmlElementPtr& new_parent)
+{
+    if (new_parent->m_offset < this->m_offset)
+        return std::make_pair(
+            std::make_pair(new_parent->_get_offset(EbmlOffset::End), this->_get_offset(EbmlOffset::End)),
+            this->get_total_size());
+    else
+        return std::make_pair(
+            std::make_pair(this->get_offset(), new_parent->_get_offset(EbmlOffset::Data)),
+            -static_cast<int32_t>(this->get_total_size()));
+}
+
+void EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust)
 {
     Buffer current_element(this->get_total_size());
-    pair<uint64_t, uint64_t> affected_range;
-    int32_t shift_amount;
+    const auto [affected_range, shift_amount] = calculate_element_move_parameters(new_parent);
 
     // Store the current element in a buffer
     this->_seek_to(EbmlOffset::Header);
     m_stream.read(reinterpret_cast<char*>(current_element.data()), current_element.size());
-
-    // Calculate the ahift amount and the range
-    if (new_parent->m_offset < this->m_offset)
-    {
-        shift_amount = this->get_total_size();
-        affected_range = std::make_pair(new_parent->_get_offset(EbmlOffset::End), this->_get_offset(EbmlOffset::End));
-    }
-    else
-    {
-        shift_amount = -static_cast<int32_t>(this->get_total_size());
-        affected_range = std::make_pair(this->get_offset(), new_parent->_get_offset(EbmlOffset::Data));
-    }
 
     // A buffer that's going to store all of the content that are going to be switched with the current_element
     Buffer part_to_switch(affected_range.second - affected_range.first - this->get_total_size());
@@ -367,8 +366,6 @@ int32_t EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_t
             element->m_offset += shift_amount;
         }
     }
-
-    return shift_amount;
 }
 
 /******************************************************************************************************/

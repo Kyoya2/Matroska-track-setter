@@ -43,6 +43,9 @@ using EbmlElements = vector<EbmlElementPtr>;
 class EbmlElement
 {
 public:
+    using OffsetRange = pair<uint64_t, uint64_t>;
+
+public:
     static EbmlElementPtr s_construct_from_stream(std::iostream& stream);
 
     /******************************************************************************************************/
@@ -53,7 +56,6 @@ public:
     inline uint64_t get_offset() const { return m_offset; }
     inline size_t get_total_size() const { return m_id.get_encoded_size() + m_length.get_encoded_size() + m_length.get_value(); }
 
-public:
     /******************************************************************************************************/
     /*************************************** Functions for iteration **************************************/
     /******************************************************************************************************/
@@ -100,11 +102,14 @@ public:
     // Both elements must be on the same level
     uint64_t get_distance_from(EbmlElementPtr other);
 
+    // Returns the offset range in which all elements would be shifted and the shift amount if moved current element to new_parent
+    pair<OffsetRange, int64_t> calculate_element_move_parameters(const EbmlElementPtr& new_parent);
+
     // Moves the current element to a given parent.
     // Note that after calling this function. elements_to_adjust must contain all referenced elements
     // between the new parent and the current element (not including the new parent, current element or current parent)
-    // Returns the amount by which all relevant elements were shifted
-    int32_t move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust);
+    // Related function: calculate_element_move_parameters
+    void move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust);
 
 PRIVATE:
     /******************************************************************************************************/
