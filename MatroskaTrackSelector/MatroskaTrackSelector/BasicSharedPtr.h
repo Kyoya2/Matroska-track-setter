@@ -27,7 +27,7 @@ namespace BasicSharedPtrStats
 #endif
 
 /*
-    This class is identical to std::share_pointer except it has a function that allows a pointer object to
+    This class is identical to `std::shared_pointer` except it has a function that allows a pointer object to
     relinquish himself from ownership of the stored object while still allowing it to be copied validly.
     This is usefull for building dynamic trees that are stored on the heap:
     each node has a pointer of iteself which is not owned by himself, when it wants to create children it
@@ -60,18 +60,14 @@ PRIVATE:
     explicit BasicSharedPtr(Internal* internal_ptr);
 
 public:
-    // Default
     BasicSharedPtr(std::nullptr_t ptr = nullptr);
 
-    // Copy
     BasicSharedPtr(const BasicSharedPtr& other);
     BasicSharedPtr& operator=(const BasicSharedPtr& other);
 
-    // Move
     BasicSharedPtr(BasicSharedPtr&& other) noexcept;
     BasicSharedPtr& operator=(BasicSharedPtr&& other) noexcept;
  
-    // Dtor
     ~BasicSharedPtr();
 
     /******************************************************************************************************/
@@ -154,7 +150,7 @@ inline BasicSharedPtr<T>& BasicSharedPtr<T>::operator=(const BasicSharedPtr<T>& 
 template<typename T>
 inline BasicSharedPtr<T>::BasicSharedPtr(BasicSharedPtr&& other) noexcept :
     m_internal_ptr(other.m_internal_ptr),
-    m_owned(other.m_owned) // Although there's no reason to move non-owned objects, it's still possible
+    m_owned(other.m_owned)
 {
     other.m_owned = false;
     other.m_internal_ptr = nullptr;
