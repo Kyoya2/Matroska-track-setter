@@ -24,6 +24,7 @@
     <ProjectGuid>{9fbe36c4-fdcf-4b29-a6e6-03df01816ddc}</ProjectGuid>
     <RootNamespace>MatroskaTrackSelector</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>InteractiveTrackSelector</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
