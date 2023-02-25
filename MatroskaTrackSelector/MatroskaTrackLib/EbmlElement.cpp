@@ -151,9 +151,7 @@ int64_t EbmlElement::get_int_value()
 
 string EbmlElement::get_string_value()
 {
-    string result;
-    result.resize(m_length); // Reserve one extra character for null-terminator
-    //result.data()[m_length.get_value()] = '\0';
+    string result(m_length, '\0');
     _read_content(result.data());
     return result;
 }
