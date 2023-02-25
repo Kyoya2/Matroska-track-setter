@@ -74,6 +74,7 @@ namespace Utility
     inline size_t get_byte_size(uint64_t num);
     inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
     inline void write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length);
+    inline size_t get_utf8_string_length(const string& str);
 }
 
 inline uint64_t Utility::get_msb(uint64_t num)
@@ -148,4 +149,14 @@ inline void Utility::write_big_endian_to_stream(std::ostream& stream, uint64_t v
     std::reverse(encoded_bytes_ptr, encoded_bytes_ptr + encoded_length);
 
     stream.write(encoded_bytes_ptr, encoded_length);
+}
+
+size_t Utility::get_utf8_string_length(const string& str)
+{
+    size_t len = 0;
+    const char* s = str.data();
+    while (*s)
+        len += ((*s++ & 0xc0) != 0x80);
+
+    return len;
 }

@@ -174,7 +174,7 @@ private:
 
         if (std::regex_search(text, match, COLORED_TEXT))
         {
-            return match[1].length();
+            return Utility::get_utf8_string_length(match[1].str());
         }
         return text.size();
     }
