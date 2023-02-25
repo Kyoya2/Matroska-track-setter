@@ -115,6 +115,7 @@ int main()
         [--dry-run] - Don't actually change the file's content
 
     */
+    // TODO track-fiddling logic should be in a separate project (.lib) from the interactive selection and rule parsing
     using namespace ConsoleAttributes;
 
     // Enable printing unicode characters for building pretty tables
