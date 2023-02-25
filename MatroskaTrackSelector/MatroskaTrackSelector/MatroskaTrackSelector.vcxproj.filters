@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Ebml">
-      <UniqueIdentifier>{1d2a3327-4016-40cc-89db-8d03169e8019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Ebml\EbmlVint">
-      <UniqueIdentifier>{8481996c-a845-4a59-958b-4f6f69e941d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Ebml\EbmlParser">
-      <UniqueIdentifier>{c16d4ab5-c0c0-4f46-9d23-6d5fc14a5587}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common">
       <UniqueIdentifier>{8d167dee-cc59-4c6a-892f-bb84d6ee661a}</UniqueIdentifier>
     </Filter>
@@ -18,12 +9,6 @@
     </Filter>
     <Filter Include="Track management">
       <UniqueIdentifier>{124665ef-d1d1-43d5-991b-cd8eee1dd5fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Track management\TrackManager">
-      <UniqueIdentifier>{4966b6b2-72cf-462d-abc8-7ad664c2d134}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Track management\MatroskaLanguageTags">
-      <UniqueIdentifier>{53aa9e9b-49e8-4eba-ab7c-48605e4cfd6a}</UniqueIdentifier>
     </Filter>
     <Filter Include="TrackPrioritizer">
       <UniqueIdentifier>{b0366838-35cf-4828-94e1-c3e77ef5339c}</UniqueIdentifier>
@@ -37,36 +22,12 @@
     <Filter Include="Track management\InteractiveTrackSelector\AutomaticTrackSelector">
       <UniqueIdentifier>{d86b3454-3544-4b20-b34f-2db927142e2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Track management\TrackManager\TrackEntry">
-      <UniqueIdentifier>{b944767a-b2ba-450d-bf37-33cbf6a47e5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Track management\TrackManager\SeekEntry">
-      <UniqueIdentifier>{464b81f0-fd0c-4c19-a02b-bd36420ec57c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts">
       <UniqueIdentifier>{4a7de4ba-f9dd-42d7-8024-4c1adc405faf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="EbmlElementID.cpp">
-      <Filter>Ebml\EbmlVint</Filter>
-    </ClCompile>
-    <ClCompile Include="EbmlElementLength.cpp">
-      <Filter>Ebml\EbmlVint</Filter>
-    </ClCompile>
-    <ClCompile Include="EbmlElement.cpp">
-      <Filter>Ebml\EbmlParser</Filter>
-    </ClCompile>
-    <ClCompile Include="TrackEntry.cpp">
-      <Filter>Track management\TrackManager\TrackEntry</Filter>
-    </ClCompile>
-    <ClCompile Include="MatroskaLanguageTags.cpp">
-      <Filter>Track management\MatroskaLanguageTags</Filter>
-    </ClCompile>
-    <ClCompile Include="TrackManager.cpp">
-      <Filter>Track management\TrackManager</Filter>
-    </ClCompile>
     <ClCompile Include="TrackPrioritizer.cpp">
       <Filter>TrackPrioritizer</Filter>
     </ClCompile>
@@ -79,35 +40,8 @@
     <ClCompile Include="AutomaticTrackSelector.cpp">
       <Filter>Track management\InteractiveTrackSelector\AutomaticTrackSelector</Filter>
     </ClCompile>
-    <ClCompile Include="SeekEntry.cpp">
-      <Filter>Track management\TrackManager\SeekEntry</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EbmlElementID.h">
-      <Filter>Ebml\EbmlVint</Filter>
-    </ClInclude>
-    <ClInclude Include="EbmlVintUtils.h">
-      <Filter>Ebml\EbmlVint</Filter>
-    </ClInclude>
-    <ClInclude Include="EbmlElementLength.h">
-      <Filter>Ebml\EbmlVint</Filter>
-    </ClInclude>
-    <ClInclude Include="MatroskaElementSpecification.auto.h">
-      <Filter>Ebml\EbmlParser</Filter>
-    </ClInclude>
-    <ClInclude Include="EbmlElement.h">
-      <Filter>Ebml\EbmlParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Utils\MatroskaElementSpecification.template.h">
-      <Filter>Ebml\EbmlParser</Filter>
-    </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="BasicSharedPtr.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="EbmlVintUT.h">
       <Filter>Tests</Filter>
     </ClInclude>
@@ -120,17 +54,8 @@
     <ClInclude Include="EbmlParserUT.h">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="TrackEntry.h">
-      <Filter>Track management\TrackManager\TrackEntry</Filter>
-    </ClInclude>
-    <ClInclude Include="MatroskaLanguageTags.auto.h">
-      <Filter>Track management\MatroskaLanguageTags</Filter>
-    </ClInclude>
     <ClInclude Include="MatroskaLanguageTagsUT.h">
       <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="TrackManager.h">
-      <Filter>Track management\TrackManager</Filter>
     </ClInclude>
     <ClInclude Include="TrackPrioritizer.h">
       <Filter>TrackPrioritizer</Filter>
@@ -146,12 +71,6 @@
     </ClInclude>
     <ClInclude Include="AutomaticTrackSelector.h">
       <Filter>Track management\InteractiveTrackSelector\AutomaticTrackSelector</Filter>
-    </ClInclude>
-    <ClInclude Include="SeekEntry.h">
-      <Filter>Track management\TrackManager\SeekEntry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Utils\MatroskaLanguageTags.template.h">
-      <Filter>Track management\MatroskaLanguageTags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

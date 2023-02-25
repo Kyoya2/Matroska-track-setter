@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="BasicSharedPtr.h" />
+    <ClInclude Include="EbmlElement.h" />
+    <ClInclude Include="EbmlElementID.h" />
+    <ClInclude Include="EbmlElementLength.h" />
+    <ClInclude Include="EbmlVintUtils.h" />
+    <ClInclude Include="MatroskaElementSpecification.auto.h" />
+    <ClInclude Include="MatroskaLanguageTags.auto.h" />
+    <ClInclude Include="Include\Common.h" />
+    <ClInclude Include="Include\TrackManager.h" />
+    <ClInclude Include="SeekEntry.h" />
+    <ClInclude Include="Include\TrackEntry.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EbmlElement.cpp" />
+    <ClCompile Include="EbmlElementID.cpp" />
+    <ClCompile Include="EbmlElementLength.cpp" />
+    <ClCompile Include="MatroskaLanguageTags.cpp" />
+    <ClCompile Include="SeekEntry.cpp" />
+    <ClCompile Include="TrackEntry.cpp" />
+    <ClCompile Include="TrackManager.cpp" />
+  </ItemGroup>
+</Project>

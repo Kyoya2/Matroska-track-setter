@@ -441,11 +441,6 @@ cases_6_8_end:
 
     // Case 8
     // If the track set wasn't eligible for any other case
-    if (!eligible_case_found)
-    {
-        DEBUG_PRINT_LINE("The current track set is eligible for case 8");
-        // TODO
-    }
 found_eligible_case:
     1;
 }
