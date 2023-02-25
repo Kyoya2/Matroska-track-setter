@@ -24,7 +24,7 @@ ISO639_2_CODE_LIST_URL = 'https://www.loc.gov/standards/iso639-2/php/code_list.p
 BCP47_LANGUAGE_SUBTAG_REGISTRY_URL = 'https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry'
 
 TEMPLATE_FILE_PATH = 'MatroskaLanguageTags.template.h'
-OUTPUT_FILE_PATH = '../MatroskaTrackSelector/MatroskaTrackSelector/MatroskaLanguageTags.auto.h'
+OUTPUT_FILE_PATH = '../MatroskaTrackSelector/MatroskaTrackLib/MatroskaLanguageTags.auto.h'
 
 def get_iso639_2_language_tags(result: list):
     raw_html_data = requests.get(ISO639_2_CODE_LIST_URL).content

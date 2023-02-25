@@ -27,7 +27,7 @@ import requests
 
 MATROSKA_EBML_SCHEMA_ADDRESS = r'https://raw.githubusercontent.com/ietf-wg-cellar/matroska-specification/master/ebml_matroska.xml'
 TEMPLATE_FILE_PATH = 'MatroskaElementSpecification.template.h'
-OUTPUT_FILE_PATH = '../MatroskaTrackSelector/MatroskaTrackSelector/MatroskaElementSpecification.auto.h'
+OUTPUT_FILE_PATH = '../MatroskaTrackSelector/MatroskaTrackLib/MatroskaElementSpecification.auto.h'
 
 class EbmlSchemaElementType:
     """
