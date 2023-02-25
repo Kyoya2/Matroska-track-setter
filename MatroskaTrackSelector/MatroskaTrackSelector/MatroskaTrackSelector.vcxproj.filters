@@ -43,6 +43,9 @@
     <Filter Include="Track management\TrackManager\SeekEntry">
       <UniqueIdentifier>{464b81f0-fd0c-4c19-a02b-bd36420ec57c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{4a7de4ba-f9dd-42d7-8024-4c1adc405faf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -150,5 +153,16 @@
     <ClInclude Include="..\..\Utils\MatroskaLanguageTags.template.h">
       <Filter>Track management\MatroskaLanguageTags</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Utils\generate_ebml_vint_test_numbers.py">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\..\Utils\generate_element_specification.py">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\..\Utils\generate_language_tags.py">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
 </Project>
