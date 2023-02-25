@@ -191,11 +191,6 @@
     <ClCompile Include="TrackPrioritizer.cpp" />
     <ClCompile Include="InteractiveTrackSelector.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Utils\generate_ebml_vint_test_numbers.py" />
-    <None Include="..\..\Utils\generate_element_specification.py" />
-    <None Include="..\..\Utils\generate_language_tags.py" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

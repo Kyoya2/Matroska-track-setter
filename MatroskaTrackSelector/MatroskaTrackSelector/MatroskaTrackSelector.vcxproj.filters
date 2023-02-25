@@ -22,9 +22,6 @@
     <Filter Include="Track management\InteractiveTrackSelector\AutomaticTrackSelector">
       <UniqueIdentifier>{d86b3454-3544-4b20-b34f-2db927142e2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts">
-      <UniqueIdentifier>{4a7de4ba-f9dd-42d7-8024-4c1adc405faf}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -72,16 +69,5 @@
     <ClInclude Include="AutomaticTrackSelector.h">
       <Filter>Track management\InteractiveTrackSelector\AutomaticTrackSelector</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Utils\generate_ebml_vint_test_numbers.py">
-      <Filter>Scripts</Filter>
-    </None>
-    <None Include="..\..\Utils\generate_element_specification.py">
-      <Filter>Scripts</Filter>
-    </None>
-    <None Include="..\..\Utils\generate_language_tags.py">
-      <Filter>Scripts</Filter>
-    </None>
   </ItemGroup>
 </Project>

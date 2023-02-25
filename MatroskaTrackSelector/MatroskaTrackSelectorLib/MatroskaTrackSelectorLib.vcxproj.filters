@@ -2,24 +2,93 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="BasicSharedPtr.h" />
-    <ClInclude Include="EbmlElement.h" />
-    <ClInclude Include="EbmlElementID.h" />
-    <ClInclude Include="EbmlElementLength.h" />
-    <ClInclude Include="EbmlVintUtils.h" />
-    <ClInclude Include="MatroskaElementSpecification.auto.h" />
-    <ClInclude Include="MatroskaLanguageTags.auto.h" />
-    <ClInclude Include="Include\Common.h" />
-    <ClInclude Include="Include\TrackManager.h" />
-    <ClInclude Include="SeekEntry.h" />
-    <ClInclude Include="Include\TrackEntry.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="EbmlElement.h">
+      <Filter>EbmlElement</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlElementID.h">
+      <Filter>EbmlElement\VINT</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlElementLength.h">
+      <Filter>EbmlElement\VINT</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlVintUtils.h">
+      <Filter>EbmlElement\VINT</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackManager.h">
+      <Filter>TrackManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackEntry.h">
+      <Filter>TrackManager\Element wrappers\TrackEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekEntry.h">
+      <Filter>TrackManager\Element wrappers\Seek</Filter>
+    </ClInclude>
+    <ClInclude Include="MatroskaElementSpecification.auto.h">
+      <Filter>EbmlElement</Filter>
+    </ClInclude>
+    <ClInclude Include="MatroskaLanguageTags.auto.h">
+      <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EbmlElement.cpp" />
-    <ClCompile Include="EbmlElementID.cpp" />
-    <ClCompile Include="EbmlElementLength.cpp" />
-    <ClCompile Include="MatroskaLanguageTags.cpp" />
-    <ClCompile Include="SeekEntry.cpp" />
-    <ClCompile Include="TrackEntry.cpp" />
-    <ClCompile Include="TrackManager.cpp" />
+    <ClCompile Include="EbmlElement.cpp">
+      <Filter>EbmlElement</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlElementID.cpp">
+      <Filter>EbmlElement\VINT</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlElementLength.cpp">
+      <Filter>EbmlElement\VINT</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackManager.cpp">
+      <Filter>TrackManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackEntry.cpp">
+      <Filter>TrackManager\Element wrappers\TrackEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="SeekEntry.cpp">
+      <Filter>TrackManager\Element wrappers\Seek</Filter>
+    </ClCompile>
+    <ClCompile Include="MatroskaLanguageTags.cpp">
+      <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="EbmlElement">
+      <UniqueIdentifier>{f1ffba20-d063-4cb2-96ff-63d8ce592bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\VINT">
+      <UniqueIdentifier>{8975d6ce-de5e-4840-891d-50846248ed96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{b8d63ba3-3632-4ba9-a8c4-d3ba95ee7465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackManager">
+      <UniqueIdentifier>{218a79ad-2bf3-415f-a748-228c6dcb49bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackManager\Element wrappers">
+      <UniqueIdentifier>{0dfccc72-fc5c-4848-a2d5-7d05086dc517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackManager\Element wrappers\TrackEntry">
+      <UniqueIdentifier>{ee22aa4a-41bb-4b54-be27-312028f5e01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackManager\Element wrappers\Seek">
+      <UniqueIdentifier>{a76c6515-c2a5-49b6-a364-8a4b9f284144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackManager\Element wrappers\TrackEntry\LanguageTags">
+      <UniqueIdentifier>{0605939e-cc57-4af1-a638-f6b39c51e81b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Utils\generate_ebml_vint_test_numbers.py">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\..\Utils\generate_element_specification.py">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\..\Utils\generate_language_tags.py">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
 </Project>
