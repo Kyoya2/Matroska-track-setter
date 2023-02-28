@@ -103,6 +103,27 @@ def get_elements(schema_file_data: str):
     return schema_elements
 
 
+def string_to_cpp_var_name(string: str) -> str:
+    """
+    Converts a string to a C++ CamelCase variable name
+    """
+    string = string.lower()
+
+    # Append an underscore if it starts with a digit
+    if string[0].isdigit():
+        string = '_' + string
+
+    # Replace some special characters while making the name as readable as possible
+    string = string.replace('/', ' or ').replace(' - ', ' to ').replace('.', '_')
+
+    # Turn into UpperCamelCase
+    string = re.sub(r'\b([A-Za-z])', lambda match: match[1].upper(), string)
+
+    # Remove the rest of the special characters
+    string = re.sub(r'\W', '', string)
+    return string
+
+
 def get_ebml_elements_string(element: EbmlSchemaElement):
     enum_string = ''
         
@@ -112,21 +133,8 @@ def get_ebml_elements_string(element: EbmlSchemaElement):
     if element.possible_enum_values is not None:
         enum_string = 'enum class ' + element.name + ' {\n'
         for name, value in element.possible_enum_values.items():
-            # Make enum name start with a valid character for C++ enum names
-            displayed_name = name.lower()
-            if displayed_name[0].isdigit():
-                displayed_name = '_'+displayed_name
-            
-            # Replace some special characters while making the enum name as readable as possible
-            displayed_name = displayed_name.replace('/', ' or ').replace(' - ', ' to ').replace('.', '_')
-
-            # Turn into UpperCamelCase
-            displayed_name = re.sub(r'\b(\w)', lambda match:match[1].upper(), displayed_name)
-
-            # Remove the rest of the special characters
-            displayed_name = re.sub(r'[^\w\d]', '', displayed_name)
-
-            enum_string += ' ' * 4 + displayed_name
+            # Make enum name start with a valid character for C++ enum names=
+            enum_string += ' ' * 4 + string_to_cpp_var_name(name)
             enum_string += f' = {repr(value)},\n'
 
         # cut out last ',\n'
