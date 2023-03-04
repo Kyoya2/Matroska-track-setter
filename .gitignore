@@ -1,5 +1,7 @@
 /MatroskaTrackSelector/.vs/
 /MatroskaTrackSelector/Bin/
 /Test files
+.idea/
+__pycache__/
 *.user
 test_file.bin
