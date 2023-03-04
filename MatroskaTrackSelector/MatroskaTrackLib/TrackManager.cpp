@@ -174,6 +174,9 @@ void TrackManager::_set_default_track(
     Tracks& other_tracks,
     TrackEntry* untouchable_track)
 {
+    // TODO: according to the EbmlSchema for Matroska, the Tracks element is recurring, which 
+    // means that any changes made here must be also made for all other Tracks elements is the
+    // current file
     static constexpr uint32_t FD_SIZE = 3;
     static constexpr uint32_t FF_SIZE = 4;
     // Define this to prevent the program from modifying files.
