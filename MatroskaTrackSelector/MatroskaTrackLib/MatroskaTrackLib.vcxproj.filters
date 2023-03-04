@@ -3,17 +3,17 @@
   <ItemGroup>
     <ClInclude Include="BasicSharedPtr.h" />
     <ClInclude Include="Common.h" />
-    <ClInclude Include="EbmlElement.h">
-      <Filter>EbmlElement</Filter>
+    <ClInclude Include="OldEbmlElement.h">
+      <Filter>OldEbmlElement</Filter>
     </ClInclude>
     <ClInclude Include="EbmlElementID.h">
-      <Filter>EbmlElement\VINT</Filter>
+      <Filter>OldEbmlElement\VINT</Filter>
     </ClInclude>
     <ClInclude Include="EbmlElementLength.h">
-      <Filter>EbmlElement\VINT</Filter>
+      <Filter>OldEbmlElement\VINT</Filter>
     </ClInclude>
     <ClInclude Include="EbmlVintUtils.h">
-      <Filter>EbmlElement\VINT</Filter>
+      <Filter>OldEbmlElement\VINT</Filter>
     </ClInclude>
     <ClInclude Include="TrackManager.h">
       <Filter>TrackManager</Filter>
@@ -25,21 +25,21 @@
       <Filter>TrackManager\Element wrappers\Seek</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaElementSpecification.auto.h">
-      <Filter>EbmlElement</Filter>
+      <Filter>OldEbmlElement</Filter>
     </ClInclude>
     <ClInclude Include="MatroskaLanguageTags.auto.h">
       <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EbmlElement.cpp">
-      <Filter>EbmlElement</Filter>
+    <ClCompile Include="OldEbmlElement.cpp">
+      <Filter>OldEbmlElement</Filter>
     </ClCompile>
     <ClCompile Include="EbmlElementID.cpp">
-      <Filter>EbmlElement\VINT</Filter>
+      <Filter>OldEbmlElement\VINT</Filter>
     </ClCompile>
     <ClCompile Include="EbmlElementLength.cpp">
-      <Filter>EbmlElement\VINT</Filter>
+      <Filter>OldEbmlElement\VINT</Filter>
     </ClCompile>
     <ClCompile Include="TrackManager.cpp">
       <Filter>TrackManager</Filter>
@@ -55,12 +55,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="EbmlElement">
-      <UniqueIdentifier>{f1ffba20-d063-4cb2-96ff-63d8ce592bdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EbmlElement\VINT">
-      <UniqueIdentifier>{8975d6ce-de5e-4840-891d-50846248ed96}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts">
       <UniqueIdentifier>{b8d63ba3-3632-4ba9-a8c4-d3ba95ee7465}</UniqueIdentifier>
     </Filter>
@@ -78,6 +72,15 @@
     </Filter>
     <Filter Include="TrackManager\Element wrappers\TrackEntry\LanguageTags">
       <UniqueIdentifier>{0605939e-cc57-4af1-a638-f6b39c51e81b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OldEbmlElement">
+      <UniqueIdentifier>{f1ffba20-d063-4cb2-96ff-63d8ce592bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OldEbmlElement\VINT">
+      <UniqueIdentifier>{8975d6ce-de5e-4840-891d-50846248ed96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement">
+      <UniqueIdentifier>{c463d319-6451-4028-a287-d3cd4cf2b0dc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

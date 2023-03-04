@@ -18,7 +18,7 @@
 #include <fstream>
 
 #include "Common.h"
-#include "EbmlElement.h"
+#include "OldEbmlElement.h"
 #include "TrackEntry.h"
 #include "SeekEntry.h"
 
@@ -35,8 +35,8 @@ public:
     void set_default_tracks(size_t subtitle_track_index, size_t audio_track_index);
 
 PRIVATE:
-    void _load_tracks(EbmlElementPtr& tracks_element);
-    void _load_seek_entries(EbmlElementPtr& seek_head_element);
+    void _load_tracks(OldEbmlElementPtr& tracks_element);
+    void _load_seek_entries(OldEbmlElementPtr& seek_head_element);
     void _set_default_track(
         Tracks& tracks,                   // Either subtitle tracks or audio tracks
         TrackEntry* default_track,        // A pointer to the track to set as the default amongst the tracks in 'tracks'
@@ -53,7 +53,7 @@ PRIVATE:
 
     // The first entry points to a top-level void element, the second entry contains all top-level elements
     // between that void element and the 'Tracks' entry
-    using TopLevelVoidElementDescriptor = pair<EbmlElementPtr, EbmlElements>;
+    using TopLevelVoidElementDescriptor = pair<OldEbmlElementPtr, EbmlElements>;
 
     TopLevelVoidElementDescriptor m_void_before_tracks;
     TopLevelVoidElementDescriptor m_void_after_tracks;

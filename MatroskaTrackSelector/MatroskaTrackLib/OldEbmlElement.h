@@ -27,26 +27,26 @@
 using std::unordered_map;
 
 // Offsets relative to the current element
-enum class EbmlOffset
+enum class OldEbmlOffset
 {
     Header, // Offset to the first character of the EBML ID
     Data,   // Offset to the first character if the data (after EBML ID and Length)
     End     // Offset to the first character after the end of the data
 };
 
-class EbmlElement;
+class OldEbmlElement;
 
 // Typedefs
-using EbmlElementPtr = BasicSharedPtr<EbmlElement>;
-using EbmlElements = vector<EbmlElementPtr>;
+using OldEbmlElementPtr = BasicSharedPtr<OldEbmlElement>;
+using EbmlElements = vector<OldEbmlElementPtr>;
 
-class EbmlElement
+class OldEbmlElement
 {
 public:
     using OffsetRange = pair<uint64_t, uint64_t>;
 
 public:
-    static EbmlElementPtr s_construct_from_stream(std::iostream& stream);
+    static OldEbmlElementPtr s_construct_from_stream(std::iostream& stream);
 
     /******************************************************************************************************/
     /********************************************** Getters ***********************************************/
@@ -61,21 +61,21 @@ public:
     /******************************************************************************************************/
     // This function WILL overwrite the current element if it's refcout is 1.
     // Make sure to take ownership of the pointer if you don't want it to be overwritten.
-    EbmlElementPtr get_next_element();
-    EbmlElementPtr get_first_child();
-    inline EbmlElementPtr get_parent() { return m_parent; }
+    OldEbmlElementPtr get_next_element();
+    OldEbmlElementPtr get_first_child();
+    inline OldEbmlElementPtr get_parent() { return m_parent; }
 
-    bool is_last() { return this->_get_offset(EbmlOffset::End) == m_parent->_get_offset(EbmlOffset::End); }
+    bool is_last() { return this->_get_offset(OldEbmlOffset::End) == m_parent->_get_offset(OldEbmlOffset::End); }
 
     // Returns the first child element with the given ID or null if a child with that ID wasn't found
-    EbmlElementPtr find_child(const EbmlElementIDType id);
+    OldEbmlElementPtr find_child(const EbmlElementIDType id);
 
     // Returns a vector with all children of the current element with the given ID
     EbmlElements get_identical_children_by_id(const EbmlElementIDType id);
 
     // Sets the value of each {ID:Element} pair to a child of the current element with the corresponding key-ID.
     // All requested children should be unique elements (ones that can't appear more then once in one parent).
-    void get_unique_children(unordered_map<EbmlElementIDType, EbmlElementPtr>& children);
+    void get_unique_children(unordered_map<EbmlElementIDType, OldEbmlElementPtr>& children);
 
    /******************************************************************************************************/
    /********************************************* Data getters *******************************************/
@@ -93,44 +93,44 @@ public:
     void update_uint_value(uint64_t new_value);
     void overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value);
 
-    BasicSharedPtr<EbmlElement> create_boolean_child(bool at_beginning, EbmlElementIDType new_element_id, bool value);
+    BasicSharedPtr<OldEbmlElement> create_boolean_child(bool at_beginning, EbmlElementIDType new_element_id, bool value);
 
    /******************************************************************************************************/
    /******************************************** Miscellaneous *******************************************/
    /******************************************************************************************************/
     // Calculate distance of current elementy from another element
     // Both elements must be on the same level
-    uint64_t get_distance_from(EbmlElementPtr other);
+    uint64_t get_distance_from(OldEbmlElementPtr other);
 
     // Returns the offset range in which all elements would be shifted and the shift amount if moved current element to new_parent
-    pair<OffsetRange, int64_t> calculate_element_move_parameters(const EbmlElementPtr& new_parent);
+    pair<OffsetRange, int64_t> calculate_element_move_parameters(const OldEbmlElementPtr& new_parent);
 
     // Moves the current element to a given parent.
     // Note that after calling this function. elements_to_adjust must contain all referenced elements
     // between the new parent and the current element (not including the new parent, current element or current parent)
     // Related function: calculate_element_move_parameters
-    void move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust);
+    void move_to(OldEbmlElementPtr new_parent, EbmlElements& elements_to_adjust);
 
 PRIVATE:
     /******************************************************************************************************/
     /**************************************** Internal Constructors ***************************************/
     /******************************************************************************************************/
-    explicit EbmlElement(EbmlElementPtr parent);
-    explicit EbmlElement(std::iostream& stream);
+    explicit OldEbmlElement(OldEbmlElementPtr parent);
+    explicit OldEbmlElement(std::iostream& stream);
 
     /******************************************************************************************************/
     /****************************************** Internal Utility ******************************************/
     /******************************************************************************************************/
-    static EbmlElementPtr _s_construct_from_parent(EbmlElementPtr& parent);
-    constexpr uint64_t _get_offset(EbmlOffset seek_pos) const;
-    inline void _seek_to(EbmlOffset seek_pos) const;
+    static OldEbmlElementPtr _s_construct_from_parent(OldEbmlElementPtr& parent);
+    constexpr uint64_t _get_offset(OldEbmlOffset seek_pos) const;
+    inline void _seek_to(OldEbmlOffset seek_pos) const;
     inline void _seek_to(uint64_t seek_pos) const;
     void _initialize_as_root();
     void _create_void_element(size_t size); // Creates a void element of the given size at the current stream position
 
     // This function creates a pointer of an ebml element using any available contructor
     template <typename... Args>
-    static EbmlElementPtr s_get(Args&&... args);
+    static OldEbmlElementPtr s_get(Args&&... args);
 
     // Reads the raw content of the elemnt into the given container
     void _read_content(void* container) const;
@@ -140,28 +140,28 @@ PRIVATE:
     uint64_t m_offset;
     EbmlElementID m_id;
     EbmlElementLength m_length;
-    EbmlElementPtr m_parent;   // Owned
-    EbmlElementPtr m_self;     // Not owned
+    OldEbmlElementPtr m_parent;   // Owned
+    OldEbmlElementPtr m_self;     // Not owned
 
 public:
-    friend class BasicSharedPtr<EbmlElement>;
+    friend class BasicSharedPtr<OldEbmlElement>;
 };
 
 template<typename ...Args>
-inline EbmlElementPtr EbmlElement::s_get(Args&& ...args)
+inline OldEbmlElementPtr OldEbmlElement::s_get(Args&& ...args)
 {
-    EbmlElementPtr element = EbmlElementPtr::make_basic_shared(std::forward<Args>(args)...);
+    OldEbmlElementPtr element = OldEbmlElementPtr::make_basic_shared(std::forward<Args>(args)...);
     element->m_self = element;
     element->m_self.release_ownership();
     return element;
 }
 
-inline void EbmlElement::_seek_to(const EbmlOffset seek_pos) const
+inline void OldEbmlElement::_seek_to(const OldEbmlOffset seek_pos) const
 {
     _seek_to(_get_offset(seek_pos));
 }
 
-inline void EbmlElement::_seek_to(uint64_t seek_pos) const
+inline void OldEbmlElement::_seek_to(uint64_t seek_pos) const
 {
     m_stream.seekp(seek_pos);
 }

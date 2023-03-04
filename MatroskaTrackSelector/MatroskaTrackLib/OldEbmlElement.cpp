@@ -14,11 +14,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "EbmlElement.h"
+#include "OldEbmlElement.h"
 
-EbmlElementPtr EbmlElement::s_construct_from_stream(std::iostream& stream)
+OldEbmlElementPtr OldEbmlElement::s_construct_from_stream(std::iostream& stream)
 {
-    EbmlElementPtr element = s_get(stream);
+    OldEbmlElementPtr element = s_get(stream);
 
     // If the current element is the root, verify some properties and then overwrite it with the underlying 'Segment' element
     if (EBML_ID == element->get_id())
@@ -34,12 +34,12 @@ EbmlElementPtr EbmlElement::s_construct_from_stream(std::iostream& stream)
 /******************************************************************************************************/
 /*************************************** Functions for iteration **************************************/
 /******************************************************************************************************/
-EbmlElementPtr EbmlElement::get_next_element()
+OldEbmlElementPtr OldEbmlElement::get_next_element()
 {
     if (this->is_last())
         return nullptr;
     
-    _seek_to(EbmlOffset::End);
+    _seek_to(OldEbmlOffset::End);
 
     // TODO: make a new function like "advance_to_next_element" and use it explicitly instead of this ugly "optimization"
     if (1 == m_self.get_refcount())
@@ -58,18 +58,18 @@ EbmlElementPtr EbmlElement::get_next_element()
     }
 }
 
-EbmlElementPtr EbmlElement::get_first_child()
+OldEbmlElementPtr OldEbmlElement::get_first_child()
 {
-    _seek_to(EbmlOffset::Data);
+    _seek_to(OldEbmlOffset::Data);
     return _s_construct_from_parent(m_self);
 }
 
-void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, EbmlElementPtr>& children)
+void OldEbmlElement::get_unique_children(unordered_map<EbmlElementIDType, OldEbmlElementPtr>& children)
 {
     const size_t number_of_children_to_find = children.size();
     size_t children_found = 0;
 
-    EbmlElementPtr current_element = get_first_child();
+    OldEbmlElementPtr current_element = get_first_child();
 
     while (true)
     {
@@ -89,9 +89,9 @@ void EbmlElement::get_unique_children(unordered_map<EbmlElementIDType, EbmlEleme
     }
 }
 
-EbmlElementPtr EbmlElement::find_child(const EbmlElementIDType id)
+OldEbmlElementPtr OldEbmlElement::find_child(const EbmlElementIDType id)
 {
-    EbmlElementPtr current_element = get_first_child();
+    OldEbmlElementPtr current_element = get_first_child();
 
     while (true)
     {
@@ -107,10 +107,10 @@ EbmlElementPtr EbmlElement::find_child(const EbmlElementIDType id)
     }
 }
 
-EbmlElements EbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
+EbmlElements OldEbmlElement::get_identical_children_by_id(const EbmlElementIDType id)
 {
     EbmlElements result;
-    EbmlElementPtr current_element = get_first_child();
+    OldEbmlElementPtr current_element = get_first_child();
 
     while (true)
     {
@@ -131,53 +131,53 @@ EbmlElements EbmlElement::get_identical_children_by_id(const EbmlElementIDType i
 /******************************************************************************************************/
 /********************************************* Data getters *******************************************/
 /******************************************************************************************************/
-Buffer EbmlElement::get_binary_value()
+Buffer OldEbmlElement::get_binary_value()
 {
     Buffer result(m_length);
     _read_content(result.data());
     return result;
 }
 
-uint64_t EbmlElement::get_uint_value()
+uint64_t OldEbmlElement::get_uint_value()
 {
-    _seek_to(EbmlOffset::Data);
+    _seek_to(OldEbmlOffset::Data);
     return Utility::read_big_endian_from_stream(m_stream, m_length);
 }
 
-int64_t EbmlElement::get_int_value()
+int64_t OldEbmlElement::get_int_value()
 {
     return static_cast<int64_t>(get_uint_value());
 }
 
-string EbmlElement::get_string_value()
+string OldEbmlElement::get_string_value()
 {
     string result(m_length, '\0');
     _read_content(result.data());
     return result;
 }
 
-bool EbmlElement::get_bool_value()
+bool OldEbmlElement::get_bool_value()
 {
-    _seek_to(EbmlOffset::Data);
+    _seek_to(OldEbmlOffset::Data);
     return static_cast<bool>(m_stream.get());
 }
 
 /******************************************************************************************************/
 /****************************************** Element modifiers *****************************************/
 /******************************************************************************************************/
-void EbmlElement::update_bool_value(bool new_value)
+void OldEbmlElement::update_bool_value(bool new_value)
 {
-    _seek_to(EbmlOffset::Data);
+    _seek_to(OldEbmlOffset::Data);
     m_stream.put(static_cast<uint8_t>(new_value));
 }
 
-void EbmlElement::update_uint_value(uint64_t new_value)
+void OldEbmlElement::update_uint_value(uint64_t new_value)
 {
-    _seek_to(EbmlOffset::Data);
+    _seek_to(OldEbmlOffset::Data);
     Utility::write_big_endian_to_stream(m_stream, new_value, m_length.get_value());
 }
 
-void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value)
+void OldEbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, bool value)
 {
     EbmlElementID new_id = new_element_id;
     EbmlElementLength new_length = 1;
@@ -194,7 +194,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
     m_length = new_length;
 
     // Re-write the header of the element
-    _seek_to(EbmlOffset::Header);
+    _seek_to(OldEbmlOffset::Header);
     m_stream << m_id;
 
     // If there's only one byte left to fill, extend the encoded length of the m_length element by one
@@ -208,7 +208,7 @@ void EbmlElement::overwrite_with_bool_element(EbmlElementIDType new_element_id, 
     }
 }
 
-BasicSharedPtr<EbmlElement> EbmlElement::create_boolean_child(bool at_beginning, EbmlElementIDType new_element_id, bool value)
+BasicSharedPtr<OldEbmlElement> OldEbmlElement::create_boolean_child(bool at_beginning, EbmlElementIDType new_element_id, bool value)
 {
     assert(m_id.get_value() == Void_ID);
 
@@ -217,7 +217,7 @@ BasicSharedPtr<EbmlElement> EbmlElement::create_boolean_child(bool at_beginning,
     EbmlElementLength new_element_length(1);
 
     size_t new_element_size = new_element_id_obj.get_encoded_size() + new_element_length.get_encoded_size() + 1; // 1 for the bool value itself
-    uint64_t new_element_offset = at_beginning ? (_get_offset(EbmlOffset::Data)) : (_get_offset(EbmlOffset::End) - new_element_size);
+    uint64_t new_element_offset = at_beginning ? (_get_offset(OldEbmlOffset::Data)) : (_get_offset(OldEbmlOffset::End) - new_element_size);
 
     // Make sure that the current element is big enough to contain a child
     if (this->get_total_size() - new_element_size < 2) // 2 is the minimal size of a Void element header
@@ -235,37 +235,37 @@ BasicSharedPtr<EbmlElement> EbmlElement::create_boolean_child(bool at_beginning,
 /******************************************************************************************************/
 /******************************************** Miscellaneous *******************************************/
 /******************************************************************************************************/
-uint64_t EbmlElement::get_distance_from(EbmlElementPtr other)
+uint64_t OldEbmlElement::get_distance_from(OldEbmlElementPtr other)
 {
     if (this->get_offset() < other->get_offset())
     {
-        return other->get_offset() - this->_get_offset(EbmlOffset::End);
+        return other->get_offset() - this->_get_offset(OldEbmlOffset::End);
     }
     else
     {
-        return this->get_offset() - other->_get_offset(EbmlOffset::End);
+        return this->get_offset() - other->_get_offset(OldEbmlOffset::End);
     }
 }
 
-pair<EbmlElement::OffsetRange, int64_t> EbmlElement::calculate_element_move_parameters(const EbmlElementPtr& new_parent)
+pair<OldEbmlElement::OffsetRange, int64_t> OldEbmlElement::calculate_element_move_parameters(const OldEbmlElementPtr& new_parent)
 {
     if (new_parent->m_offset < this->m_offset)
         return std::make_pair(
-            std::make_pair(new_parent->_get_offset(EbmlOffset::End), this->_get_offset(EbmlOffset::End)),
+            std::make_pair(new_parent->_get_offset(OldEbmlOffset::End), this->_get_offset(OldEbmlOffset::End)),
             this->get_total_size());
     else
         return std::make_pair(
-            std::make_pair(this->get_offset(), new_parent->_get_offset(EbmlOffset::Data)),
+            std::make_pair(this->get_offset(), new_parent->_get_offset(OldEbmlOffset::Data)),
             -static_cast<int32_t>(this->get_total_size()));
 }
 
-void EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_adjust)
+void OldEbmlElement::move_to(OldEbmlElementPtr new_parent, EbmlElements& elements_to_adjust)
 {
     Buffer current_element(this->get_total_size());
     const auto [affected_range, shift_amount] = calculate_element_move_parameters(new_parent);
 
     // Store the current element in a buffer
-    this->_seek_to(EbmlOffset::Header);
+    this->_seek_to(OldEbmlOffset::Header);
     m_stream.read(reinterpret_cast<char*>(current_element.data()), current_element.size());
 
     // A buffer that's going to store all of the content that are going to be switched with the current_element
@@ -287,17 +287,17 @@ void EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_a
         */
         
         // Store the part to switch
-        new_parent->_seek_to(EbmlOffset::End);
+        new_parent->_seek_to(OldEbmlOffset::End);
         m_stream.read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
         // Write buffers in new order
-        new_parent->_seek_to(EbmlOffset::End);
+        new_parent->_seek_to(OldEbmlOffset::End);
         m_stream.write(reinterpret_cast<char*>(current_element.data()), current_element.size());
         m_stream.write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
     // Update referencing objects:
         // Current element offset
-        this->m_offset = new_parent->_get_offset(EbmlOffset::End);
+        this->m_offset = new_parent->_get_offset(OldEbmlOffset::End);
 
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
@@ -327,11 +327,11 @@ void EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_a
         */
 
         // Store the part to switch
-        this->_seek_to(EbmlOffset::End);
+        this->_seek_to(OldEbmlOffset::End);
         m_stream.read(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
 
         // Write buffers in new order
-        this->_seek_to(EbmlOffset::Header);
+        this->_seek_to(OldEbmlOffset::Header);
         m_stream.write(reinterpret_cast<char*>(part_to_switch.data()), part_to_switch.size());
         m_stream.write(reinterpret_cast<char*>(current_element.data()), current_element.size());
 
@@ -345,7 +345,7 @@ void EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_a
         new_parent->m_offset -= current_element.size();
 
         // Current element offset
-        this->m_offset = new_parent->_get_offset(EbmlOffset::Data);
+        this->m_offset = new_parent->_get_offset(OldEbmlOffset::Data);
 
         // New parent size
         _seek_to(new_parent->m_offset + new_parent->m_id.get_encoded_size());
@@ -369,7 +369,7 @@ void EbmlElement::move_to(EbmlElementPtr new_parent, EbmlElements& elements_to_a
 /******************************************************************************************************/
 /**************************************** Internal Constructors ***************************************/
 /******************************************************************************************************/
-EbmlElement::EbmlElement(std::iostream& stream) :
+OldEbmlElement::OldEbmlElement(std::iostream& stream) :
     m_stream(stream),
     m_offset(stream.tellg()),
     m_id(stream),
@@ -378,7 +378,7 @@ EbmlElement::EbmlElement(std::iostream& stream) :
     m_self()
 {}
 
-EbmlElement::EbmlElement(EbmlElementPtr parent) :
+OldEbmlElement::OldEbmlElement(OldEbmlElementPtr parent) :
     m_stream(parent->m_stream),
     m_offset(parent->m_stream.tellg()),
     m_id(parent->m_stream),
@@ -390,22 +390,22 @@ EbmlElement::EbmlElement(EbmlElementPtr parent) :
 /******************************************************************************************************/
 /****************************************** Internal Utility ******************************************/
 /******************************************************************************************************/
-EbmlElementPtr EbmlElement::_s_construct_from_parent(EbmlElementPtr& parent)
+OldEbmlElementPtr OldEbmlElement::_s_construct_from_parent(OldEbmlElementPtr& parent)
 {
     return s_get(parent);
 }
 
-constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
+constexpr uint64_t OldEbmlElement::_get_offset(const OldEbmlOffset seek_pos) const
 {
     switch (seek_pos)
     {
-    case EbmlOffset::Header:
+    case OldEbmlOffset::Header:
         return m_offset;
 
-    case EbmlOffset::Data:
+    case OldEbmlOffset::Data:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size();
 
-    case EbmlOffset::End:
+    case OldEbmlOffset::End:
         return m_offset + m_id.get_encoded_size() + m_length.get_encoded_size() + m_length;
 
     default:
@@ -413,15 +413,15 @@ constexpr uint64_t EbmlElement::_get_offset(const EbmlOffset seek_pos) const
     }
 }
 
-void EbmlElement::_read_content(void* container) const
+void OldEbmlElement::_read_content(void* container) const
 {
-    _seek_to(EbmlOffset::Data);
+    _seek_to(OldEbmlOffset::Data);
     m_stream.read(reinterpret_cast<char*>(container), m_length);
 }
 
-void EbmlElement::_initialize_as_root()
+void OldEbmlElement::_initialize_as_root()
 {
-    unordered_map<EbmlElementIDType, EbmlElementPtr> children{
+    unordered_map<EbmlElementIDType, OldEbmlElementPtr> children{
         {DocType_ID, nullptr},
         {EBMLMaxIDLength_ID, nullptr},
         {EBMLMaxSizeLength_ID, nullptr}
@@ -451,7 +451,7 @@ void EbmlElement::_initialize_as_root()
     }
 
     // Set the current element to be the 'Segment' element
-    _seek_to(EbmlOffset::End);
+    _seek_to(OldEbmlOffset::End);
     m_offset = m_stream.tellg();
     m_id = EbmlElementID(m_stream);
     m_length = EbmlElementLength(m_stream);
@@ -463,7 +463,7 @@ void EbmlElement::_initialize_as_root()
     DEBUG_PRINT_LINE("The 'EBML' element has been verified and now points to the corresponding 'Segment' element");
 }
 
-void EbmlElement::_create_void_element(size_t size)
+void OldEbmlElement::_create_void_element(size_t size)
 {
     assert(size >= 2);
 
@@ -490,7 +490,7 @@ void EbmlElement::_create_void_element(size_t size)
     void_length.write(m_stream, encoded_length_size);
 }
 
-std::ostream& operator<<(std::ostream& stream, const EbmlElementPtr& element)
+std::ostream& operator<<(std::ostream& stream, const OldEbmlElementPtr& element)
 {
     stream << std::hex << 
               "Offset: 0x"  << element->get_offset() <<

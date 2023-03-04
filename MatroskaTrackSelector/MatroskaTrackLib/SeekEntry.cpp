@@ -16,13 +16,13 @@
  */
 #include "SeekEntry.h"
 
-SeekEntry::SeekEntry(EbmlElementPtr& seek_element) :
+SeekEntry::SeekEntry(OldEbmlElementPtr& seek_element) :
     m_seek_element(seek_element),
     m_seek_position(0)
 {
     assert(seek_element->get_id() == Seek_ID);
 
-    unordered_map<EbmlElementIDType, EbmlElementPtr> children{
+    unordered_map<EbmlElementIDType, OldEbmlElementPtr> children{
         {SeekID_ID, nullptr},
         {SeekPosition_ID, nullptr},
     };

@@ -20,7 +20,7 @@
 #include <cctype>
 
 #include "Common.h"
-#include "EbmlElement.h"
+#include "OldEbmlElement.h"
 #include "MatroskaLanguageTags.auto.h"
 
 using std::string_view;
@@ -29,7 +29,7 @@ struct TrackEntry
 {
 public:
     // Load elements and track type but do not parse values
-    TrackEntry(EbmlElementPtr& track_element);
+    TrackEntry(OldEbmlElementPtr& track_element);
 
     TrackEntry(const TrackEntry&) = delete;
     TrackEntry& operator=(const TrackEntry&) = delete;
@@ -51,12 +51,12 @@ public:
 
 public:
     // Elements
-    EbmlElementPtr track_element;
-    EbmlElementPtr name_element;
-    EbmlElementPtr language_element;
-    EbmlElementPtr language_bcp47_element;
-    EbmlElementPtr flag_default_element;
-    EbmlElementPtr flag_forced_element;
+    OldEbmlElementPtr track_element;
+    OldEbmlElementPtr name_element;
+    OldEbmlElementPtr language_element;
+    OldEbmlElementPtr language_bcp47_element;
+    OldEbmlElementPtr flag_default_element;
+    OldEbmlElementPtr flag_forced_element;
 
     // Element values
     TrackType type;

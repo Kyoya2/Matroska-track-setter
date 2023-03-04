@@ -17,12 +17,12 @@
 #pragma once
 
 #include "Common.h"
-#include "EbmlElement.h"
+#include "OldEbmlElement.h"
 
 class SeekEntry
 {
 public:
-    SeekEntry(EbmlElementPtr& seek_element);
+    SeekEntry(OldEbmlElementPtr& seek_element);
 
     SeekEntry(const SeekEntry&) = delete;
     SeekEntry& operator=(const SeekEntry&) = delete;
@@ -35,9 +35,9 @@ public:
     void update_seek_position(uint64_t new_seek_position);
 
 PRIVATE:
-    EbmlElementPtr m_seek_element;
-    EbmlElementPtr m_seek_id_element;
-    EbmlElementPtr m_seek_position_element;
+    OldEbmlElementPtr m_seek_element;
+    OldEbmlElementPtr m_seek_id_element;
+    OldEbmlElementPtr m_seek_position_element;
     EbmlElementIDType m_seek_id;
     uint64_t m_seek_position;
 };

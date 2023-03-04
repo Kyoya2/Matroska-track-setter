@@ -49,7 +49,7 @@ static void add_track_components_to_vector(EbmlElements components, TrackEntry* 
 TrackManager::TrackManager(const string& file) : m_file_stream(file, std::ios_base::binary | std::ios_base::out | std::ios_base::in)
 {
     m_file_stream.seekg(0);
-    auto segment_element = EbmlElement::s_construct_from_stream(m_file_stream);
+    auto segment_element = OldEbmlElement::s_construct_from_stream(m_file_stream);
 
     if (Segment_ID != segment_element->get_id())
     {
@@ -132,13 +132,13 @@ void TrackManager::set_default_tracks(size_t subtitle_track_index, size_t audio_
     set_default_tracks(&m_subtitle_tracks[subtitle_track_index], &m_audio_tracks[audio_track_index]);
 }
 
-void TrackManager::_load_tracks(EbmlElementPtr& tracks_element)
+void TrackManager::_load_tracks(OldEbmlElementPtr& tracks_element)
 {
     assert(tracks_element->get_id() == Tracks_ID);
     auto tracks = tracks_element->get_identical_children_by_id(TrackEntry_ID);
 
     DEBUG_PRINT_LINE("Loading tracks");
-    for (EbmlElementPtr& track : tracks)
+    for (OldEbmlElementPtr& track : tracks)
     {
         TrackEntry current_track_entry = track;
 
@@ -159,7 +159,7 @@ void TrackManager::_load_tracks(EbmlElementPtr& tracks_element)
     }
 }
 
-void TrackManager::_load_seek_entries(EbmlElementPtr& seek_head_element)
+void TrackManager::_load_seek_entries(OldEbmlElementPtr& seek_head_element)
 {
     assert(seek_head_element->get_id() == SeekHead_ID);
     auto seek_elements = seek_head_element->get_identical_children_by_id(Seek_ID);
@@ -263,7 +263,7 @@ void TrackManager::_set_default_track(
     {
         DEBUG_PRINT_LINE("The desired track's language is explicitly set to English");
 
-        EbmlElementPtr& language_indicator = (default_track->has_Language() ?
+        OldEbmlElementPtr& language_indicator = (default_track->has_Language() ?
                                                 default_track->language_element :
                                                 default_track->language_bcp47_element);
 
@@ -342,7 +342,7 @@ case_5_end:
     {
         DEBUG_PRINT_LINE("The desired track can expand by sizeof(FlagForced)");
 
-        EbmlElementPtr element_to_be_moved;
+        OldEbmlElementPtr element_to_be_moved;
         for (TrackEntry* track : working_state)
         {
             // If another track has FlagForced
