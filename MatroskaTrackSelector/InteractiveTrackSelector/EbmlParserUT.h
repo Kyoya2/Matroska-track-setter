@@ -60,7 +60,7 @@ namespace EbmlParserUT
             }
             else if (j > 1)
             {
-                element->_seek_to(EbmlOffset::End);
+                element->_seek_to(OldEbmlOffset::End);
                 OldEbmlElementPtr next_element = OldEbmlElement::s_construct_from_stream(test_file);
                 CHECK(next_element->get_id() == 0xec);
 
