@@ -192,6 +192,11 @@
     <ClCompile Include="TrackPrioritizer.cpp" />
     <ClCompile Include="InteractiveTrackSelector.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MatroskaTrackLib\MatroskaTrackLib.vcxproj">
+      <Project>{db62a8ab-8822-4df5-bae3-592ea6d92fa9}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
