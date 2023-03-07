@@ -69,16 +69,15 @@ DECL_EXCEPTION(InvalidRulesFileFormat);
 
 namespace Utility
 {
-    inline uint64_t get_msb(uint64_t num);
-    inline uint32_t get_msb(uint32_t num);
-    inline size_t get_msb_index(uint64_t num);
-    inline size_t get_byte_size(uint64_t num);
+    inline constexpr uint64_t get_msb(uint64_t num);
+    inline constexpr size_t get_msb_index(uint64_t num);
+    inline constexpr size_t get_byte_size(uint64_t num);
     inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
     inline void write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length);
-    inline size_t get_utf8_string_length(const string& str);
+    inline constexpr size_t get_utf8_string_length(const string& str);
 }
 
-inline uint64_t Utility::get_msb(uint64_t num)
+inline constexpr uint64_t Utility::get_msb(uint64_t num)
 {
     if (0 == num)
         return 0;
@@ -95,30 +94,19 @@ inline uint64_t Utility::get_msb(uint64_t num)
     return num + 1;
 }
 
-inline uint32_t Utility::get_msb(uint32_t num)
+inline constexpr size_t Utility::get_msb_index(uint64_t num)
 {
-    if (0 == num)
-        return 0;
+    size_t result = 0;
+    while (num != 0)
+    {
+        num >>= 1;
+        ++result;
+    }
 
-    num = num >> 1;
-
-    num |= num >> 1;
-    num |= num >> 2;
-    num |= num >> 4;
-    num |= num >> 8;
-    num |= num >> 16;
-
-    return num + 1;
+    return result;
 }
 
-inline size_t Utility::get_msb_index(uint64_t num)
-{
-    unsigned long result;
-    _BitScanReverse64(&result, num);
-    return static_cast<size_t>(result);
-}
-
-inline size_t Utility::get_byte_size(uint64_t num)
+inline constexpr size_t Utility::get_byte_size(uint64_t num)
 {
     return (Utility::get_msb_index(num) / 8) + 1;
 }
@@ -149,7 +137,7 @@ inline void Utility::write_big_endian_to_stream(std::ostream& stream, uint64_t v
     stream.write(reinterpret_cast<char*>(&value), encoded_length);
 }
 
-size_t Utility::get_utf8_string_length(const string& str)
+size_t constexpr Utility::get_utf8_string_length(const string& str)
 {
     size_t len = 0;
     const char* s = str.data();
