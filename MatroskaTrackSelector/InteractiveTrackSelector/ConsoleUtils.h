@@ -105,63 +105,63 @@ public:
         cout << std::left;
 
         // frame top
-        cout << u8"╔";                 
+        cout << (char*)u8"╔";                 
         for (size_t i = 0; i < frame_width; ++i)
-            cout << u8"═";
-        WriteLine(u8"╗");
+            cout << (char*)u8"═";
+        WriteLine((char*)u8"╗");
 
         // title
-        WriteLine(u8"║ " << padded_text(title, frame_width - 2) << u8" ║");
+        WriteLine((char*)u8"║ " << padded_text(title, frame_width - 2) << (char*)u8" ║");
 
         // title separator
-        cout << u8"╟";
+        cout << (char*)u8"╟";
         for (size_t i = 0; i < frame_width; ++i)
-            cout << u8"─";
-        WriteLine(u8"╢");
+            cout << (char*)u8"─";
+        WriteLine((char*)u8"╢");
 
         // Headers
-        cout << u8"║ ";
+        cout << (char*)u8"║ ";
         for (size_t col = 0; col < num_columns; ++col)
         {
             if (col != 0)
-                cout << u8" │ ";
+                cout << (char*)u8" │ ";
 
             cout << padded_text(headers[col], column_widths[col]);
         }
-        WriteLine(internal_padding << u8" ║");
+        WriteLine(internal_padding << (char*)u8" ║");
 
         // Header separator
-        cout << u8"║ ";
+        cout << (char*)u8"║ ";
         for (size_t col = 0; col < num_columns; ++col)
         {
             if (col != 0)
-                cout << u8"─┼─";
+                cout << (char*)u8"─┼─";
 
             for (size_t i = 0; i < column_widths[col]; ++i)
-                cout << u8"─";
+                cout << (char*)u8"─";
         }
-        WriteLine(internal_padding << u8" ║");
+        WriteLine(internal_padding << (char*)u8" ║");
 
         // Rows
         for (size_t row = 0; row < rows.size(); ++row)
         {
-            cout << u8"║ ";
+            cout << (char*)u8"║ ";
             for (size_t col = 0; col < num_columns; ++col)
             {
                 if (col != 0)
-                    cout << u8" │ ";
+                    cout << (char*)u8" │ ";
 
                 cout << padded_text(rows[row][col], column_widths[col]);
             }
-            WriteLine(internal_padding << u8" ║");
+            WriteLine(internal_padding << (char*)u8" ║");
         }
 #undef padded_text
 
         // frame bottom
-        cout << u8"╚";
+        cout << (char*)u8"╚";
         for (size_t i = 0; i < frame_width; ++i)
-            cout << u8"═";
-        WriteLine(u8"╝");
+            cout << (char*)u8"═";
+        WriteLine((char*)u8"╝");
     }
 
 private:
