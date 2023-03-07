@@ -33,6 +33,7 @@
 #include <functional>
 #include <string_view>
 #include <exception>
+#include <intrin.h>
 
 using std::cout;
 using std::endl;
@@ -134,9 +135,7 @@ inline uint64_t Utility::read_big_endian_from_stream(std::istream& stream, size_
     // Read as big-endian
     stream.read(reinterpret_cast<char*>(&result) + (sizeof(result) - size), size);
 
-    // Convert to little-endian
-    std::reverse(reinterpret_cast<char*>(&result), reinterpret_cast<char*>(&result + 1));
-    return result;
+    return _byteswap_uint64(result);
 }
 
 inline void Utility::write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length)
@@ -145,10 +144,9 @@ inline void Utility::write_big_endian_to_stream(std::ostream& stream, uint64_t v
     assert((get_msb_index(value) + 1) / 8 <= encoded_length);
 
     // Convert to big-endian
-    char* encoded_bytes_ptr = reinterpret_cast<char*>(&value);
-    std::reverse(encoded_bytes_ptr, encoded_bytes_ptr + encoded_length);
+    value = _byteswap_uint64(value);
 
-    stream.write(encoded_bytes_ptr, encoded_length);
+    stream.write(reinterpret_cast<char*>(&value), encoded_length);
 }
 
 size_t Utility::get_utf8_string_length(const string& str)
