@@ -21,8 +21,7 @@ namespace EbmlVintUtils
 {
     inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
 
-    template<typename T>
-    inline T extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr);
+    inline uint64_t extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr);
 
     inline uint64_t remove_vint_marker(uint64_t value);
 }
@@ -49,18 +48,13 @@ inline size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value
         return byte_count + 1;
 }
 
-template<typename T>
-inline T EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size)
+// Sets the stream pointer at the end of the VINT.
+inline uint64_t EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size)
 {
-    T result = stream.get();
+    uint64_t result = stream.get();
 
     // Calculate the size of the VINT by calculating length of (VINT_WIDTH + VINT_DATA)
     size_t size_of_vint = 8 - Utility::get_msb_index(result);
-
-    if (size_of_vint > sizeof(T))
-    {
-        throw exception("Value too big to parse");
-    }
 
     // Unset VINT_MARKER
     if (!value_with_vint_marker)
