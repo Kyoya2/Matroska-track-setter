@@ -44,13 +44,40 @@ protected:
     inline void _basic_seek_to(EbmlBasicOffset where) const { _seek_stream(_get_basic_offset(where)); }
 
     // TODO: restrict element visibility
-private:
-    EbmlFileInfoBlockPtr m_info;
+
+    /*
+    * It's important that 'm_data_length' is loaded before 'm_data_offset' bacause when we load
+    * 'm_data_length', the stream pointer will be moved to the start of the element's data, which
+    * is the value that needs to be loaded into 'm_data_offset'.
+    *
+    * The reasons for storing the offset to the element's data, and not, for example, the start
+    * of the ID are:
+    * 
+    *   1. It's most likely that the most requested offset (from '_get_basic_offset') would be
+    *      the offset to the element's data, that's because we need to know that offset each time
+    *      that we want to iterate over a master element's children, or to simply read a primitive
+    *      element's value. And because it's the most likely option to be requested, we want to be
+    *      able to return it as quickly as possible, without performing any calculations.
+    * 
+    *   2. The EBML root is not actually an element, it doesn't have an ID or a length VINT. But
+    *      I still want it to inherit from 'EbmlMasterElement' for the user's convenience. In order
+    *      for the 'EbmlElementIterator' to work properly, we need to return '0' when it asks for
+    *      for the root's data offset. This is only possible when the actual data offset is stored
+    *      in the element. For example, if the element stores the offset to its length VINT, then
+    *      the computation of its data offset would look something like this:
+    * 
+    *           data_offset = m_length_vint_offset + m_data_length.get_encoded_size();
+    * 
+    *      but the encoded size is always at-least 1, even when the value is 0. This means that we
+    *      would get an incorrect result from '_get_basic_offset' when requesting the data offset.
+    */
+
 protected:
     EbmlElementLength m_data_length;
 private:
     size_t m_data_offset;    // The offset of the element's data
     EbmlElementBasePtr m_parent;
+    EbmlFileInfoBlockPtr m_info;
 
     // TODO: friend class EbmlRoot; ???
 };
