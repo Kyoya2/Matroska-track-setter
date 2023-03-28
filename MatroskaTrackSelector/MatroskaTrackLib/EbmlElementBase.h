@@ -89,12 +89,14 @@ constexpr size_t EbmlElementBase::_get_basic_offset(EbmlBasicOffset what) const 
     case EbmlBasicOffset::Length:
         return m_data_offset - m_data_length.get_encoded_size();
 
+    [[likely]]
     case EbmlBasicOffset::Data:
         return m_data_offset;
 
     case EbmlBasicOffset::End:
         return m_data_offset + m_data_length;
 
+    [[unlikely]]
     default:
         return MAXSIZE_T;
     }
