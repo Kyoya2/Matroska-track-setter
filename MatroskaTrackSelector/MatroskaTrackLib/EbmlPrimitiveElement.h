@@ -52,7 +52,7 @@ EbmlPrimitiveElement<id_size, T>::EbmlPrimitiveElement(EbmlElementBasePtr parent
 template <uint8_t id_size, typename T>
 void EbmlPrimitiveElement<id_size, T>::_read_content(void* buffer) const
 {
-    EbmlElementBase::_basic_seek_to(EbmlBasicOffset::Data);
+    EbmlElementBase::_basic_seek_to(EbmlOffset::Data);
     EbmlElementBase::_get_stream().read(reinterpret_cast<char*>(buffer), EbmlElementBase::m_data_length);
 }
 
@@ -61,7 +61,7 @@ const T& EbmlPrimitiveElement<id_size, T>::get_value() const
 {
     if (!m_is_initialized)
     {
-        EbmlElementBase::_basic_seek_to(EbmlBasicOffset::Data);
+        EbmlElementBase::_basic_seek_to(EbmlOffset::Data);
         _read_value(m_value);
         m_is_initialized = true;
     }
@@ -74,12 +74,12 @@ void EbmlPrimitiveElement<id_size, T>::set_value(const T& value, size_t encoded_
 {
     if (encoded_size != EbmlElementBase::m_data_length)
     {
-        EbmlElementBase::_basic_seek_to(EbmlBasicOffset::Length);
+        EbmlElementBase::_basic_seek_to(EbmlOffset::Length);
         EbmlElementBase::m_data_length = encoded_size;
         EbmlElementBase::_get_stream() << EbmlElement::m_data_length;
     }
     else
-        EbmlElementBase::_basic_seek_to(EbmlBasicOffset::Data);
+        EbmlElementBase::_basic_seek_to(EbmlOffset::Data);
 
     _write_value(value, encoded_size);
     m_value = value;

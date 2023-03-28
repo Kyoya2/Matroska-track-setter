@@ -58,6 +58,6 @@ EbmlElementIterator EbmlMasterElement<id_size>::get_iterator() const
 {
     return EbmlElementIterator(
         EbmlElementBase::_get_stream(),
-        EbmlElementBase::_get_basic_offset(EbmlBasicOffset::Data),
-        EbmlElementBase::_get_basic_offset(EbmlBasicOffset::End));
+        EbmlElementBase::_get_basic_offset(EbmlOffset::Data),
+        EbmlElementBase::_get_basic_offset(EbmlOffset::End));
 }

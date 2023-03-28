@@ -18,7 +18,7 @@ struct EbmlFileInfoBlock
 using EbmlFileInfoBlockPtr = std::shared_ptr<EbmlFileInfoBlock>;
 
 // Offsets relative to the current element
-enum class EbmlBasicOffset
+enum class EbmlOffset
 {
     Length, // Offset to the element's length
     Data,   // Offset to the element's data
@@ -38,10 +38,10 @@ private:
     EbmlElementBase(std::iostream& stream);
 
 protected:
-    inline constexpr size_t _get_basic_offset(EbmlBasicOffset what) const noexcept;
+    inline constexpr size_t _get_basic_offset(EbmlOffset what) const noexcept;
     std::iostream& _get_stream() const { return m_info->stream; }
     void _seek_stream(size_t offset) const { _get_stream().seekg(offset); }
-    inline void _basic_seek_to(EbmlBasicOffset where) const { _seek_stream(_get_basic_offset(where)); }
+    inline void _basic_seek_to(EbmlOffset where) const { _seek_stream(_get_basic_offset(where)); }
 
     // TODO: restrict element visibility
 
@@ -82,18 +82,18 @@ private:
     // TODO: friend class EbmlRoot; ???
 };
 
-constexpr size_t EbmlElementBase::_get_basic_offset(EbmlBasicOffset what) const noexcept
+constexpr size_t EbmlElementBase::_get_basic_offset(EbmlOffset what) const noexcept
 {
     switch (what)
     {
-    case EbmlBasicOffset::Length:
+    case EbmlOffset::Length:
         return m_data_offset - m_data_length.get_encoded_size();
 
     [[likely]]
-    case EbmlBasicOffset::Data:
+    case EbmlOffset::Data:
         return m_data_offset;
 
-    case EbmlBasicOffset::End:
+    case EbmlOffset::End:
         return m_data_offset + m_data_length;
 
     [[unlikely]]
