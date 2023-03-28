@@ -11,6 +11,6 @@ protected:
     using EbmlElementBase::EbmlElementBase;
 
 protected:
-    inline constexpr size_t _get_element_start_offset() const noexcept { return _get_basic_offset(EbmlOffset::Length) - id_size; }
+    inline constexpr size_t _get_element_start_offset() const noexcept { return _get_offset(EbmlOffset::Length) - id_size; }
     inline void _seek_to_element_start() const { _seek_stream(_get_element_start_offset()); }
 };

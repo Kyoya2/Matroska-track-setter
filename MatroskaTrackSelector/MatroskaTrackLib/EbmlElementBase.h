@@ -38,10 +38,10 @@ private:
     EbmlElementBase(std::iostream& stream);
 
 protected:
-    inline constexpr size_t _get_basic_offset(EbmlOffset what) const noexcept;
+    inline constexpr size_t _get_offset(EbmlOffset what) const noexcept;
     std::iostream& _get_stream() const { return m_info->stream; }
     void _seek_stream(size_t offset) const { _get_stream().seekg(offset); }
-    inline void _basic_seek_to(EbmlOffset where) const { _seek_stream(_get_basic_offset(where)); }
+    inline void _basic_seek_to(EbmlOffset where) const { _seek_stream(_get_offset(where)); }
 
     // TODO: restrict element visibility
 
@@ -53,7 +53,7 @@ protected:
     * The reasons for storing the offset to the element's data, and not, for example, the start
     * of the ID are:
     * 
-    *   1. It's most likely that the most requested offset (from '_get_basic_offset') would be
+    *   1. It's most likely that the most requested offset (from '_get_offset') would be
     *      the offset to the element's data, that's because we need to know that offset each time
     *      that we want to iterate over a master element's children, or to simply read a primitive
     *      element's value. And because it's the most likely option to be requested, we want to be
@@ -69,7 +69,7 @@ protected:
     *           data_offset = m_length_vint_offset + m_data_length.get_encoded_size();
     * 
     *      but the encoded size is always at-least 1, even when the value is 0. This means that we
-    *      would get an incorrect result from '_get_basic_offset' when requesting the data offset.
+    *      would get an incorrect result from '_get_offset' when requesting the data offset.
     */
 
 protected:
@@ -82,7 +82,7 @@ private:
     // TODO: friend class EbmlRoot; ???
 };
 
-constexpr size_t EbmlElementBase::_get_basic_offset(EbmlOffset what) const noexcept
+constexpr size_t EbmlElementBase::_get_offset(EbmlOffset what) const noexcept
 {
     switch (what)
     {
