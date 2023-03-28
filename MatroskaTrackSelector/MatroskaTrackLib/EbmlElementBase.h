@@ -30,12 +30,12 @@ class EbmlElementBase : public std::enable_shared_from_this<EbmlElementBase>
 protected:
     // IMPORTANT: When calling any contructor, the stream pointer must be at the end of the element's ID
     // and at the start of the elements length VINT.
-    // 
-    // Only the root element may be constructed using this constructor
-    EbmlElementBase(std::iostream& stream);
     EbmlElementBase(EbmlElementBasePtr parent);
-
     virtual ~EbmlElementBase() noexcept;
+
+private:
+    // Only the EBML root element may be constructed using this constructor
+    EbmlElementBase(std::iostream& stream);
 
 protected:
     inline constexpr size_t _get_basic_offset(EbmlBasicOffset what) const noexcept;
