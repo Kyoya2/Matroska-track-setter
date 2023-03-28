@@ -41,7 +41,7 @@ protected:
     inline constexpr size_t _get_offset(EbmlOffset what) const noexcept;
     std::iostream& _get_stream() const { return m_info->stream; }
     void _seek_stream(size_t offset) const { _get_stream().seekg(offset); }
-    inline void _basic_seek_to(EbmlOffset where) const { _seek_stream(_get_offset(where)); }
+    inline void seek_to(EbmlOffset where) const { _seek_stream(_get_offset(where)); }
 
     // TODO: restrict element visibility
 
