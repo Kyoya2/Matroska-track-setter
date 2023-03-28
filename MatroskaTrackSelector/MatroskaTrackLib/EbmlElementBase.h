@@ -46,10 +46,10 @@ protected:
     // TODO: restrict element visibility
 private:
     EbmlFileInfoBlockPtr m_info;
-    size_t m_length_offset;    // The offset of the length of the current element inside the file
-
 protected:
     EbmlElementLength m_data_length;
+private:
+    size_t m_data_offset;    // The offset of the element's data
     EbmlElementBasePtr m_parent;
 
     // TODO: friend class EbmlRoot; ???
@@ -60,13 +60,13 @@ constexpr size_t EbmlElementBase::_get_basic_offset(EbmlBasicOffset what) const 
     switch (what)
     {
     case EbmlBasicOffset::Length:
-        return m_length_offset;
+        return m_data_offset - m_data_length.get_encoded_size();
 
     case EbmlBasicOffset::Data:
-        return m_length_offset + m_data_length.get_encoded_size();
+        return m_data_offset;
 
     case EbmlBasicOffset::End:
-        return m_length_offset + m_data_length.get_encoded_size() + m_data_length;
+        return m_data_offset + m_data_length;
 
     default:
         return MAXSIZE_T;
