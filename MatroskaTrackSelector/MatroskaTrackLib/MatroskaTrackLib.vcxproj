@@ -21,6 +21,14 @@
   <ItemGroup>
     <ClInclude Include="BasicSharedPtr.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="EbmlBinaryElement.h" />
+    <ClInclude Include="EbmlElement.h" />
+    <ClInclude Include="EbmlElementBase.h" />
+    <ClInclude Include="EbmlFixedBinaryElement.h" />
+    <ClInclude Include="EbmlMasterElement.h" />
+    <ClInclude Include="EbmlPrimitiveElement.h" />
+    <ClInclude Include="EbmlNumericElements.h" />
+    <ClInclude Include="EbmlStringElement.h" />
     <ClInclude Include="OldEbmlElement.h" />
     <ClInclude Include="EbmlElementID.h" />
     <ClInclude Include="EbmlElementLength.h" />
@@ -28,10 +36,13 @@
     <ClInclude Include="MatroskaElementSpecification.auto.h" />
     <ClInclude Include="MatroskaLanguageTags.auto.h" />
     <ClInclude Include="SeekEntry.h" />
+    <ClInclude Include="SomeElement.h" />
     <ClInclude Include="TrackEntry.h" />
     <ClInclude Include="TrackManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EbmlElementBase.cpp" />
+    <ClCompile Include="EbmlMasterElement.cpp" />
     <ClCompile Include="OldEbmlElement.cpp" />
     <ClCompile Include="EbmlElementID.cpp" />
     <ClCompile Include="EbmlElementLength.cpp" />

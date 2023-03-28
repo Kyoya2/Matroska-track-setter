@@ -29,6 +29,7 @@
 #include "BasicSharedPtrUT.h"
 #include "EbmlParserUT.h"
 #include "MatroskaLanguageTagsUT.h"
+#include "SomeElement.h"
 
 namespace BasicSharedPtrStats
 {
@@ -116,10 +117,12 @@ int main()
 
     */
     using namespace ConsoleAttributes;
-
     // Enable printing unicode characters for building pretty tables
     SetConsoleOutputCP(CP_UTF8);
-
+    //setvbuf(stdout, nullptr, _IOFBF, 1000); not really necesarry and doesnt solve the problem, only makes it more rare
+    std::iostream s(nullptr);
+    shared_ptr<SomeMasterElement> qwe = std::make_shared<SomeMasterElement>(nullptr);
+    qwe->load_elements(SomeMasterElement::Child::SomeElement);
     // Enable color escape codes so we can have a colorful console
     HANDLE std_out = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD current_console_mode = 0;

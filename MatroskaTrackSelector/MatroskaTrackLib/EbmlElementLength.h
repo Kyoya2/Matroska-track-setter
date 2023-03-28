@@ -20,8 +20,6 @@
 #include "Common.h"
 #include "EbmlVintUtils.h"
 
-using EbmlElementLengthType = uint64_t;
-
 class EbmlElementLength
 {
 public:

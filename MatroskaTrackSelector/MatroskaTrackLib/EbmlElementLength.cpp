@@ -23,7 +23,7 @@ EbmlElementLength::EbmlElementLength(EbmlElementLengthType value) :
 
 EbmlElementLength::EbmlElementLength(std::istream& stream) :
     m_encoded_size(0),
-    m_value(EbmlVintUtils::extract_from_stream(stream, false, &m_encoded_size))
+    m_value(EbmlVintUtils::read_element_length_from_stream(stream, &m_encoded_size))
 {}
 
 void EbmlElementLength::write(std::ostream& stream, size_t encoded_length) const

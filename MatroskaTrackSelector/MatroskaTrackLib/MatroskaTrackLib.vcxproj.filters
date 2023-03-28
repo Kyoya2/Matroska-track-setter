@@ -30,6 +30,33 @@
     <ClInclude Include="MatroskaLanguageTags.auto.h">
       <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
     </ClInclude>
+    <ClInclude Include="EbmlElement.h">
+      <Filter>EbmlElement</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlPrimitiveElement.h">
+      <Filter>EbmlElement\PrimitiveElement</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlNumericElements.h">
+      <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlStringElement.h">
+      <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlMasterElement.h">
+      <Filter>EbmlElement\EbmlMasterElement</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlBinaryElement.h">
+      <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
+    </ClInclude>
+    <ClInclude Include="SomeElement.h">
+      <Filter>EbmlElement\Auto generated</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlFixedBinaryElement.h">
+      <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlElementBase.h">
+      <Filter>EbmlElement\ElementBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OldEbmlElement.cpp">
@@ -52,6 +79,12 @@
     </ClCompile>
     <ClCompile Include="MatroskaLanguageTags.cpp">
       <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlMasterElement.cpp">
+      <Filter>EbmlElement\EbmlMasterElement</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlElementBase.cpp">
+      <Filter>EbmlElement\ElementBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +114,21 @@
     </Filter>
     <Filter Include="EbmlElement">
       <UniqueIdentifier>{c463d319-6451-4028-a287-d3cd4cf2b0dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\PrimitiveElement">
+      <UniqueIdentifier>{5a2ef68e-2505-4fc8-92c6-b317700f0a0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\PrimitiveElement\PrimitiveElements">
+      <UniqueIdentifier>{ccad34da-2fbb-4de9-90ab-794644ca2166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\EbmlMasterElement">
+      <UniqueIdentifier>{1b1a1ab4-e0f8-412d-9469-4b2598739871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\Auto generated">
+      <UniqueIdentifier>{ac4db231-4753-47a2-ac00-d1d3cce1c48a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\ElementBase">
+      <UniqueIdentifier>{047580df-2871-4222-872b-79366b59b747}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

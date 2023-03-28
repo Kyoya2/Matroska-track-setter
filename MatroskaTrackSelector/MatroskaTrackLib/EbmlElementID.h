@@ -20,8 +20,6 @@
 #include "Common.h"
 #include "EbmlVintUtils.h"
 
-using EbmlElementIDType = uint32_t;
-
 class EbmlElementID
 {
 public:

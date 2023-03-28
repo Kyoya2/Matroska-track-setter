@@ -135,3 +135,11 @@ class EbmlElement(NamedTuple):
 
     # Can multiple IDENTICAL copies of the element appear
     is_recurring: bool = False
+
+
+class EbmlElements(NamedTuple):
+    # Elements that can appear anywhere in an EBML document
+    global_elements: List[EbmlElement]
+
+    # Elements that can only appear as children of other specific elements
+    local_elements: List[EbmlElement]

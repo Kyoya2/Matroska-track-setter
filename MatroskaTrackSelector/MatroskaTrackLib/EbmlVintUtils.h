@@ -16,14 +16,19 @@
  */
 #pragma once
 #include "Common.h"
+#include <concepts>
+
+using EbmlElementLengthType = uint64_t;
+using EbmlElementIDType = uint32_t;
 
 namespace EbmlVintUtils
 {
+    template <std::integral T, bool value_with_vint_marker>
+    inline T extract_from_stream_unsafe(std::istream& stream, size_t* out_encoded_size = nullptr);
     inline size_t get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker);
-
-    inline uint64_t extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size = nullptr);
-
     inline uint64_t remove_vint_marker(uint64_t value);
+    inline EbmlElementIDType read_element_id_from_stream(std::istream& stream, size_t* out_encoded_size = nullptr);
+    inline EbmlElementLengthType read_element_length_from_stream(std::istream& stream, size_t* out_encoded_size = nullptr);
 }
 
 inline size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value_with_vint_marker)
@@ -49,20 +54,23 @@ inline size_t EbmlVintUtils::get_minimal_encoded_size(uint64_t value, bool value
 }
 
 // Sets the stream pointer at the end of the VINT.
-inline uint64_t EbmlVintUtils::extract_from_stream(std::istream& stream, bool value_with_vint_marker, size_t* out_encoded_size)
+// This function doesn't check if the VINT fits in the integral type T, so truncation may happen
+template <std::integral T, bool value_with_vint_marker>
+inline T EbmlVintUtils::extract_from_stream_unsafe(std::istream& stream, size_t* out_encoded_size)
 {
-    uint64_t result = stream.get();
+    T result = stream.get();
+    size_t msb_index = Utility::get_msb_index(result);
 
     // Calculate the size of the VINT by calculating length of (VINT_WIDTH + VINT_DATA)
-    size_t size_of_vint = 8 - Utility::get_msb_index(result);
+    size_t size_of_vint = 8 - msb_index;
 
     // Unset VINT_MARKER
     if (!value_with_vint_marker)
-        result ^= Utility::get_msb(result);
+        result ^= static_cast<T>(1) << msb_index;
 
     // Read the rest of the VINT from the stream
     result <<= 8 * (size_of_vint - 1);
-    result |= Utility::read_big_endian_from_stream(stream, size_of_vint - 1);
+    result |= static_cast<T>(Utility::read_big_endian_from_stream(stream, size_of_vint - 1));
 
     if (nullptr != out_encoded_size)
         *out_encoded_size = size_of_vint;
@@ -73,4 +81,14 @@ inline uint64_t EbmlVintUtils::extract_from_stream(std::istream& stream, bool va
 inline uint64_t EbmlVintUtils::remove_vint_marker(uint64_t value)
 {
     return value ^ Utility::get_msb(value);
+}
+
+inline EbmlElementIDType EbmlVintUtils::read_element_id_from_stream(std::istream& stream, size_t* out_encoded_size)
+{
+    return extract_from_stream_unsafe<EbmlElementIDType, true>(stream, out_encoded_size);
+}
+
+inline EbmlElementLengthType EbmlVintUtils::read_element_length_from_stream(std::istream& stream, size_t* out_encoded_size)
+{
+    return extract_from_stream_unsafe<EbmlElementLengthType, false>(stream, out_encoded_size);
 }

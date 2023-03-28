@@ -40,11 +40,14 @@ using std::endl;
 using std::vector;
 using std::string;
 using std::string_view;
-using std::reference_wrapper;
 using std::pair;
 using std::exception;
+using std::shared_ptr;
 
 using Buffer = vector<uint8_t>;
+
+template <size_t size>
+using FixedBuffer = std::array<uint8_t, size>;
 
 #ifdef _DEBUG
 #define DEBUG_PRINT(message) cout << message
@@ -75,6 +78,7 @@ namespace Utility
     inline uint64_t read_big_endian_from_stream(std::istream& stream, size_t length);
     inline void write_big_endian_to_stream(std::ostream& stream, uint64_t value, size_t encoded_length);
     inline constexpr size_t get_utf8_string_length(const string& str);
+    inline consteval auto as_constant(auto value) { return value; }
 }
 
 inline constexpr uint64_t Utility::get_msb(uint64_t num)

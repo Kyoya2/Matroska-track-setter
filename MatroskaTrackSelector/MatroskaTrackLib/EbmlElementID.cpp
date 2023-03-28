@@ -23,7 +23,8 @@ EbmlElementID::EbmlElementID(EbmlElementIDType value) :
 
 EbmlElementID::EbmlElementID(std::istream& stream) :
     m_encoded_size(0),
-    m_value(EbmlVintUtils::extract_from_stream(stream, true, &m_encoded_size))
+    m_value(EbmlVintUtils::read_element_id_from_stream(stream, &m_encoded_size))
+    // TODO: add ReadElementIdFromStream and ReadElementLengthFromStream to EbmlVintUtils
 {}
 
 void EbmlElementID::write(std::ostream& stream) const

@@ -31,8 +31,6 @@
 #include "MatroskaElementSpecification.auto.h"
 #include "AutomaticTrackSelector.h"
 
-using std::shared_ptr;
-
 
 class InteractiveTrackSelector
 {
