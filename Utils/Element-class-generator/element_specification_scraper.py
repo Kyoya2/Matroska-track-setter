@@ -23,12 +23,13 @@ for more information, see: https://www.rfc-editor.org/rfc/rfc8794.html#name-ebml
 import re
 import requests
 from schema_types import *
+from markdown_parser import *
 from os.path import abspath
 from typing import Tuple
 from xml.sax.saxutils import unescape
 import xml.etree.ElementTree as ElementTree
 
-EBML_RFC_ADDRESS = r'https://www.rfc-editor.org/rfc/rfc8794.xml'
+EBML_SPECIFICATION_ADDRESS = r'https://raw.githubusercontent.com/ietf-wg-cellar/ebml-specification/master/specification.markdown'
 MATROSKA_EBML_SCHEMA_ADDRESS = r'https://raw.githubusercontent.com/ietf-wg-cellar/matroska-specification/master/ebml_matroska.xml'
 TEMPLATE_FILE_PATH = 'MatroskaElementSpecification.template.h'
 OUTPUT_FILE_PATH = '../MatroskaTrackSelector/MatroskaTrackLib/MatroskaElementSpecification.auto.h'
@@ -157,114 +158,96 @@ def parse_range_attribute(range_attr: str, element_type: EbmlElementType) -> Ebm
         )
 
 
-def parse_element_from_ebml_rfc(element: ElementTree.Element) -> EbmlElement:
+_EBML_SPECIFICATION_ELEMENT_PROPERTIES_REGEX = re.compile(r'^(\w+):\n: +(.+?)(?=\n{2,}|\n*\Z)', re.MULTILINE | re.DOTALL)
+def parse_elements_from_specifications(elements_specifications_markdown: str) -> List[EbmlElement]:
     """
-    Parse an EBML element's description from an XML element in the EBML RFC.
+    Parse an EBML element's description from a markdown snippet of the EBML specifications
     """
-    # The properties of each element are pairs of (property_name, property_value) that follow each other
-    # inside the "dl" element of the section
-    property_names_and_values_elements = element.findall('dl/*')
+    result = []
+    for element_attributes_markdown in get_markdown_sections(elements_specifications_markdown, 3).values():
+        # Set default values for properties that appear in SOME but NOT ALL element descriptors
+        documentation = []
+        default_value = None
+        element_length = None
+        min_occurs, max_occurs = 0, None
+        value_constraints = None
 
-    # make the list of [pname1, pval1, pname2, pval2, ...] into [[pname1, pval1], [pname2, pval2], ...]
-    property_name_value_element_pairs = [property_names_and_values_elements[i:i + 2] for i in
-                                         range(0, len(property_names_and_values_elements), 2)]
+        # Set bogus values for properties that are mandatory
+        element_id, element_name, element_path, element_type = None, None, None, None
 
-    # Set default values for properties that appear in SOME but NOT ALL element descriptors
-    documentation = []
-    default_value = None
-    element_length = None
-    min_occurs, max_occurs = 0, None
-    value_constraints = None
+        # We need to know the type of the element to be able to parse the default value and the range. However, the
+        # "type" property comes after the "default" property in the current format, so we iterate the list of
+        # attributes in reversed order
+        for property_name, property_value in reversed(_EBML_SPECIFICATION_ELEMENT_PROPERTIES_REGEX.findall(element_attributes_markdown)):
+            if property_name == 'id':
+                element_id = property_value
 
-    # Set bogus values for properties that are mandatory
-    element_id, element_name, element_path, element_type = None, None, None, None
+            elif property_name == 'name':
+                element_name = property_value
 
-    # We need to know the type of the element to be able to parse the default value and the range. However, the
-    # "type" property comes after the "default" property in the current format, so we iterate the list of
-    # attributes in reversed order
-    for property_name_element, property_value_element in reversed(property_name_value_element_pairs):
-        property_name = property_name_element.text
+            elif property_name == 'path':
+                element_path = property_value.strip('`')
 
-        assert property_name.endswith(':'), 'Got an unexpected property'
-        property_name = property_name[:-1]
+            elif property_name == 'type':
+                # This is a translation dict for all the element types that appear in the RFC
+                element_type = {
+                    'Master Element': EbmlElementType.Master,
+                    'Unsigned Integer': EbmlElementType.UInt,
+                    'String': EbmlElementType.AsciiString,
+                    'Binary': EbmlElementType.Binary
+                }[property_value]
 
-        if property_name == 'path':
-            property_value = property_value_element[0].text
-        else:
-            property_value = property_value_element.text
+            elif property_name == 'description':
+                # Treat the 'description' field as documentation of type 'definition'
+                documentation.append(EbmlDocumentationEntry(EbmlDocumentationType.Definition, property_value))
 
-        if property_name == 'id':
-            element_id = property_value
+            elif property_name == 'range':
+                value_constraints = parse_range_attribute(property_value, element_type)
 
-        elif property_name == 'name':
-            element_name = property_value
+            elif property_name == 'length':
+                element_length = parse_length_attribute(property_value)
 
-        elif property_name == 'path':
-            element_path = property_value
+            elif property_name == 'minOccurs':
+                min_occurs = int(property_value)
 
-        elif property_name == 'type':
-            # This is a translation dict for all the element types that appear in the RFC
-            element_type = {
-                'Master Element': EbmlElementType.Master,
-                'Unsigned Integer': EbmlElementType.UInt,
-                'String': EbmlElementType.AsciiString,
-                'Binary': EbmlElementType.Binary
-            }[property_value]
+            elif property_name == 'maxOccurs':
+                max_occurs = int(property_value)
 
-        elif property_name == 'description':
-            # Treat the 'description' field as documentation of type 'definition'
-            documentation.append(EbmlDocumentationEntry(EbmlDocumentationType.Definition, property_value))
+            elif property_name == 'default':
+                default_value = parse_value_by_type(property_value, element_type)
 
-        elif property_name == 'range':
-            value_constraints = parse_range_attribute(property_value, element_type)
+            else:
+                raise Exception('Got an unexpected attribute', property_name)
 
-        elif property_name == 'length':
-            element_length = parse_length_attribute(property_value)
+        result.append(EbmlElement(
+            name=element_name,
+            id=element_id,
+            type=element_type,
+            path=element_path,
+            max_occurs=max_occurs,
+            min_occurs=min_occurs,
+            default_value=default_value,
+            value_constraints=value_constraints,
+            length=element_length,
+            documentation=documentation,
+        ))
 
-        elif property_name == 'minOccurs':
-            min_occurs = int(property_value)
-
-        elif property_name == 'maxOccurs':
-            max_occurs = int(property_value)
-
-        elif property_name == 'default':
-            default_value = parse_value_by_type(property_value, element_type)
-
-        else:
-            raise Exception('Got an unexpected attribute', property_name)
-
-    return EbmlElement(
-        name=element_name,
-        id=element_id,
-        type=element_type,
-        path=element_path,
-        max_occurs=max_occurs,
-        min_occurs=min_occurs,
-        default_value=default_value,
-        value_constraints=value_constraints,
-        length=element_length,
-        documentation=documentation,
-    )
+    return result
 
 
 def get_generic_ebml_elements() -> EbmlElements:
     """
-    Get the EBML elements described in the EBML RFC
+    Get the EBML elements described in the EBML specification. Those
+    Elements are relevant to any EBML document with any schema,
     """
-    schema_root = ElementTree.fromstring(requests.get(EBML_RFC_ADDRESS).content.decode())
-    element_semantics_element = schema_root.find('./middle/section[@anchor="elements-semantics"]')
-
-    # The RFC document has two sections that describe EBML elements. Lucky for us, they are described in the same format
-    ebml_header_elements = element_semantics_element.findall('./section[@anchor="ebml-header-elements"]/section')
-    global_ebml_elements = element_semantics_element.findall('./section[@anchor="global-elements"]/section')
-
-    elements = []
-    for element_section_element in ebml_header_elements + global_ebml_elements:
-        elements.append(parse_element_from_ebml_rfc(element_section_element))
+    ebml_specification = requests.get(EBML_SPECIFICATION_ADDRESS).content.decode()
+    element_semantics_section = get_markdown_section_content(ebml_specification, 'Elements semantics')
+    header_elements_section = get_markdown_section_content(element_semantics_section, 'EBML Header Elements')
+    global_elements_section = get_markdown_section_content(element_semantics_section, 'Global Elements')
 
     return EbmlElements(
-        global_elements = [parse_element_from_ebml_rfc(element) for element in global_ebml_elements],
-        local_elements = [parse_element_from_ebml_rfc(element) for element in ebml_header_elements]
+        global_elements = parse_elements_from_specifications(global_elements_section),
+        local_elements = parse_elements_from_specifications(header_elements_section)
     )
 
 
@@ -473,6 +456,6 @@ def main():
 
 
 if __name__ == '__main__':
-    get_ebml_elements()
+    print(get_generic_ebml_elements())
     exit()
     main()
