@@ -28,13 +28,14 @@ enum class EbmlOffset
 class EbmlElementBase : public std::enable_shared_from_this<EbmlElementBase>
 {
 protected:
-    // IMPORTANT: When calling any contructor, the stream pointer must be at the end of the element's ID
+    // When calling any contructor, the stream pointer must be at the end of the element's ID
     // and at the start of the elements length VINT.
     EbmlElementBase(EbmlElementBasePtr parent);
     virtual ~EbmlElementBase() noexcept;
 
 private:
-    // Only the EBML root element may be constructed using this constructor
+    // Only the EBML root element may be constructed using this constructor.
+    // When calling any contructor, the stream pointer must be at the start of the root element
     EbmlElementBase(std::iostream& stream);
 
 protected:
