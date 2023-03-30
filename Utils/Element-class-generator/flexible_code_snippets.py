@@ -73,8 +73,7 @@ ROOT_ELEMENT_FORMAT = simple_format(
 
 NON_ROOT_MASTER_ELEMENT_FORMAT = simple_format(
     MASTER_ELEMENT_FORMAT,
-    constructor_args = NonRootMasterElementFormats.ConstructorArgs,
-    constructor_body = NonRootMasterElementFormats.ConstructorBody,
+    constructor_impl = NonRootMasterElementFormats.ConstructorImpl,
     parent_friend    = NonRootMasterElementFormats.ParentFriend
 )
 
