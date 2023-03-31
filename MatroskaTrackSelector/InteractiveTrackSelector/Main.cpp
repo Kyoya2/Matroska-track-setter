@@ -29,7 +29,7 @@
 #include "BasicSharedPtrUT.h"
 #include "EbmlParserUT.h"
 #include "MatroskaLanguageTagsUT.h"
-#include "SomeElement.h"
+#include "EbmlMatroskaElements.auto.h"
 
 namespace BasicSharedPtrStats
 {

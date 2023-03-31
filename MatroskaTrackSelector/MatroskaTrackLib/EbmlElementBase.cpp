@@ -1,18 +1,16 @@
 #include "EbmlElementBase.h"
 
-// Constructor for the EBML root, the stream pointer is at the start
-// of the root element
-EbmlElementBase::EbmlElementBase(std::iostream& stream) :
-    m_info(std::make_shared<EbmlFileInfoBlock>(stream)),
-    m_data_length(0),
-    m_data_offset(stream.tellg()),
+// Constructor for any element that doesn't have a paernt. Only 'EbmlDocument' is allowed to call this constructor
+EbmlElementBase::EbmlElementBase(EbmlFileInfoBlockPtr info_block) :
+    m_info(info_block),
+    m_data_length(info_block->stream),
+    m_data_offset(info_block->stream.tellg()),
     m_parent(nullptr)
 {
     m_info->referenced_elements.emplace(this);
 }
 
-// Constructor for the rest of the elements, the stream pointer is at
-// the start of the element's length
+// Constructor for the rest of the elements
 EbmlElementBase::EbmlElementBase(EbmlElementBasePtr parent) :
     m_info(parent->m_info),
     m_data_length(m_info->stream),

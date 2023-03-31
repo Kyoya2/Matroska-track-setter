@@ -84,7 +84,4 @@ public:
 public:
     shared_ptr<SomeElement> some_element;
     vector<shared_ptr<SomeOtherElement>> some_other_element_elements;
-
-private:
-    friend class EbmlRoot;
 };
