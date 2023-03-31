@@ -1,10 +1,5 @@
 #pragma once
-#include "EbmlNumericElements.h"
-#include "EbmlMasterElement.h"
-#include "EbmlStringElement.h"
-#include "EbmlBinaryElement.h"
-#include "EbmlFixedBinaryElement.h"
-#include <type_traits>
+#include "ElementDeclarationUtils.h"
 
 /*
 using std::underlying_type_t;
@@ -29,28 +24,6 @@ template <auto val> inline constexpr bool is_constant_v<Constant<val>> = true;
 
 template <typename T> concept WrappedConstant = is_constant_v<T>;
 */
-
-// A template for declaring non-master EBML elements
-#define CurrentTPrimitiveClass TPrimitive<Utility::get_byte_size(ElementID), TPrimitiveParams...>
-template <EbmlElementIDType ElementID, typename TParentElement, template<uint8_t, auto...> typename TPrimitive, auto... TPrimitiveParams>
-class BasicEbmlElement final : CurrentTPrimitiveClass
-{
-    // We want to verify that `TPrimitive` is derived from a specialization of `EbmlPrimitiveElement` but IDK how to do that.
-    // Instead, I check that `TPrimitive` is derived from an `EbmlElement` that is not a master element
-    static_assert(
-        std::derived_from<CurrentTPrimitiveClass, EbmlElementBase> &&
-        !std::derived_from<CurrentTPrimitiveClass, EbmlMasterElement<Utility::get_byte_size(ElementID)>>
-   );
-
-    // Make sure that `TParent` is a master element
-    //static_assert(std::derived_from<TParentElement, EbmlMasterElement>);
-
-    using CurrentTPrimitiveClass::TPrimitive;
-    static constinit inline EbmlElementIDType id = ElementID;
-
-    friend TParentElement;
-};
-#undef CurrentTPrimitiveClass
 
 class SomeMasterElement;
 
@@ -111,4 +84,7 @@ public:
 public:
     shared_ptr<SomeElement> some_element;
     vector<shared_ptr<SomeOtherElement>> some_other_element_elements;
+
+private:
+    friend class EbmlRoot;
 };

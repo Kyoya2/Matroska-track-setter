@@ -45,7 +45,7 @@
     <ClInclude Include="EbmlBinaryElement.h">
       <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
     </ClInclude>
-    <ClInclude Include="SomeElement.h">
+    <ClInclude Include="EbmlMatroskaElements.auto.h">
       <Filter>EbmlElement\Auto generated</Filter>
     </ClInclude>
     <ClInclude Include="EbmlFixedBinaryElement.h">
@@ -59,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="EbmlMasterElement.h">
       <Filter>EbmlElement\EbmlMasterElement</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlDocument.h">
+      <Filter>EbmlDocument</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementDeclarationUtils.h">
+      <Filter>EbmlElement\Auto generated</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="EbmlElementIterator.cpp">
       <Filter>EbmlElement\ElementIterator</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlDocument.cpp">
+      <Filter>EbmlDocument</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +144,9 @@
     </Filter>
     <Filter Include="EbmlElement\ElementIterator">
       <UniqueIdentifier>{ed309c63-26fc-40e2-a5be-e729e55529d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlDocument">
+      <UniqueIdentifier>{c101ca31-9b53-4358-9a64-5021bd7595c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
