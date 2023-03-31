@@ -52,19 +52,19 @@
       <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
     </ClInclude>
     <ClInclude Include="EbmlElementBase.h">
-      <Filter>EbmlElement\ElementBase</Filter>
+      <Filter>EbmlElement\EbmlElementBase</Filter>
     </ClInclude>
     <ClInclude Include="EbmlElementIterator.h">
       <Filter>EbmlElement\ElementIterator</Filter>
-    </ClInclude>
-    <ClInclude Include="EbmlMasterElement.h">
-      <Filter>EbmlElement\EbmlMasterElement</Filter>
     </ClInclude>
     <ClInclude Include="EbmlDocument.h">
       <Filter>EbmlDocument</Filter>
     </ClInclude>
     <ClInclude Include="ElementDeclarationUtils.h">
       <Filter>EbmlElement\Auto generated</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlMasterElement.h">
+      <Filter>EbmlElement\PrimitiveElement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -90,7 +90,7 @@
       <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
     </ClCompile>
     <ClCompile Include="EbmlElementBase.cpp">
-      <Filter>EbmlElement\ElementBase</Filter>
+      <Filter>EbmlElement\EbmlElementBase</Filter>
     </ClCompile>
     <ClCompile Include="EbmlElementIterator.cpp">
       <Filter>EbmlElement\ElementIterator</Filter>
@@ -133,20 +133,17 @@
     <Filter Include="EbmlElement\PrimitiveElement\PrimitiveElements">
       <UniqueIdentifier>{ccad34da-2fbb-4de9-90ab-794644ca2166}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EbmlElement\EbmlMasterElement">
-      <UniqueIdentifier>{1b1a1ab4-e0f8-412d-9469-4b2598739871}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EbmlElement\Auto generated">
       <UniqueIdentifier>{ac4db231-4753-47a2-ac00-d1d3cce1c48a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="EbmlElement\ElementBase">
-      <UniqueIdentifier>{047580df-2871-4222-872b-79366b59b747}</UniqueIdentifier>
     </Filter>
     <Filter Include="EbmlElement\ElementIterator">
       <UniqueIdentifier>{ed309c63-26fc-40e2-a5be-e729e55529d5}</UniqueIdentifier>
     </Filter>
     <Filter Include="EbmlDocument">
       <UniqueIdentifier>{c101ca31-9b53-4358-9a64-5021bd7595c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\EbmlElementBase">
+      <UniqueIdentifier>{047580df-2871-4222-872b-79366b59b747}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
