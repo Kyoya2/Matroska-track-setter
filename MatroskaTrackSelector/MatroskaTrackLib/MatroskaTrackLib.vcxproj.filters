@@ -58,7 +58,7 @@
       <Filter>EbmlElement\ElementIterator</Filter>
     </ClInclude>
     <ClInclude Include="EbmlDocument.h">
-      <Filter>EbmlDocument</Filter>
+      <Filter>EbmlElement\EbmlDocument</Filter>
     </ClInclude>
     <ClInclude Include="ElementDeclarationUtils.h">
       <Filter>EbmlElement\Auto generated</Filter>
@@ -96,7 +96,7 @@
       <Filter>EbmlElement\ElementIterator</Filter>
     </ClCompile>
     <ClCompile Include="EbmlDocument.cpp">
-      <Filter>EbmlDocument</Filter>
+      <Filter>EbmlElement\EbmlDocument</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,11 +139,11 @@
     <Filter Include="EbmlElement\ElementIterator">
       <UniqueIdentifier>{ed309c63-26fc-40e2-a5be-e729e55529d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EbmlDocument">
-      <UniqueIdentifier>{c101ca31-9b53-4358-9a64-5021bd7595c5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EbmlElement\EbmlElementBase">
       <UniqueIdentifier>{047580df-2871-4222-872b-79366b59b747}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\EbmlDocument">
+      <UniqueIdentifier>{c101ca31-9b53-4358-9a64-5021bd7595c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
