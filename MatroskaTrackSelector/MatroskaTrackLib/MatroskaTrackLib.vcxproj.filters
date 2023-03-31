@@ -42,9 +42,6 @@
     <ClInclude Include="EbmlStringElement.h">
       <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
     </ClInclude>
-    <ClInclude Include="EbmlMasterElement.h">
-      <Filter>EbmlElement\EbmlMasterElement</Filter>
-    </ClInclude>
     <ClInclude Include="EbmlBinaryElement.h">
       <Filter>EbmlElement\PrimitiveElement\PrimitiveElements</Filter>
     </ClInclude>
@@ -56,6 +53,12 @@
     </ClInclude>
     <ClInclude Include="EbmlElementBase.h">
       <Filter>EbmlElement\ElementBase</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlElementIterator.h">
+      <Filter>EbmlElement\ElementIterator</Filter>
+    </ClInclude>
+    <ClInclude Include="EbmlMasterElement.h">
+      <Filter>EbmlElement\EbmlMasterElement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,11 +83,11 @@
     <ClCompile Include="MatroskaLanguageTags.cpp">
       <Filter>TrackManager\Element wrappers\TrackEntry\LanguageTags</Filter>
     </ClCompile>
-    <ClCompile Include="EbmlMasterElement.cpp">
-      <Filter>EbmlElement\EbmlMasterElement</Filter>
-    </ClCompile>
     <ClCompile Include="EbmlElementBase.cpp">
       <Filter>EbmlElement\ElementBase</Filter>
+    </ClCompile>
+    <ClCompile Include="EbmlElementIterator.cpp">
+      <Filter>EbmlElement\ElementIterator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +132,9 @@
     </Filter>
     <Filter Include="EbmlElement\ElementBase">
       <UniqueIdentifier>{047580df-2871-4222-872b-79366b59b747}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EbmlElement\ElementIterator">
+      <UniqueIdentifier>{ed309c63-26fc-40e2-a5be-e729e55529d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

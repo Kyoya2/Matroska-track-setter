@@ -24,6 +24,7 @@
     <ClInclude Include="EbmlBinaryElement.h" />
     <ClInclude Include="EbmlElement.h" />
     <ClInclude Include="EbmlElementBase.h" />
+    <ClInclude Include="EbmlElementIterator.h" />
     <ClInclude Include="EbmlFixedBinaryElement.h" />
     <ClInclude Include="EbmlMasterElement.h" />
     <ClInclude Include="EbmlPrimitiveElement.h" />
@@ -42,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EbmlElementBase.cpp" />
-    <ClCompile Include="EbmlMasterElement.cpp" />
+    <ClCompile Include="EbmlElementIterator.cpp" />
     <ClCompile Include="OldEbmlElement.cpp" />
     <ClCompile Include="EbmlElementID.cpp" />
     <ClCompile Include="EbmlElementLength.cpp" />
