@@ -31,6 +31,10 @@ EbmlElementIDType EbmlElementIterator::_s_advance(std::istream& stream, size_t& 
 
     stream.seekg(inout_next_element_offset);
 
+    // Return 0 if can't read further
+    if (stream.eof())
+        return 0;
+
     const EbmlElementIDType child_id = EbmlVintUtils::read_element_id_from_stream(stream, &encoded_id_size);
 
     // Calculate the offset to the next element, by adding the size of the current element to the

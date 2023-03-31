@@ -26,7 +26,7 @@ private:
     // Assumes that the stream pointer is at the start of an element.
     // inout_next_element_size should hold an offset to the current element, after this function
     // returns it will contain the offset to the next element. The function returns the ID of
-    // the next element.
+    // the next element or 0 if reached end of stream.
     static EbmlElementIDType _s_advance(std::istream& stream, size_t& inout_next_element_offset);
     void mark_end_reached() { m_current_child_id = 0; }
 
