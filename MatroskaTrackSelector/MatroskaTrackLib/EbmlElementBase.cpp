@@ -1,7 +1,7 @@
 #include "EbmlElementBase.h"
 
 // Constructor for any element that doesn't have a paernt. Only 'EbmlDocument' is allowed to call this constructor
-EbmlElementBase::EbmlElementBase(EbmlFileInfoBlockPtr info_block) :
+EbmlElementBase::EbmlElementBase(EbmlDocumentInfoBlockPtr info_block) :
     m_info(info_block),
     m_data_length(info_block->stream),
     m_data_offset(info_block->stream.tellg()),

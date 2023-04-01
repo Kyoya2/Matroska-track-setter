@@ -8,14 +8,14 @@ class EbmlElementBase;
 using EbmlElementBasePtr = std::shared_ptr<EbmlElementBase>;
 
 // Informatiuon relevant to all elements in a file
-struct EbmlFileInfoBlock
+class EbmlDocumentInfoBlock
 {
-    EbmlFileInfoBlock(std::iostream& stream) : stream(stream), referenced_elements() {}
+    EbmlDocumentInfoBlock(std::iostream& stream) : stream(stream), referenced_elements() {}
 
     std::iostream& stream;
     std::unordered_set<EbmlElementBase*> referenced_elements;
 };
-using EbmlFileInfoBlockPtr = std::shared_ptr<EbmlFileInfoBlock>;
+using EbmlDocumentInfoBlockPtr = std::shared_ptr<EbmlDocumentInfoBlock>;
 
 // Offsets relative to the current element
 enum class EbmlOffset
@@ -35,7 +35,7 @@ protected:
 private:
     // Constructor for any element that doesn't have a paernt. Only 'EbmlDocument' is allowed to call this constructor
     // The stream pointer must be at the start of the element's length VINT
-    EbmlElementBase(EbmlFileInfoBlockPtr info_block);
+    EbmlElementBase(EbmlDocumentInfoBlockPtr info_block);
 
 protected:
     inline constexpr size_t _get_offset(EbmlOffset what) const noexcept;
@@ -63,7 +63,7 @@ protected:
 private:
     size_t m_data_offset;    // The offset of the element's data
     EbmlElementBasePtr m_parent;
-    EbmlFileInfoBlockPtr m_info;
+    EbmlDocumentInfoBlockPtr m_info;
 
     friend class EbmlDocument;
 };
