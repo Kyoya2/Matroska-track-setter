@@ -279,6 +279,10 @@ def get_elements_from_ebml_schema(schema_file_data: str) -> List[EbmlElement]:
         if 'recursive' in element.attrib:
             is_recursive = bool(int(element.attrib['recursive']))
 
+        is_unknown_size_allowed = False
+        if 'unknownsizeallowed' in element.attrib:
+            is_unknown_size_allowed = bool(int(element.attrib['unknownsizeallowed']))
+
         default_value = None
         if 'default' in element.attrib:
             default_value = parse_value_by_type(element.attrib['default'], element_type)
@@ -325,18 +329,19 @@ def get_elements_from_ebml_schema(schema_file_data: str) -> List[EbmlElement]:
             element_type = EbmlElementType.Flag
 
         schema_elements.append(EbmlElement(
-            name                = element.attrib['name'],
-            id                  = element.attrib['id'],
-            type                = element_type,
-            path                = element.attrib['path'],
-            max_occurs          = max_occurs,
-            min_occurs          = min_occurs,
-            default_value       = default_value,
-            value_constraints   = value_constraints,
-            length              = element_length,
-            documentation       = extract_documentation_from_html_element(element),
-            is_recursive        = is_recursive,
-            is_recurring        = is_recurring
+            name                    = element.attrib['name'],
+            id                      = element.attrib['id'],
+            type                    = element_type,
+            path                    = element.attrib['path'],
+            max_occurs              = max_occurs,
+            min_occurs              = min_occurs,
+            default_value           = default_value,
+            value_constraints       = value_constraints,
+            length                  = element_length,
+            documentation           = extract_documentation_from_html_element(element),
+            is_recursive            = is_recursive,
+            is_recurring            = is_recurring,
+            is_unknown_size_allowed = is_unknown_size_allowed
         ))
 
     return schema_elements

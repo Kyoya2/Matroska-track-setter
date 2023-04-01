@@ -136,6 +136,9 @@ class EbmlElement(NamedTuple):
     # Can multiple IDENTICAL copies of the element appear
     is_recurring: bool = False
 
+    # Can the element have an unknown size
+    is_unknown_size_allowed: bool = False
+
 
 class EbmlElements(NamedTuple):
     # Elements that can appear anywhere in an EBML document
