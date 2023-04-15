@@ -10,10 +10,14 @@ using EbmlElementBasePtr = std::shared_ptr<EbmlElementBase>;
 // Informatiuon relevant to all elements in a file
 class EbmlDocumentInfoBlock
 {
+private:
     EbmlDocumentInfoBlock(std::iostream& stream) : stream(stream), referenced_elements() {}
 
+public:
     std::iostream& stream;
     std::unordered_set<EbmlElementBase*> referenced_elements;
+
+    friend class EbmlDocument;
 };
 using EbmlDocumentInfoBlockPtr = std::shared_ptr<EbmlDocumentInfoBlock>;
 
@@ -65,7 +69,8 @@ private:
     EbmlElementBasePtr m_parent;
     EbmlDocumentInfoBlockPtr m_info;
 
-    friend class EbmlDocument;
+    friend class EBML;
+    friend class EbmlBody;
 };
 
 constexpr size_t EbmlElementBase::_get_offset(EbmlOffset what) const noexcept

@@ -25,10 +25,13 @@ template <auto val> inline constexpr bool is_constant_v<Constant<val>> = true;
 template <typename T> concept WrappedConstant = is_constant_v<T>;
 */
 
+class EBML;
 class SomeMasterElement;
 
 using SomeElement = BasicEbmlElement<0x4255, SomeMasterElement, EbmlUIntElement>;
-using SomeOtherElement = BasicEbmlElement<0x4257, SomeMasterElement, EbmlFixedBinaryElement, 123>;
+using SomeOtherElement = BasicEbmlElement<0x4256, SomeMasterElement, EbmlFixedBinaryElement, 123>;
+using HeaderElement = BasicEbmlElement<0x4257, EBML, EbmlUIntElement>;
+using AnotherHeaderElement = BasicEbmlElement<0x4258, EBML, EbmlFixedBinaryElement, 123>;
 //using YetAnotherElement = BasicEbmlElement<0x4257, SomeMasterElement, EbmlFixedBinaryElement, 123>;
 
 
@@ -48,6 +51,62 @@ public:
         SomeOtherElement = 1ull << 1
     };};
     
+public:
+    void load_elements(Child::TYPE children_to_load, Child::TYPE stop_at = Child::NONE)
+    {
+        // Keep iterating until we reach the end or until we loaded the requested elements
+        for (auto child_iter = get_iterator(); child_iter && children_to_load; ++child_iter)
+        {
+            const auto current_child_id = child_iter.get_current_child_id();
+            // Element that can appear at-most once
+            if (current_child_id == SomeElement::id)
+            {
+                if (children_to_load & Child::SomeElement)
+                {
+                    some_element = shared_ptr<SomeElement>(new SomeElement(shared_from_this()));
+
+                    // Clear the flag to stop searching for this element
+                    children_to_load = (Child::TYPE)(children_to_load ^ Child::SomeElement);
+                }
+                else if (stop_at & Child::SomeElement)
+                    break;
+            }
+            else if (current_child_id == SomeOtherElement::id)
+            {
+                if (children_to_load & Child::SomeOtherElement)
+                {
+                    some_other_element_elements.emplace_back(new SomeOtherElement(shared_from_this()));
+                    // Don't clear the flag because more elements like it may still appear
+                }
+                else if (stop_at & Child::SomeOtherElement)
+                    break;
+            }
+        }
+    }
+
+public:
+    shared_ptr<SomeElement> some_element;
+    vector<shared_ptr<SomeOtherElement>> some_other_element_elements;
+};
+
+class EBML final : public EbmlMasterElement<4>
+{
+public:
+    static inline constinit EbmlElementIDType id = 12356789;
+
+public:
+    EBML(EbmlDocumentInfoBlockPtr info_block) : EbmlMasterElement(info_block) {}
+
+public:
+    struct Child {
+        enum TYPE : uint64_t
+        {
+            NONE = 0ull,
+            SomeElement = 1ull << 0,
+            SomeOtherElement = 1ull << 1
+        };
+    };
+
 public:
     void load_elements(Child::TYPE children_to_load, Child::TYPE stop_at = Child::NONE)
     {

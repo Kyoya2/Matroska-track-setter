@@ -22,6 +22,8 @@ class BasicEbmlElement final : CurrentTPrimitiveClass
     //static_assert(std::derived_from<TParentElement, EbmlMasterElement>);
 
     using CurrentTPrimitiveClass::TPrimitive;
+
+public:
     static constinit inline EbmlElementIDType id = ElementID;
 
     friend TParentElement;
